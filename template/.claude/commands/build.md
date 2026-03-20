@@ -54,11 +54,14 @@ On success: node lib/pipeline-cli.js update-attempt taskId attemptId --outcome s
 On failure: node lib/pipeline-cli.js update-attempt taskId attemptId --outcome failure --notes "what broke"
 On failure: STOP. Do not retry. Do not revert.
 Format notes per .claude/agent-protocol.md template.
+
+NEVER mark a task "completed" — only QA can do that. Leave the task status as
+"in-progress" with a success attempt. QA validates and sets completed.
 </step>
 
 <step name="phase-rollup">
-node lib/pipeline-cli.js rollup phaseId
 node lib/pipeline-cli.js set-pipeline phaseId awaiting-qa --agent build
+Do NOT run rollup — QA handles final status after validation.
 </step>
 
 <step name="report">
