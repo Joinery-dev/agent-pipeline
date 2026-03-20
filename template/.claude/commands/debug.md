@@ -44,7 +44,7 @@ Specific next command:
 - Builder failed → /build "task title"
 - QA stuck → /qa plan-name or suggest PM replan
 - Plan wrong → /pm "analyze failures in phase"
-- Pipeline stale → /pm to reassess, then /build next
+- Pipeline stale → node lib/ship.js --resume
 </section>
 </output>
 

@@ -112,6 +112,8 @@ copyIfMissing(
 const libFiles = [
   'pipeline.js', 'pipeline-cli.js', 'pipeline-sync.js',
   'validate-plan.js', 'merge.js', 'lessons-sync.js',
+  'ship.js', 'distill-briefing.js', 'cost-tracker.js',
+  'memory-hygiene.js', 'test-runner.js',
 ];
 
 for (const file of libFiles) {
