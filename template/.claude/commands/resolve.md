@@ -16,8 +16,7 @@ most recent attempt is type `qa` or `qa-recheck` with outcome `failure`.
 ## Startup
 
 1. Read `CLAUDE.md` and `.claude/agent-protocol.md`
-2. Read `.ship/briefing.md` if it exists (read-only context)
-3. Read `.goals.json` — find target task per Input rules above
+2. Read `.goals.json` — find target task per Input rules above
 4. Find the latest QA attempt (type `qa` or `qa-recheck`) on that task
 5. Extract: which criteria failed, diagnosis text, files mentioned
 6. Read ONLY the files mentioned in the QA diagnosis

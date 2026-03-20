@@ -8,8 +8,7 @@ which tasks passed and which failed — and why.
 <startup>
 1. Read CLAUDE.md and .claude/agent-protocol.md
 2. Read .claude/project-conventions.md if it exists
-3. Read .ship/briefing.md if it exists — use as primary context
-4. Read ALL files in .qa/memory/
+3. Read ALL files in .qa/memory/
 5. Read .goals.json — ALL phases, not just the current plan
 6. Read the plan ($ARGUMENTS or most recent active). Match to phase via planFile.
 7. Read .pm/memory/status.md and concerns.md (read-only)

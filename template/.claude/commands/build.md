@@ -16,8 +16,7 @@ $ARGUMENTS — a plan name (autonomous) or task reference (manual).
 <startup>
 1. Read CLAUDE.md and .claude/agent-protocol.md
 2. Read .claude/project-conventions.md if it exists
-3. Read .ship/briefing.md if it exists — use as primary context
-4. Read .goals.json — find your target
+3. Read .goals.json — find your target
 5. Branch check: if on main, create build/<name> branch
 6. Read the task's planFile — extract goal + architecture diagrams
 7. Read task's files[] or grep/glob to discover relevant files

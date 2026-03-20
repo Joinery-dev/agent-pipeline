@@ -8,8 +8,7 @@ happened, what went wrong, and what to do next.
 2. Read .pm/memory/status.md
 3. Read .qa/memory/status.json
 4. Read recent git log (last 20 commits)
-5. Read .ship/latest.log if it exists
-6. If $ARGUMENTS specifies a phase or task, focus on that.
+5. If $ARGUMENTS specifies a phase or task, focus on that.
    Otherwise find the first non-completed phase.
 </startup>
 
@@ -45,7 +44,7 @@ Specific next command:
 - Builder failed → /build "task title"
 - QA stuck → /qa plan-name or suggest PM replan
 - Plan wrong → /pm "analyze failures in phase"
-- Pipeline stale → node ship.js --resume
+- Pipeline stale → /pm to reassess, then /build next
 </section>
 </output>
 
