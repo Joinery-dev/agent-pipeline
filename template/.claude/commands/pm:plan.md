@@ -66,30 +66,43 @@ After all phases and tasks are created:
 </step>
 
 <step name="diagram">
-Build a React Flow diagram and store it on the entity you are planning for.
+The plan file is the source of truth (for agents). The diagram is the visual
+representation of the same architecture (for humans in the Goals Side Panel).
+They must match. Derive the diagram FROM the plan — never the other way around.
 
-**Diagram placement rule:** The diagram is stored on the entity the plan is about.
-- Planning the whole project → store on the project root (use the project ID)
-- Planning a major phase → store on that majorPhase (use its ID)
-- Planning a sub-phase → store on that phase (use its ID)
+**Diagram placement:** Store on the entity you are planning for.
+- Project → project root ID
+- Major phase → majorPhase ID
+- Sub-phase → phase ID
+Do NOT create diagrams for individual tasks.
 
-Do NOT create diagrams for individual tasks — the code is the source of truth at that level.
-The `add-diagram` command accepts any entity ID — project, majorPhase, or phase.
+**Diagram content must mirror the plan:**
+- Every sub-phase in the plan → a node in the diagram
+- Every task in the plan → a node (at phase level)
+- Every dependency/interface in the plan → an edge in the diagram
+- If the plan says Phase A outputs a REST API consumed by Phase B, the diagram
+  must show an edge between A and B labeled with that interface
 
-Research the domain with an Explore agent first. Then build using
-Turbo Flow design system: TurboNode (conic gradient borders, dark inner,
-icon + title + subline + fields), TurboEdge (bezier, gradient stroke,
-label pills), GroupNode (tinted backgrounds).
+**Nested hierarchy:** Diagrams nest like a map. The project diagram shows major
+phases. Each major phase diagram shows its sub-phases. Each sub-phase diagram
+shows its tasks. A node in a parent diagram should correspond to an entity that
+has its own diagram one level down.
 
-Layout: 3-column grid (COL=400, cx(c) = c*COL, ry(r) = r*240).
+**Parent diagram update:** If this new plan adds a phase that isn't represented
+in the parent's diagram, update the parent diagram to include it.
 
-Fit check: if parent entity has diagrams, verify entry/exit points
-match, use same color group and naming conventions.
+**Design system:** Turbo Flow — TurboNode (conic gradient borders, dark inner,
+icon + title + subline + fields), TurboEdge (bezier, gradient stroke, label
+pills), GroupNode (tinted backgrounds). 3-column grid layout (COL=400,
+cx(c) = c*COL, ry(r) = r*240).
+
+**Fit check:** Read parent entity's diagram. Verify:
+- This diagram's entry points match what the parent shows flowing in
+- This diagram's exit points match what the parent shows flowing out
+- Same color group and naming conventions as parent assigns
 
 Write JSON to temp file, store via:
   node lib/pipeline-cli.js add-diagram <entityId> --title "name" --jsonFile /tmp/diagram.json
-
-Render, screenshot, verify layout. Fix before finalizing.
 </step>
 
 <step name="report">

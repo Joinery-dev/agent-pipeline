@@ -18,7 +18,7 @@ $ARGUMENTS — a plan name (autonomous) or task reference (manual).
 2. Read .claude/project-conventions.md if it exists
 3. Read .goals.json — find your target
 5. Branch check: if on main, create build/<name> branch
-6. Read the task's planFile — extract goal + architecture diagrams
+6. Read the task's planFile — extract goal, architecture, and success criteria
 7. Read task's files[] or grep/glob to discover relevant files
 8. Read .pm/memory/concerns.md and .qa/memory/patterns.md (read-only)
 </startup>

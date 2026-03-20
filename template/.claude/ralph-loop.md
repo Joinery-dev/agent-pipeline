@@ -69,6 +69,16 @@ For each task that was built, evaluate:
    vocabulary as the rest of the project?
 5. **Dependency direction** — does this code depend on things it
    shouldn't, or create coupling that will make future phases harder?
+6. **Diagram sync** — read the phase's diagram (if it has one) and the
+   parent's diagram. Check:
+   - Does the phase diagram still match the plan? (Same number of tasks/nodes,
+     same interfaces as edges, nothing added or removed without updating)
+   - Is this phase represented in the parent diagram? If a new sub-phase was
+     added, the parent diagram should include it
+   - Do the entry/exit points in the parent diagram match what the code
+     actually implements? (e.g., parent shows "REST API" edge into this phase —
+     does the code actually expose/consume that API?)
+   Flag stale or mismatched diagrams as forest warnings.
 
 Forest findings are reported as **WARNING** (advisory, not blocking).
 WARNING risk levels: HIGH, MEDIUM, LOW.
