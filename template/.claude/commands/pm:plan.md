@@ -65,9 +65,9 @@ Build a React Flow diagram and store it on the entity you are planning for.
 - Planning the whole project → store on the project root (use the project ID)
 - Planning a major phase → store on that majorPhase (use its ID)
 - Planning a sub-phase → store on that phase (use its ID)
-- Planning a single task → store on that task (use its ID)
 
-The `add-diagram` command accepts any entity ID — project, majorPhase, phase, or task.
+Do NOT create diagrams for individual tasks — the code is the source of truth at that level.
+The `add-diagram` command accepts any entity ID — project, majorPhase, or phase.
 
 Research the domain with an Explore agent first. Then build using
 Turbo Flow design system: TurboNode (conic gradient borders, dark inner,

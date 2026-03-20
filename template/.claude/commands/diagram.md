@@ -34,6 +34,19 @@ The viewer at `app/visualize/page.js` supports both conventions
 
 ---
 
+## Diagram Levels
+
+Diagrams are created at project, major phase, and phase levels only.
+Do NOT create diagrams for individual tasks — the code is the source of truth at that level.
+
+| Level      | Node granularity           | Edge meaning         |
+|------------|---------------------------|----------------------|
+| Project    | One per major phase        | Phase dependencies   |
+| MajorPhase | One per phase              | Sequence / data flow |
+| Phase      | One per task + key modules | Task deps, data contracts |
+
+---
+
 ## Viewing Diagrams
 
 Diagrams are stored in `.goals.json` via:
