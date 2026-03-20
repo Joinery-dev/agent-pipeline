@@ -76,17 +76,25 @@ They must match. Derive the diagram FROM the plan — never the other way around
 - Sub-phase → phase ID
 Do NOT create diagrams for individual tasks.
 
-**Diagram content must mirror the plan:**
-- Every sub-phase in the plan → a node in the diagram
-- Every task in the plan → a node (at phase level)
-- Every dependency/interface in the plan → an edge in the diagram
-- If the plan says Phase A outputs a REST API consumed by Phase B, the diagram
-  must show an edge between A and B labeled with that interface
+**Diagram the system being built, NOT the work plan.** The plan file already
+describes the work. The diagram shows the architecture — components, modules,
+pages, APIs, data stores, and how they connect.
 
-**Nested hierarchy:** Diagrams nest like a map. The project diagram shows major
-phases. Each major phase diagram shows its sub-phases. Each sub-phase diagram
-shows its tasks. A node in a parent diagram should correspond to an entity that
-has its own diagram one level down.
+At each level, diagram what the system looks like when this work is done:
+- **Project level** — the major systems/areas and how they integrate
+- **Major phase level** — the components/modules being built and their interfaces
+- **Phase level** — the files, APIs, data flows, and how they connect
+
+Nodes = components, modules, pages, APIs, data stores, services.
+Edges = data flow, API calls, imports, user navigation.
+NOT nodes = tasks, work items, build steps.
+
+The diagram should be something a developer looks at and says "oh, that's how
+the system fits together" — not "that's the order we build things."
+
+**Nested hierarchy:** Diagrams zoom in like a map. A node in the project diagram
+(e.g., "Auth System") has its own detailed diagram at the major phase level
+showing the components inside it (login page, JWT middleware, user store, etc.).
 
 **Parent diagram update:** If this new plan adds a phase that isn't represented
 in the parent's diagram, update the parent diagram to include it.
