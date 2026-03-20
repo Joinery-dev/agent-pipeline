@@ -97,9 +97,22 @@ NOT nodes = tasks, work items, build steps.
 The diagram should be something a developer looks at and says "oh, that's how
 the system fits together" — not "that's the order we build things."
 
-**Nested hierarchy:** Diagrams zoom in like a map. A node in the project diagram
-(e.g., "Auth System") has its own detailed diagram at the major phase level
-showing the components inside it (login page, JWT middleware, user store, etc.).
+**Nested hierarchy with entry/exit nodes:** Diagrams zoom in like a map. A node
+in the project diagram (e.g., "Auth System") has its own detailed diagram at the
+major phase level showing the components inside it.
+
+Every child diagram (major phase, phase) must include **entry and exit nodes**
+that visually connect it to the parent diagram:
+- **Entry nodes** on the left — one for each edge flowing INTO this entity in the
+  parent diagram. Use a distinct style (e.g., dashed border or muted color) and
+  label them exactly as the parent's edge labels them. These show "what comes in."
+- **Exit nodes** on the right — one for each edge flowing OUT of this entity in
+  the parent diagram. Same distinct style. These show "what goes out."
+- The interior nodes (the actual architecture) connect from the entry nodes and
+  flow to the exit nodes.
+
+This way, looking at a child diagram, you immediately see how it plugs into the
+level above. The entry/exit nodes are the contract with the parent.
 
 **Parent diagram update:** If this new plan adds a phase that isn't represented
 in the parent's diagram, update the parent diagram to include it.
@@ -107,12 +120,15 @@ in the parent's diagram, update the parent diagram to include it.
 **Design system:** Turbo Flow — TurboNode (conic gradient borders, dark inner,
 icon + title + subline + fields), TurboEdge (bezier, gradient stroke, label
 pills), GroupNode (tinted backgrounds). 3-column grid layout (COL=400,
-cx(c) = c*COL, ry(r) = r*240).
+cx(c) = c*COL, ry(r) = r*240). Entry/exit nodes use a muted variant — same
+TurboNode but with lower opacity gradient and a subline like "← from Parent"
+or "→ to Parent".
 
 **Fit check:** Read parent entity's diagram. Verify:
-- This diagram's entry points match what the parent shows flowing in
-- This diagram's exit points match what the parent shows flowing out
+- Entry nodes match every edge the parent sends into this entity
+- Exit nodes match every edge the parent expects out of this entity
 - Same color group and naming conventions as parent assigns
+- No missing connections — if parent shows 3 edges in, diagram has 3 entry nodes
 
 Write JSON to temp file, store via:
   node lib/pipeline-cli.js add-diagram <entityId> --title "name" --jsonFile /tmp/diagram.json
