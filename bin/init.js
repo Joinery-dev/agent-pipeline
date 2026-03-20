@@ -202,6 +202,23 @@ if (!existsSync(plansDir)) {
   created.push('plans/');
 }
 
+// ── Diagram viewer (React Flow) ───────────────────────────────────
+
+const vizFiles = ['page.js', 'TurboEdge.js', 'visualize.module.css'];
+for (const file of vizFiles) {
+  copyIfMissing(
+    join(TEMPLATE_DIR, 'app', 'visualize', file),
+    join(targetDir, 'app', 'visualize', file),
+    `app/visualize/${file}`
+  );
+}
+
+copyIfMissing(
+  join(TEMPLATE_DIR, 'app', 'api', 'diagrams', 'route.js'),
+  join(targetDir, 'app', 'api', 'diagrams', 'route.js'),
+  'app/api/diagrams/route.js'
+);
+
 // ── CLAUDE.md starter ─────────────────────────────────────────────
 
 writeIfMissing(

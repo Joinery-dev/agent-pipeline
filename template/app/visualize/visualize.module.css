@@ -1,0 +1,435 @@
+/* ── Container ── */
+
+.container {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+/* ── Diagram Selector ── */
+
+.diagramSelector {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  gap: 4px;
+  background: rgba(17, 17, 17, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.diagramTab {
+  font-size: 12px;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #888;
+  cursor: pointer;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.diagramTab:hover {
+  color: #ccc;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.diagramTabActive {
+  color: #f3f4f6;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ── React Flow base ── */
+
+:global(.react-flow) {
+  --bg-color: rgb(17, 17, 17);
+  --text-color: rgb(243, 244, 246);
+  --node-border-radius: 10px;
+  --node-box-shadow:
+    10px 0 15px rgba(42, 138, 246, 0.18),
+    -10px 0 15px rgba(174, 83, 186, 0.18);
+  background-color: var(--bg-color) !important;
+  color: var(--text-color);
+}
+
+/* ── Turbo Node ── */
+
+:global(.react-flow__node-turbo) {
+  border-radius: var(--node-border-radius);
+  display: flex;
+  min-width: 240px;
+  max-width: 320px;
+  font-family: 'Fira Mono', 'SF Mono', 'Fira Code', monospace;
+  font-weight: 500;
+  letter-spacing: -0.2px;
+  box-shadow: var(--node-box-shadow);
+}
+
+.wrapper {
+  overflow: hidden;
+  display: flex;
+  padding: 2px;
+  position: relative;
+  border-radius: var(--node-border-radius);
+  flex-grow: 1;
+}
+
+.gradient::before {
+  content: '';
+  position: absolute;
+  padding-bottom: calc(100% * 1.41421356237);
+  width: calc(100% * 1.41421356237);
+  background: conic-gradient(
+    from -160deg at 50% 50%,
+    #e92a67 0deg,
+    #a853ba 120deg,
+    #2a8af6 240deg,
+    #e92a67 360deg
+  );
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 100%;
+  opacity: 0.35;
+  transition: opacity 0.3s;
+}
+
+:global(.react-flow__node-turbo:hover) .gradient::before {
+  opacity: 0.6;
+}
+
+:global(.react-flow__node-turbo.selected) .gradient::before {
+  animation: spinner 4s linear infinite;
+  opacity: 0.7;
+}
+
+@keyframes spinner {
+  100% {
+    transform: translate(-50%, -50%) rotate(-360deg);
+  }
+}
+
+.inner {
+  background: var(--bg-color);
+  padding: 12px 16px;
+  border-radius: var(--node-border-radius);
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  position: relative;
+  gap: 6px;
+}
+
+.body {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.bodyText {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #f3f4f6;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.sub {
+  font-size: 11px;
+  color: #666;
+  margin-top: 2px;
+}
+
+/* ── Node fields ── */
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 6px;
+}
+
+.field {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  padding: 1.5px 0;
+}
+
+.fname {
+  font-size: 10px;
+  color: #9ca3af;
+}
+
+.ftype {
+  font-size: 9.5px;
+  color: #4b5563;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 170px;
+}
+
+/* ── Handles ── */
+
+:global(.react-flow__node-turbo) :global(.react-flow__handle) {
+  opacity: 0;
+  width: 10px;
+  height: 10px;
+}
+
+:global(.react-flow__node-turbo) :global(.react-flow__handle.source) {
+  bottom: -5px;
+}
+
+:global(.react-flow__node-turbo) :global(.react-flow__handle.target) {
+  top: -5px;
+}
+
+/* ── Group Node ── */
+
+.groupNode {
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  padding: 10px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.groupNode[data-color='purple'] {
+  background: rgba(168, 83, 186, 0.06);
+  border-color: rgba(168, 83, 186, 0.15);
+}
+
+.groupNode[data-color='amber'] {
+  background: rgba(245, 158, 11, 0.05);
+  border-color: rgba(245, 158, 11, 0.12);
+}
+
+.groupNode[data-color='blue'] {
+  background: rgba(42, 138, 246, 0.05);
+  border-color: rgba(42, 138, 246, 0.12);
+}
+
+.groupNode[data-color='green'] {
+  background: rgba(52, 211, 153, 0.05);
+  border-color: rgba(52, 211, 153, 0.12);
+}
+
+.groupNode[data-color='pink'] {
+  background: rgba(233, 42, 103, 0.05);
+  border-color: rgba(233, 42, 103, 0.12);
+}
+
+.groupLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #555;
+}
+
+.groupNode[data-color='purple'] .groupLabel { color: rgba(168, 83, 186, 0.6); }
+.groupNode[data-color='amber'] .groupLabel { color: rgba(245, 158, 11, 0.5); }
+.groupNode[data-color='blue'] .groupLabel { color: rgba(42, 138, 246, 0.5); }
+.groupNode[data-color='green'] .groupLabel { color: rgba(52, 211, 153, 0.5); }
+.groupNode[data-color='pink'] .groupLabel { color: rgba(233, 42, 103, 0.5); }
+
+/* ── Edges ── */
+
+:global(.react-flow__edge) {
+  cursor: pointer;
+}
+
+:global(.react-flow__edge .react-flow__edge-path) {
+  stroke: url(#edge-gradient);
+  stroke-width: 2;
+  stroke-opacity: 0.6;
+  transition: stroke-opacity 0.15s, stroke-width 0.15s;
+}
+
+:global(.react-flow__edge:hover .react-flow__edge-path) {
+  stroke-opacity: 1;
+  stroke-width: 3;
+}
+
+.edgeLabel {
+  position: absolute;
+  font-size: 11px;
+  font-family: 'Fira Mono', 'SF Mono', monospace;
+  color: #888;
+  background: rgba(17, 17, 17, 0.92);
+  padding: 3px 10px;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  pointer-events: all;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.edgeLabel:hover {
+  color: #eee;
+  background: rgba(30, 30, 40, 0.95);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ── Controls ── */
+
+:global(.react-flow__controls button) {
+  background-color: rgb(17, 17, 17) !important;
+  color: #f3f4f6 !important;
+  border: 1px solid #333 !important;
+  border-bottom: none !important;
+}
+
+:global(.react-flow__controls button:hover) {
+  background-color: rgb(37, 37, 37) !important;
+}
+
+:global(.react-flow__controls button:first-child) {
+  border-radius: 5px 5px 0 0 !important;
+}
+
+:global(.react-flow__controls button:last-child) {
+  border-bottom: 1px solid #333 !important;
+  border-radius: 0 0 5px 5px !important;
+}
+
+:global(.react-flow__controls button path) {
+  fill: #f3f4f6 !important;
+}
+
+:global(.react-flow__node:focus) {
+  outline: none;
+}
+
+/* ── Detail Panel ── */
+
+.detailPanel {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 380px;
+  max-height: calc(100% - 32px);
+  overflow-y: auto;
+  background: rgba(24, 24, 32, 0.95);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.03);
+  z-index: 10;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.detailClose {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.detailClose:hover {
+  color: #ccc;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.detailRoute {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.detailChip {
+  font-size: 12px;
+  font-weight: 500;
+  color: #d1d5db;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.detailArrow {
+  color: #444;
+  font-size: 14px;
+}
+
+.detailTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #f3f4f6;
+  margin-bottom: 8px;
+}
+
+.detailSub {
+  font-family: 'Fira Mono', 'SF Mono', monospace;
+  font-size: 11px;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.detailDesc {
+  font-size: 13px;
+  line-height: 1.65;
+  color: #9ca3af;
+}
+
+.detailFields {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.detailFieldRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: baseline;
+}
+
+.detailFieldName {
+  font-family: 'Fira Mono', 'SF Mono', monospace;
+  font-size: 11px;
+  color: #d1d5db;
+}
+
+.detailFieldType {
+  font-size: 10px;
+  color: #555;
+  text-align: right;
+}
