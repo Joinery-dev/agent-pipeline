@@ -52,8 +52,13 @@ representing a distinct area of work. Each sub-phase gets its own tasks.
 Do NOT put everything in one sub-phase with many tasks.
 
 For each sub-phase:
-1. Create the sub-phase:
-   node lib/pipeline-cli.js add-phase --title "Name" --desc "Summary" --planFile "plans/slug.md" --majorPhase majorPhaseId
+1. Create the sub-phase with interface contracts:
+   node lib/pipeline-cli.js add-phase --title "Name" --desc "Summary" --planFile "plans/slug.md" --majorPhase majorPhaseId --produces "REST API /api/auth,JWT tokens" --consumes "user database,env config"
+
+   **Interface contracts are required.** Every phase must declare:
+   - `--produces` — what this phase creates that other phases use (APIs, components, data stores, CSS classes, exports)
+   - `--consumes` — what this phase needs from other phases or the environment
+   This is how QA catches cross-phase conflicts (e.g., one phase hiding content another phase created).
 
 2. For each task in that sub-phase:
    node lib/pipeline-cli.js add-task phaseId --title "Name" --desc "Description" --files "a.js,b.js"

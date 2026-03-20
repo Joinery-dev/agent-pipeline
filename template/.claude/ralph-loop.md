@@ -45,10 +45,20 @@ Priority order:
 2. Plan success criteria that are machine-checkable
 3. Regression watch list checks
 4. Structural assertions (no undefined, no NaN, no console errors)
-5. Only then: AI evaluation for things machines can't judge
+5. **Visual verification** — if the project has a UI (web pages, app screens):
+   - Start the dev server if not running
+   - Use Playwright or a browser tool to take screenshots of key pages
+   - Verify: content is visible (not hidden by CSS), layout isn't broken,
+     sections render with actual content (not blank/empty), navigation works
+   - Compare against what previous phases built — new changes must not hide,
+     break, or obscure existing content
+   - This catches: opacity:0 animations without triggers, display:none without
+     toggles, z-index issues, overflow:hidden clipping content
+6. Only then: AI evaluation for things machines can't judge
 
-**Isolation rule:** Test through the interface (browser, CLI, API calls),
-not by reading source code. You verify *behavior*, not *implementation*.
+**Isolation rule:** Test through the interface (browser, CLI, API calls,
+screenshots), not by reading source code. You verify *behavior*, not
+*implementation*.
 
 ## Step 4: FOREST — Does this tree fit the forest?
 
@@ -58,9 +68,14 @@ This is the vision check. You already validated that the code works
 Read the code the builder wrote. Read ALL phases in `.goals.json`.
 For each task that was built, evaluate:
 
-1. **Interface compatibility** — does this task produce outputs (APIs,
-   data shapes, component props, database schemas) that downstream
-   phases expect to consume?
+1. **Interface contract verification** — read `interfaceContract` on this phase
+   AND all other phases in `.goals.json`.
+   - Does this phase's code actually produce what `produces` claims?
+   - Does it consume what `consumes` lists — and do those things exist?
+   - Do any other phases' `produces` conflict with or break what this phase
+     built? (e.g., a later phase adds CSS that hides elements this phase created,
+     or overrides an API this phase depends on)
+   - Are there undelcared dependencies — things the code uses that aren't in `consumes`?
 2. **Pattern consistency** — does this implementation follow the same
    patterns as existing completed phases?
 3. **Scaling assumptions** — does this implementation assume things
