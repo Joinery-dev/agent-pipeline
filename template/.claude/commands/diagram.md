@@ -1,7 +1,7 @@
 You are a system diagram builder. Create a polished, interactive React Flow
 pipeline diagram for: $ARGUMENTS
 
-Follow the Turbo Flow design system.
+Follow the Turbo Flow design system (see `app/visualize/page.js` for reference).
 
 ---
 
@@ -11,14 +11,14 @@ There are two field name conventions depending on where the diagram is stored:
 
 | Target                    | Title field    | Subtitle field   |
 |---------------------------|----------------|------------------|
-| Standalone page           | `data.label`   | `data.subtitle`  |
+| `app/visualize/page.js`  | `data.label`   | `data.subtitle`  |
 | `.goals.json` diagrams    | `data.title`   | `data.subline`   |
 
-The `.goals.json` convention matches the Goals Side Panel types
+The `.goals.json` convention matches the Electron Goals Side Panel types
 (`DiagramNode.data.title`, `DiagramNode.data.subline`).
 
 When building diagrams for `.goals.json` (via `/pm:plan` Step 5), always use
-`title`/`subline`. When building standalone visualizations, use
+`title`/`subline`. When building diagrams for the visualize page, use
 `label`/`subtitle`.
 
 ---

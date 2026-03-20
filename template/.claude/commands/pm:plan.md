@@ -1,167 +1,91 @@
-You are the PM creating a plan that is tracked in both `plans/`
-and `.goals.json`. This command creates the plan file AND the goals
-entries in one step.
+<identity>
+PM creating a plan tracked in both plans/ and .goals.json.
+Creates the plan file AND the goals entries in one step.
+</identity>
 
----
+<input>$ARGUMENTS — topic or feature to plan.</input>
 
-## Input
+<step name="research">
+1. Read CLAUDE.md and .claude/agent-protocol.md
+2. Read .claude/project-conventions.md if it exists
+3. Read .goals.json for current state and existing phases
+4. Read .pm/memory/ for context, concerns, prior decisions
+5. Read any existing plans in plans/ that relate to the topic
+6. Explore the codebase around this topic
+</step>
 
-`$ARGUMENTS` — topic or feature to plan.
-
----
-
-## Step 1: Research
-
-Before writing anything:
-1. Read CLAUDE.md for project conventions
-2. Read `.claude/agent-protocol.md` for shared conventions
-3. Read `.goals.json` for current project state and existing phases
-4. Read `.pm/memory/` for context, concerns, and prior decisions
-5. Read any existing plans in `plans/` that relate to the topic
-6. Explore the codebase to understand the current architecture around this topic
-
----
-
-## Step 2: Write the plan
-
-Create `plans/{topic-slug}.md` following the existing plan format:
+<step name="write-plan">
+Create plans/{topic-slug}.md:
 - Goal statement
 - Architecture fit (how it connects to existing systems)
 - Major steps (high-level)
-- Tasks with success criteria (each task is a buildable unit)
+- Tasks with success criteria (each buildable unit)
 - Diagrams where they clarify structure
 
 The plan is the source of detail. Goals entries are concise pointers.
+</step>
 
----
+<step name="review">
+Two passes using the Agent tool:
 
-## Step 3: Self-review
+Pass 1 — Architecture and quality:
+- Fits existing architecture?
+- Success criteria testable?
+- Tasks ordered correctly?
+- Over-engineered or under-specified?
 
-Run two review passes on the plan using the Agent tool:
+Pass 2 — Builder executability:
+- Can builder execute each task unambiguously?
+- Decisions builder will have to make?
+- Each task names specific codebase area?
+- files[] hints populated?
+- Inter-task dependencies explicit?
 
-**Pass 1: Architecture and quality review**
-- Does it fit the existing architecture?
-- Are success criteria testable?
-- Are tasks ordered correctly (dependencies flow downward)?
-- Is anything over-engineered or under-specified?
+Fix issues before proceeding.
+</step>
 
-**Pass 2: Builder executability review**
-- For each task: can the builder execute this unambiguously?
-- Are there decisions the builder will have to make that aren't covered?
-- Does each task name a specific area of the codebase (not vague like "update the system")?
-- Are the `files[]` hints populated where possible?
-- If a task depends on a previous task's output, is that dependency explicit?
+<step name="create-goals">
+Use lib/pipeline-cli.js:
 
-Fix issues found in either pass before proceeding.
+1. Create phase:
+   node lib/pipeline-cli.js add-phase --title "Name" --desc "Summary" --planFile "plans/slug.md"
 
----
+2. For each task:
+   node lib/pipeline-cli.js add-task phaseId --title "Name" --desc "Description" --files "a.js,b.js"
 
-## Step 4: Create goals entries via Pipeline CLI
+3. Validate:
+   node lib/pipeline-cli.js validate
+   node lib/validate-plan.js --phase phaseId
+</step>
 
-Use `lib/pipeline-cli.js` for all .goals.json mutations:
+<step name="diagram">
+Build a React Flow diagram for the phase and store in .goals.json.
 
-1. Create the phase:
-```bash
-node lib/pipeline-cli.js add-phase --title "Phase Name" --desc "One-line summary" --planFile "plans/topic-slug.md"
-```
-Save the returned `phaseId`.
+Research the domain with an Explore agent first. Then build using
+Turbo Flow design system: TurboNode (conic gradient borders, dark inner,
+icon + title + subline + fields), TurboEdge (bezier, gradient stroke,
+label pills), GroupNode (tinted backgrounds).
 
-2. For each plan task, create a task:
-```bash
-node lib/pipeline-cli.js add-task <phaseId> --title "Task Name" --desc "Concise description" --planFile "plans/topic-slug.md" --files "file1.js,file2.js"
-```
+Layout: 3-column grid (COL=400, cx(c) = c*COL, ry(r) = r*240).
 
-3. Validate schema:
-```bash
-node lib/pipeline-cli.js validate
-```
+Fit check: if parent majorPhase has diagrams, verify entry/exit points
+match, use same color group and naming conventions.
 
-4. Validate plan quality:
-```bash
-node lib/validate-plan.js --phase <phaseId>
-```
-Fix any errors before proceeding. Warnings are advisory.
+Write JSON to temp file, store via:
+  node lib/pipeline-cli.js add-diagram phaseId --title "Phase: name" --jsonFile /tmp/diagram.json
 
-IDs, timestamps, and schema validation are handled automatically by pipeline-cli.
+Render, screenshot, verify layout. Fix before finalizing.
+</step>
 
----
+<step name="report">
+Tell the user: plan file location, phase + task count, diagram added,
+recommended first task for /build.
+</step>
 
-## Step 5: Create phase diagram
-
-Build a React Flow diagram for the phase and store it in `.goals.json` via the pipeline CLI.
-
-### 5a. Research the domain
-
-Use an Explore agent to read the source code around this phase's topic. Trace inputs, outputs, data shapes, and connections. Understand the architecture before diagramming.
-
-### 5b. Build the diagram
-
-Follow the Turbo Flow design system exactly:
-- **TurboNode**: conic gradient borders, dark `.inner`, icon + title + subline + fields
-- **TurboEdge**: `getBezierPath`, gradient stroke, monospace label pills
-- **GroupNode**: subtle tinted backgrounds (4-6% opacity) and accent borders
-- **3-column grid layout**: `COL=400, cx(c) = c*COL, ry(r) = r*240`
-- **Edge labels**: short (2-4 words) + full description in `data.flow`
-- **Click-to-inspect**: detail text via `data.detail` on nodes
-
-**Phase-level diagram content:**
-- Each task as a `turbo` node (title, description snippet, file hints as fields)
-- Task dependencies as edges
-- Group nodes for logical clusters (e.g., "Data Layer", "API Layer", "UI Layer")
-
-**Field names for .goals.json diagrams:** use `data.title` (not `data.label`) and `data.subline` (not `data.subtitle`). These match the Goals Side Panel types.
-
-### 5c. Fit check
-
-Before writing:
-1. Find the parent majorPhase. If it has `diagrams[]`, read them
-2. Find the node in the parent diagram that represents this phase
-3. **Data contract check:** verify the new diagram's entry/exit points match what the parent expects (inputs coming in, outputs going out)
-4. **Visual consistency:** use the same color group the parent assigns to this phase, same design system, same naming conventions
-5. If no parent diagram exists, skip the fit check
-
-### 5d. Write the diagram
-
-Write the diagram JSON (nodes + edges) to a temp file, then store via CLI:
-```bash
-# Write the JSON to a temp file
-# (nodes and edges arrays only — id/title/timestamps added by CLI)
-cat > /tmp/diagram-<phaseId>.json << 'EOF'
-{ "nodes": [...], "edges": [...] }
-EOF
-
-node lib/pipeline-cli.js add-diagram <phaseId> --title "Phase: <name>" --jsonFile /tmp/diagram-<phaseId>.json
-```
-
-### 5e. Playwright verification
-
-Render the diagram, take a screenshot, verify layout quality. Fix edge spaghetti, overlapping groups, or unreadable labels before finalizing. Follow the same iterative screenshot loop as `/diagram`.
-
-### Diagram detail levels
-
-| Level      | Node granularity              | Edge meaning              |
-|------------|------------------------------|---------------------------|
-| Project    | One per major phase           | Phase dependencies        |
-| MajorPhase | One per phase                 | Sequence / data flow      |
-| Phase      | One per task + key modules    | Task deps, data contracts |
-| Task       | One per file/function         | Call graph / data flow    |
-
----
-
-## Step 6: Report
-
-Tell the user:
-- Plan file location
-- Phase and task count added to .goals.json
-- Diagram added (title, node/edge count)
-- Recommended first task for `/build`
-
----
-
-## Guardrails
-
-- Do NOT create tasks in .goals.json without a corresponding plan file
-- Do NOT modify existing phases or tasks — only add new ones
-- Do NOT skip the self-review step
-- Keep task descriptions concise — the plan file has the detail
-- Follow all conventions from CLAUDE.md
+<guardrails>
+- Don't create tasks without a plan file
+- Don't modify existing phases/tasks — only add
+- Don't skip the review step
+- Keep task descriptions concise
+- Follow CLAUDE.md conventions
+</guardrails>

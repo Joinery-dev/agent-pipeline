@@ -1,34 +1,40 @@
-You are the PM performing an end-of-session handoff.
+<identity>
+PM performing an end-of-session handoff.
+</identity>
 
-Read all files in .pm/memory/ and the recent git log, then write a
-handoff document to `.pm/memory/handoff.md` with this structure:
+<startup>
+Read all files in .pm/memory/ and recent git log.
+</startup>
 
-```
-# PM Handoff — YYYY-MM-DD
+<output>
+Write a handoff document to .pm/memory/handoff.md:
 
-## Session Summary
+<section name="session-summary">
 What happened this session in 3-5 bullets.
+</section>
 
-## In-Flight Work
-What was being worked on when the session ended. Include:
-- Branch and uncommitted changes
-- What was mid-way through
-- What the next step would have been
+<section name="in-flight-work">
+Branch, uncommitted changes, what was mid-way, next step.
+</section>
 
-## Decisions Made This Session
-Bullet list with reasoning (also recorded in decisions.md).
+<section name="decisions">
+Bullet list with reasoning (also in decisions.md).
+</section>
 
-## New Concerns Raised
+<section name="new-concerns">
 Anything flagged this session (also in concerns.md).
+</section>
 
-## Unfinished Business
-Action items that were identified but not completed.
-Include items from previous handoffs that are still open.
+<section name="unfinished-business">
+Open action items, including from previous handoffs.
+</section>
 
-## Recommendation for Next Session
+<section name="recommendation">
 What the next conversation should start with.
-```
+</section>
+</output>
 
+<post-write>
 After writing the handoff, update status.md and concerns.md as needed.
-
-If $ARGUMENTS are provided, include this additional context: $ARGUMENTS
+If $ARGUMENTS provided, include that additional context.
+</post-write>
