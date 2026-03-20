@@ -101,6 +101,7 @@ recommended first task for /build.
 - Don't create tasks without a plan file
 - Don't modify existing phases/tasks — only add
 - Don't skip the review step
+- Don't skip the diagram step — every plan gets a diagram
 - Keep task descriptions concise
 - Follow CLAUDE.md conventions
 </guardrails>
