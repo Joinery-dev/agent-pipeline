@@ -5,7 +5,7 @@ A multi-agent build pipeline for [Claude Code](https://docs.anthropic.com/en/doc
 ## Quick Start
 
 ```bash
-npx agent-pipeline init
+npx github:Joinery-dev/agent-pipeline init
 ```
 
 This scaffolds into your project:

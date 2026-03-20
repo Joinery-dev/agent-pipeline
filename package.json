@@ -1,5 +1,5 @@
 {
-  "name": "@joinery/agent-pipeline",
+  "name": "claude-agent-pipeline",
   "version": "0.1.0",
   "description": "Multi-agent build pipeline for Claude Code — PM, Builder, QA, and Resolver agents with schema-enforced state tracking",
   "type": "module",
