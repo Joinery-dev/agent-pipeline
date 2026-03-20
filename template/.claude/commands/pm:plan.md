@@ -47,9 +47,9 @@ Fix issues before proceeding.
 <step name="create-goals">
 Use lib/pipeline-cli.js:
 
-**When planning a major phase:** Create multiple sub-phases, each representing a
-distinct area of work. A major phase should have 3-8 sub-phases. Each sub-phase
-gets its own tasks. Do NOT put everything in one sub-phase with many tasks.
+**When planning a major phase:** Break the work into multiple sub-phases, each
+representing a distinct area of work. Each sub-phase gets its own tasks.
+Do NOT put everything in one sub-phase with many tasks.
 
 For each sub-phase:
 1. Create the sub-phase:
