@@ -59,7 +59,15 @@ Use lib/pipeline-cli.js:
 </step>
 
 <step name="diagram">
-Build a React Flow diagram for the phase and store in .goals.json.
+Build a React Flow diagram and store it on the entity you are planning for.
+
+**Diagram placement rule:** The diagram is stored on the entity the plan is about.
+- Planning the whole project → store on the project root (use the project ID)
+- Planning a major phase → store on that majorPhase (use its ID)
+- Planning a sub-phase → store on that phase (use its ID)
+- Planning a single task → store on that task (use its ID)
+
+The `add-diagram` command accepts any entity ID — project, majorPhase, phase, or task.
 
 Research the domain with an Explore agent first. Then build using
 Turbo Flow design system: TurboNode (conic gradient borders, dark inner,
@@ -68,11 +76,11 @@ label pills), GroupNode (tinted backgrounds).
 
 Layout: 3-column grid (COL=400, cx(c) = c*COL, ry(r) = r*240).
 
-Fit check: if parent majorPhase has diagrams, verify entry/exit points
+Fit check: if parent entity has diagrams, verify entry/exit points
 match, use same color group and naming conventions.
 
 Write JSON to temp file, store via:
-  node lib/pipeline-cli.js add-diagram phaseId --title "Phase: name" --jsonFile /tmp/diagram.json
+  node lib/pipeline-cli.js add-diagram <entityId> --title "name" --jsonFile /tmp/diagram.json
 
 Render, screenshot, verify layout. Fix before finalizing.
 </step>
