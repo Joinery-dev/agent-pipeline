@@ -101,11 +101,17 @@ copyIfMissing(
   '.claude/project-conventions.md'
 );
 
+copyIfMissing(
+  join(TEMPLATE_DIR, '.claude', 'pm-reference.md'),
+  join(targetDir, '.claude', 'pm-reference.md'),
+  '.claude/pm-reference.md'
+);
+
 // ── lib/ pipeline engine ──────────────────────────────────────────────
 
 const libFiles = [
   'pipeline.js', 'pipeline-cli.js', 'pipeline-sync.js',
-  'validate-plan.js', 'merge.js',
+  'validate-plan.js', 'merge.js', 'lessons-sync.js',
 ];
 
 for (const file of libFiles) {
@@ -195,6 +201,50 @@ if (!existsSync(plansDir)) {
   mkdirSync(plansDir, { recursive: true });
   created.push('plans/');
 }
+
+// ── CLAUDE.md starter ─────────────────────────────────────────────
+
+writeIfMissing(
+  join(targetDir, 'CLAUDE.md'),
+  `# ${projectName}
+
+## Commands
+
+- \`npm run dev\` — dev server
+- \`node --test tests/\` — unit tests
+
+## Code Conventions
+
+- ES modules only — no CommonJS
+- Server code in \`lib/\`, routes in \`app/api/\`, UI in \`app/\`, tests in \`tests/\`
+
+## Git Protocols
+
+- Commit to feature branches, not main
+- Never force push
+- Pull before push
+
+## Agent Pipeline
+
+This project uses the agent pipeline for structured development:
+- \`/pm\` — project status and planning
+- \`/pm:plan <topic>\` — create plans with goals tracking
+- \`/build <plan>\` — execute plans
+- \`/qa <plan>\` — validate builds
+- \`/resolve\` — fix QA failures
+- \`/debug\` — diagnose pipeline issues
+
+See \`.claude/agent-protocol.md\` for the full schema and conventions.
+
+## Do's and Don'ts
+
+- DO ask before committing, pushing, or writing files when the user only asked a question
+- DO distinguish questions from instructions
+- DON'T hardcode values that should be configurable
+- DON'T create files unless necessary — edit existing ones
+`,
+  'CLAUDE.md'
+);
 
 // ── Report ────────────────────────────────────────────────────────────
 
