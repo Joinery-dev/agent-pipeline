@@ -119,10 +119,17 @@ in the parent's diagram, update the parent diagram to include it.
 
 **Design system:** Turbo Flow — TurboNode (conic gradient borders, dark inner,
 icon + title + subline + fields), TurboEdge (bezier, gradient stroke, label
-pills), GroupNode (tinted backgrounds). 3-column grid layout (COL=400,
-cx(c) = c*COL, ry(r) = r*240). Entry/exit nodes use a muted variant — same
-TurboNode but with lower opacity gradient and a subline like "← from Parent"
-or "→ to Parent".
+pills), GroupNode (tinted backgrounds). Entry/exit nodes use a muted variant
+with subline "← from Parent" or "→ to Parent".
+
+**Layout principles** (no hardcoded grid — adapt to the content):
+- Nodes must never overlap or crowd. Leave generous whitespace.
+- Edges should be readable — no spaghetti. If edges cross, rearrange nodes.
+- Group related nodes visually. Use GroupNode for clusters.
+- Scale spacing to the number of nodes — a 5-node diagram needs less space
+  than a 15-node diagram, but both should feel open and readable.
+- Flow direction: left-to-right for data flow, top-to-bottom for hierarchy.
+  Pick whichever fits the content better.
 
 **Fit check:** Read parent entity's diagram. Verify:
 - Entry nodes match every edge the parent sends into this entity

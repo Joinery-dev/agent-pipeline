@@ -28,9 +28,18 @@ The viewer at `app/visualize/page.js` supports both conventions
 - **TurboNode**: conic gradient borders, dark `.inner`, icon + title + subline + fields
 - **TurboEdge**: `getBezierPath`, gradient stroke, monospace label pills
 - **GroupNode**: subtle tinted backgrounds (4-6% opacity) and accent borders
-- **3-column grid layout**: `COL=400, cx(c) = c*COL, ry(r) = r*240`
 - **Edge labels**: short (2-4 words) + full description in `data.flow`
 - **Click-to-inspect**: detail text via `data.detail` on nodes
+
+## Layout
+
+No hardcoded grid — adapt spacing to the content:
+- Nodes must never overlap or crowd. Leave generous whitespace.
+- Edges should be readable — no spaghetti. Rearrange nodes if edges cross.
+- Group related nodes visually with GroupNode.
+- Scale spacing to node count — fewer nodes = tighter, more nodes = wider.
+- Flow direction: left-to-right for data flow, top-to-bottom for hierarchy.
+  Pick whichever fits the content.
 
 ---
 
