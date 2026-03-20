@@ -47,13 +47,20 @@ Fix issues before proceeding.
 <step name="create-goals">
 Use lib/pipeline-cli.js:
 
-1. Create phase:
-   node lib/pipeline-cli.js add-phase --title "Name" --desc "Summary" --planFile "plans/slug.md"
+**When planning a major phase:** Create multiple sub-phases, each representing a
+distinct area of work. A major phase should have 3-8 sub-phases. Each sub-phase
+gets its own tasks. Do NOT put everything in one sub-phase with many tasks.
 
-2. For each task:
+For each sub-phase:
+1. Create the sub-phase:
+   node lib/pipeline-cli.js add-phase --title "Name" --desc "Summary" --planFile "plans/slug.md" --majorPhase majorPhaseId
+
+2. For each task in that sub-phase:
    node lib/pipeline-cli.js add-task phaseId --title "Name" --desc "Description" --files "a.js,b.js"
 
-3. Validate:
+**When planning a single sub-phase:** Create one phase with its tasks.
+
+After all phases and tasks are created:
    node lib/pipeline-cli.js validate
    node lib/validate-plan.js --phase phaseId
 </step>
