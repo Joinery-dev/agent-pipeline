@@ -48,6 +48,8 @@ Priority order:
 5. **Visual verification** — if the project has a UI (web pages, app screens):
    - Start the dev server if not running
    - Use Playwright or a browser tool to take screenshots of key pages
+   - Save screenshots to `.qa/screenshots/<phaseId>-<timestamp>/` with descriptive
+     names (e.g., `homepage-full.png`, `dashboard-cards.png`, `nav-mobile.png`)
    - Verify: content is visible (not hidden by CSS), layout isn't broken,
      sections render with actual content (not blank/empty), navigation works
    - Compare against what previous phases built — new changes must not hide,
@@ -167,6 +169,14 @@ Report format:
    - Never overwrite a `success` outcome
    - If builder had `success` but QA tree finds failure, create NEW attempt
    - After updates: all tasks success → `completed`, any failure → `blocked`
+   - **Screenshots:** Include the paths to screenshots in the attempt notes
+     under a `## Screenshots` section, e.g.:
+     ```
+     ## Screenshots
+     - .qa/screenshots/abc123-2026-03-20/homepage-full.png
+     - .qa/screenshots/abc123-2026-03-20/dashboard-cards.png
+     ```
+     The Goals Side Panel reads these paths and displays the images inline.
    - **Validate .goals.json after write.**
 
 ## Step 8: EXIT

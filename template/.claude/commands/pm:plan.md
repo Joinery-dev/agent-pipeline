@@ -23,6 +23,13 @@ Create plans/{topic-slug}.md:
 - Diagrams where they clarify structure
 
 The plan is the source of detail. Goals entries are concise pointers.
+
+**Describe WHAT and WHY, never HOW.** Plans describe behavior, requirements,
+and success criteria — not implementation. Never write code, JSX, CSS, SQL, or
+specific implementation in the plan. The builder decides how to implement.
+
+Bad: "Create a div with className='card' containing an h2 and three span elements"
+Good: "Dashboard card showing 4 KPIs (active projects, completed tasks, team size, automations) with visual hierarchy"
 </step>
 
 <step name="review">
