@@ -163,6 +163,9 @@ page both read from .goals.json.
 <step name="report">
 Tell the user: plan file location, phase + task count, diagram added,
 recommended first task for /build.
+
+Remind: "After building, run /qa to validate before marking complete.
+Tasks cannot be completed without QA — the pipeline engine enforces this."
 </step>
 
 <guardrails>

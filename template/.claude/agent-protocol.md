@@ -108,11 +108,19 @@ node lib/pipeline-cli.js update-attempt <taskId> <attemptId> --outcome success -
 node lib/pipeline-cli.js update-status <taskId> in-progress
 node lib/pipeline-cli.js set-pipeline <phaseId> awaiting-qa --agent build
 node lib/pipeline-cli.js rollup <phaseId>
+node lib/pipeline-cli.js rollup-major <majorPhaseId|title>
+node lib/pipeline-cli.js rollup-all
+node lib/pipeline-cli.js check-deps <phaseId>
 node lib/pipeline-cli.js validate
 node lib/pipeline-cli.js add-diagram <entityId> --title "Diagram Title" --jsonFile /tmp/diagram.json
 ```
 
-This enforces schema validation, status transition rules, and atomic writes.
+This enforces schema validation, status transition rules, QA gates, and atomic writes.
+
+**Hard gates enforced by the engine:**
+- Tasks cannot be marked `completed` without a QA attempt with `outcome: success`
+- `--majorPhase` accepts UUID, exact title, or substring title match
+- `rollup-all` cascades from sub-phases up through major phases
 
 **Fallback** (if pipeline-cli.js is unavailable):
 1. **Read** — `JSON.parse(fs.readFileSync('.goals.json', 'utf-8'))`

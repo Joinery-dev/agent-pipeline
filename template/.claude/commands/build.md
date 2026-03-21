@@ -42,6 +42,8 @@ Follow the plan. Minimal, focused changes. If ambiguous → STOP and ask.
 
 <step name="verify">
 Run node --test tests/. Run relevant specific tests first.
+If the project has a build step (Next.js, Vite, etc.), also run the production
+build (e.g., npx next build). Tests passing but build failing means broken code.
 </step>
 
 <step name="self-review">
