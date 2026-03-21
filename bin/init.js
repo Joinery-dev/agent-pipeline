@@ -114,6 +114,7 @@ const libFiles = [
   'validate-plan.js', 'merge.js', 'lessons-sync.js',
   'ship.js', 'distill-briefing.js', 'cost-tracker.js',
   'memory-hygiene.js', 'test-runner.js', 'plan-to-tasks.js',
+  'visual-check.js',
 ];
 
 for (const file of libFiles) {

@@ -56,6 +56,9 @@ Priority order:
      break, or obscure existing content
    - This catches: opacity:0 animations without triggers, display:none without
      toggles, z-index issues, overflow:hidden clipping content
+   - **Note:** If running in autonomous mode (--print), you may not be able to
+     take screenshots. That's OK — ship.js runs `lib/visual-check.js`
+     independently as a hard gate. In interactive mode, do take screenshots.
 6. Only then: AI evaluation for things machines can't judge
 
 **Isolation rule:** Test through the interface (browser, CLI, API calls,
