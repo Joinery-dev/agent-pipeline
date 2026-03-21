@@ -107,6 +107,12 @@ For each task that was built, evaluate:
      actually implements? (e.g., parent shows "REST API" edge into this phase —
      does the code actually expose/consume that API?)
    Flag stale or mismatched diagrams as forest warnings.
+7. **Visual language compliance** — if `.claude/visual-language.md` exists:
+   - Does the code use documented design tokens (colors, fonts, spacing)?
+   - Flag any hardcoded hex values, font families, or spacing not in the
+     visual language document
+   - Read `.design/memory/status.json` for the visual quality trajectory —
+     is quality improving or degrading?
 
 Forest findings are reported as **WARNING** (advisory, not blocking).
 WARNING risk levels: HIGH, MEDIUM, LOW.

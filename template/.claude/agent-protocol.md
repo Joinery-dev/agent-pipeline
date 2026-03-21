@@ -187,18 +187,37 @@ Don't inflate severity — it causes unnecessary rework cycles.
 
 ## Agent Ownership Matrix
 
-| Resource                 | PM         | Builder    | QA         | Resolver   |
-|--------------------------|------------|------------|------------|------------|
-| `.goals.json` structure  | **OWNS**   | reads      | reads      | reads      |
-| `.goals.json` tasks/attempts | reads  | **WRITES** | **WRITES** | **WRITES** |
-| `.pm/memory/`            | **OWNS**   | reads      | reads      | reads      |
-| `.qa/memory/`            | reads      | reads      | **OWNS**   | reads      |
-| `plans/`                 | **OWNS**   | reads      | reads      | reads      |
-| Source code              | reads      | **WRITES** | reads      | **WRITES** |
+| Resource                 | PM         | Builder    | QA         | Resolver   | Design     |
+|--------------------------|------------|------------|------------|------------|------------|
+| `.goals.json` structure  | **OWNS**   | reads      | reads      | reads      | reads      |
+| `.goals.json` tasks/attempts | reads  | **WRITES** | **WRITES** | **WRITES** | reads      |
+| `.pm/memory/`            | **OWNS**   | reads      | reads      | reads      | reads+writes concerns |
+| `.qa/memory/`            | reads      | reads      | **OWNS**   | reads      | reads+writes patterns |
+| `.design/memory/`        | reads      | reads      | reads      | reads      | **OWNS**   |
+| `.claude/visual-language.md` | creates+updates | reads | reads  | reads      | reads+recommends |
+| `plans/`                 | **OWNS**   | reads      | reads      | reads      | reads      |
+| Source code              | reads      | **WRITES** | reads      | **WRITES** | reads      |
+| Screenshots              | reads      | —          | takes      | —          | takes      |
 
 - **OWNS** = creates, modifies, deletes
 - **WRITES** = modifies specific fields within the owner's structure
 - **reads** = read-only access
+
+---
+
+## Design Memory Schema
+
+```
+.design/memory/
+├── status.json       — current state, grades, trajectory
+├── findings.md       — per-phase findings log (append-only)
+├── visual-drift.md   — where product diverges from visual-language.md
+└── page-grades.json  — per-page grades with history
+
+.claude/visual-language.md  — visual constitution (palette, type, spacing, mood)
+.claude/design-loop.md      — 8-step design review protocol
+.claude/design-reference.md — memory format documentation
+```
 
 ---
 

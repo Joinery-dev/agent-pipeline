@@ -197,6 +197,54 @@ writeIfMissing(
   '.qa/memory/learnings.txt'
 );
 
+// ── Design memory ─────────────────────────────────────────────────
+
+const designMemory = join(targetDir, '.design', 'memory');
+
+writeIfMissing(
+  join(designMemory, 'status.json'),
+  JSON.stringify({ lastRun: null, phase: null, round: 0, overallGrade: null, specCompliance: { met: 0, total: 0 }, findings: { shipBlockers: 0, quality: 0, polish: 0 }, trajectory: [] }, null, 2),
+  '.design/memory/status.json'
+);
+
+writeIfMissing(
+  join(designMemory, 'findings.md'),
+  `# Design Findings\n\n(none yet)\n`,
+  '.design/memory/findings.md'
+);
+
+writeIfMissing(
+  join(designMemory, 'visual-drift.md'),
+  `# Visual Drift Log\n\n(none yet)\n`,
+  '.design/memory/visual-drift.md'
+);
+
+writeIfMissing(
+  join(designMemory, 'page-grades.json'),
+  JSON.stringify({}, null, 2),
+  '.design/memory/page-grades.json'
+);
+
+// ── Visual language + design protocol ─────────────────────────────
+
+writeIfMissing(
+  join(targetDir, '.claude', 'visual-language.md'),
+  `# Visual Language\n\nThis file is the visual constitution for the project. Created by the PM\nduring the first UI phase. All agents reference it.\n\n(Not yet established — the PM will create this when planning the first UI phase.)\n`,
+  '.claude/visual-language.md'
+);
+
+copyIfMissing(
+  join(TEMPLATE_DIR, '.claude', 'design-loop.md'),
+  join(targetDir, '.claude', 'design-loop.md'),
+  '.claude/design-loop.md'
+);
+
+copyIfMissing(
+  join(TEMPLATE_DIR, '.claude', 'design-reference.md'),
+  join(targetDir, '.claude', 'design-reference.md'),
+  '.claude/design-reference.md'
+);
+
 // ── plans/ directory ──────────────────────────────────────────────────
 
 const plansDir = join(targetDir, 'plans');

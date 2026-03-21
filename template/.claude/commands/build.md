@@ -16,11 +16,14 @@ $ARGUMENTS — a plan name (autonomous) or task reference (manual).
 <startup>
 1. Read CLAUDE.md and .claude/agent-protocol.md
 2. Read .claude/project-conventions.md if it exists
-3. Read .goals.json — find your target
+3. Read .claude/visual-language.md if it exists — use these tokens, not new ones
+4. Read .goals.json — find your target
 5. Branch check: if on main, create build/<name> branch
-6. Read the task's planFile — extract goal, architecture, and success criteria
+6. Read the task's planFile — extract goal, architecture, success criteria,
+   and Visual Specification (if present — this describes what pages should look like)
 7. Read task's files[] or grep/glob to discover relevant files
 8. Read .pm/memory/concerns.md and .qa/memory/patterns.md (read-only)
+9. Read .design/memory/page-grades.json — know which pages got low grades
 </startup>
 
 <execution>

@@ -8,10 +8,17 @@ Creates the plan file AND the goals entries in one step.
 <step name="research">
 1. Read CLAUDE.md and .claude/agent-protocol.md
 2. Read .claude/project-conventions.md if it exists
-3. Read .goals.json for current state and existing phases
-4. Read .pm/memory/ for context, concerns, prior decisions
-5. Read any existing plans in plans/ that relate to the topic
-6. Explore the codebase around this topic
+3. Read .claude/visual-language.md if it exists — this is the visual constitution
+4. Read .goals.json for current state and existing phases
+5. Read .pm/memory/ for context, concerns, prior decisions
+6. Read .design/memory/findings.md + visual-drift.md + page-grades.json
+7. Read any existing plans in plans/ that relate to the topic
+8. Explore the codebase around this topic
+
+**If this is a UI phase and `.claude/visual-language.md` doesn't exist or says
+"not yet established":** Create it now, before writing the visual spec. Define
+the brand palette, typography, spacing system, component patterns, mood, and
+responsive principles. This is the foundation every subsequent phase builds on.
 </step>
 
 <step name="write-plan">
