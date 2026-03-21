@@ -200,9 +200,40 @@ This is the ONLY way to store diagrams. The Goals Side Panel and /visualize
 page both read from .goals.json.
 </step>
 
+<step name="illustration">
+If this is a UI phase, create a visual mockup showing what the pages/features
+should actually look like when built. This is NOT a diagram of the plan — it's
+a picture of the product.
+
+1. Create `.design/illustrations/<slug>.html` — a single static HTML file:
+   - Use tokens from `.claude/visual-language.md` (exact colors, fonts, spacing)
+   - Inline all CSS, no JavaScript, no external dependencies
+   - Show real-ish content (headlines, button text, section labels — not lorem ipsum)
+   - Show layout and proportions accurately — where things are, how big they are
+   - Use colored rectangles with labels for image placeholders
+   - For mobile, either use responsive CSS or create a separate HTML file
+
+2. Render to PNG:
+   node lib/render-mockup.js --html .design/illustrations/<slug>.html --output .design/illustrations/<slug>-desktop.png --viewport 1280x800
+   node lib/render-mockup.js --html .design/illustrations/<slug>.html --output .design/illustrations/<slug>-mobile.png --viewport 375x812
+
+3. Store via CLI:
+   node lib/pipeline-cli.js add-illustration <entityId> --title "Page: Name" --imagePath .design/illustrations/<slug>-desktop.png --htmlSource .design/illustrations/<slug>.html --viewport 1280x800
+
+**Nesting:** If a parent entity has an illustration, this illustration should
+zoom into a specific region of the parent. Include --parentIllustration and
+--region to mark where this fits within the parent's mockup.
+
+**Fit check:** If parent has an illustration, verify this mockup's content
+matches what the parent shows in that region. Same colors, same layout
+direction, same content type.
+
+If this is not a UI phase (no pages, no visual output), skip this step.
+</step>
+
 <step name="report">
 Tell the user: plan file location, phase + task count, diagram added,
-recommended first task for /build.
+illustration added (if UI phase), recommended first task for /build.
 
 Remind: "After building, run /qa to validate before marking complete.
 Tasks cannot be completed without QA — the pipeline engine enforces this."
@@ -215,6 +246,8 @@ Tasks cannot be completed without QA — the pipeline engine enforces this."
 - Don't skip the diagram step — every plan gets a diagram
 - Don't skip the visual specification for UI phases — the design review
   and QA check against it. Without a spec, there's no definition of "correct."
+- Don't skip the illustration step for UI phases — QA and design review
+  compare built pages against the mockup illustration
 - Keep task descriptions concise
 - Follow CLAUDE.md conventions
 </guardrails>

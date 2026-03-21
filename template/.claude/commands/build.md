@@ -24,6 +24,8 @@ $ARGUMENTS — a plan name (autonomous) or task reference (manual).
 7. Read task's files[] or grep/glob to discover relevant files
 8. Read .pm/memory/concerns.md and .qa/memory/patterns.md (read-only)
 9. Read .design/memory/page-grades.json — know which pages got low grades
+10. If the phase has illustrations in .goals.json, view the mockup image —
+    this is what the page should look like. Match it.
 </startup>
 
 <execution>

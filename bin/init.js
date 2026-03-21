@@ -114,7 +114,7 @@ const libFiles = [
   'validate-plan.js', 'merge.js', 'lessons-sync.js',
   'ship.js', 'distill-briefing.js', 'cost-tracker.js',
   'memory-hygiene.js', 'test-runner.js', 'plan-to-tasks.js',
-  'visual-check.js', 'integration-check.js',
+  'visual-check.js', 'integration-check.js', 'render-mockup.js',
 ];
 
 for (const file of libFiles) {
@@ -245,6 +245,14 @@ copyIfMissing(
   '.claude/design-reference.md'
 );
 
+// ── Illustrations directory ────────────────────────────────────────
+
+const illustrationsDir = join(targetDir, '.design', 'illustrations');
+if (!existsSync(illustrationsDir)) {
+  mkdirSync(illustrationsDir, { recursive: true });
+  created.push('.design/illustrations/');
+}
+
 // ── plans/ directory ──────────────────────────────────────────────────
 
 const plansDir = join(targetDir, 'plans');
@@ -268,6 +276,12 @@ copyIfMissing(
   join(TEMPLATE_DIR, 'app', 'api', 'diagrams', 'route.js'),
   join(targetDir, 'app', 'api', 'diagrams', 'route.js'),
   'app/api/diagrams/route.js'
+);
+
+copyIfMissing(
+  join(TEMPLATE_DIR, 'app', 'api', 'illustrations', 'route.js'),
+  join(targetDir, 'app', 'api', 'illustrations', 'route.js'),
+  'app/api/illustrations/route.js'
 );
 
 // ── CLAUDE.md starter ─────────────────────────────────────────────

@@ -48,7 +48,21 @@ interactive mode, always take screenshots yourself.
 
 ## Step 3: SPEC CHECK (tree — blocking)
 
-For each page described in the Visual Specification, evaluate point by point:
+**If the phase has `illustrations[]` in .goals.json, the mockup is the
+PRIMARY reference.** Compare the built page screenshot side-by-side
+against the mockup illustration:
+
+- **Layout match**: same sections in the same positions and proportions?
+- **Color match**: same palette as the mockup?
+- **Typography match**: same heading/body hierarchy?
+- **Content hierarchy**: same visual weight distribution?
+- **Proportions**: hero same relative height? Sections same spacing?
+
+Grade the match: A (near-identical) through F (completely different).
+C or below on any critical area = **SHIP-BLOCKER**.
+
+**If no illustration exists**, fall back to the text Visual Specification
+and evaluate point by point:
 
 - **Layout**: does the actual composition match the described layout?
 - **Hierarchy**: is the described prominence achieved? Eye path correct?
@@ -56,8 +70,9 @@ For each page described in the Visual Specification, evaluate point by point:
 - **Content flow**: does the user path match the described flow?
 - **Key details**: are the specified colors, typography, treatments used?
 
-Binary per point: **MET** or **NOT MET**.
+Note the absence of an illustration as a **QUALITY** finding.
 
+Binary per point: **MET** or **NOT MET**.
 Any NOT MET on a critical layout/hierarchy point = **SHIP-BLOCKER**.
 Minor detail mismatches = **QUALITY**.
 

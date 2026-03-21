@@ -67,7 +67,14 @@ Priority order:
      all neutral grays"
    - These are tree checks (blocking), not forest warnings — the spec is part
      of the plan, and the plan is the success criteria
-7. Only then: AI evaluation for things machines can't judge
+7. **Mockup comparison** — if the phase has `illustrations[]` in `.goals.json`:
+   - Take a screenshot of the built page at the same viewport as the mockup
+   - Compare against the mockup illustration: same sections in same order?
+     Same proportions? Same color palette? Same content hierarchy?
+   - Not pixel-perfect — compare structure, proportions, and visual weight
+   - Significant deviations are tree findings (blocking)
+   - The mockup IS the visual contract
+8. Only then: AI evaluation for things machines can't judge
 
 **Isolation rule:** Test through the interface (browser, CLI, API calls,
 screenshots), not by reading source code. You verify *behavior*, not

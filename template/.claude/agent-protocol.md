@@ -214,9 +214,33 @@ Don't inflate severity — it causes unnecessary rework cycles.
 ├── visual-drift.md   — where product diverges from visual-language.md
 └── page-grades.json  — per-page grades with history
 
+.design/illustrations/  — HTML mockup sources and rendered PNGs
+
 .claude/visual-language.md  — visual constitution (palette, type, spacing, mood)
 .claude/design-loop.md      — 8-step design review protocol
 .claude/design-reference.md — memory format documentation
+```
+
+## Illustration Schema
+
+```
+Illustration (optional on Project, MajorPhase, Phase)
+├── id: string (UUID)
+├── title: string
+├── imagePath: string (relative path to PNG)
+├── htmlSource?: string (relative path to source HTML mockup)
+├── viewport?: { width: number, height: number }
+├── region?: { x: number, y: number, width: number, height: number }
+│            (where this illustration sits within parent's illustration)
+├── parentIllustrationId?: string
+├── createdAt: string (ISO 8601)
+└── updatedAt: string (ISO 8601)
+```
+
+Store via:
+```bash
+node lib/render-mockup.js --html <html> --output <png> --viewport 1280x800
+node lib/pipeline-cli.js add-illustration <entityId> --title "Title" --imagePath <png> --htmlSource <html> --viewport 1280x800
 ```
 
 ---
