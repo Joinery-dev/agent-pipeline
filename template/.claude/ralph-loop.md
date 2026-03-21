@@ -59,7 +59,15 @@ Priority order:
    - **Note:** If running in autonomous mode (--print), you may not be able to
      take screenshots. That's OK — ship.js runs `lib/visual-check.js`
      independently as a hard gate. In interactive mode, do take screenshots.
-6. Only then: AI evaluation for things machines can't judge
+6. **Visual spec check** — if the plan has a `## Visual Specification` section:
+   - For each page described in the spec, compare the screenshot against the
+     spec's described layout, hierarchy, mood, and content flow
+   - Flag mismatches: "Spec says hero is dominant element but it's the same
+     visual weight as the nav" or "Spec says warm amber accents but page is
+     all neutral grays"
+   - These are tree checks (blocking), not forest warnings — the spec is part
+     of the plan, and the plan is the success criteria
+7. Only then: AI evaluation for things machines can't judge
 
 **Isolation rule:** Test through the interface (browser, CLI, API calls,
 screenshots), not by reading source code. You verify *behavior*, not

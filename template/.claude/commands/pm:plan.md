@@ -36,6 +36,33 @@ should include tasks for: favicon, OG/social images, placeholder imagery (SVG
 illustrations, gradient backgrounds, CSS art), feature icons. A project without
 visual assets looks unfinished regardless of code quality. The builder can generate
 SVGs, CSS gradients, and simple illustrations — plan for them.
+
+**Visual Specification (required for UI phases).** Add a `## Visual Specification`
+section to the plan. For each page or screen this phase creates, describe:
+
+- **Layout** — what's where, relative sizes, how sections flow
+- **Hierarchy** — what's most prominent, what recedes, what's the eye path
+- **Mood** — clean/bold/warm/minimal? What feeling should the page convey?
+- **Content flow** — user sees X → understands Y → does Z
+- **Key details** — which brand colors dominate, typography choices, image treatment
+- **Cross-page consistency** — how this page relates visually to others
+
+This is NOT code. It's a visual intent description. The builder reads it to
+understand what the page should feel like. QA checks screenshots against it.
+The design review evaluates whether the builder achieved the described intent.
+
+Example:
+```
+### Page: About
+Layout: Alternating full-width editorial sections, photo/text rhythm.
+Hierarchy: Large pull quotes dominate. Section headings support, don't compete.
+Mood: Warm, human, editorial. Brand personality lives here.
+Flow: Story → values → mission → CTA.
+Details: Warm amber accents. Serif headings. Photos feel editorial, not stock.
+```
+
+Read `.pm/memory/concerns.md` for design issues flagged on previous phases —
+address them in this spec so they don't recur.
 </step>
 
 <step name="review">
@@ -179,6 +206,8 @@ Tasks cannot be completed without QA — the pipeline engine enforces this."
 - Don't modify existing phases/tasks — only add
 - Don't skip the review step
 - Don't skip the diagram step — every plan gets a diagram
+- Don't skip the visual specification for UI phases — the design review
+  and QA check against it. Without a spec, there's no definition of "correct."
 - Keep task descriptions concise
 - Follow CLAUDE.md conventions
 </guardrails>

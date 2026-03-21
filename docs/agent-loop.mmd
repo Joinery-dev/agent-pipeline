@@ -1,0 +1,167 @@
+---
+title: ship.js — Full Agent Loop
+---
+
+flowchart TB
+    START([node lib/ship.js topic]) --> GITCHECK{Git repo<br/>exists?}
+    GITCHECK -->|No| GITINIT[Create .gitignore<br/>git init + commit]
+    GITCHECK -->|Yes| HYGIENE
+    GITINIT --> HYGIENE[Memory hygiene]
+    HYGIENE --> CANARY{Canary<br/>test?}
+    CANARY -->|--skip-canary| LOOP
+    CANARY -->|Run| CANARYTEST[Spawn claude -p<br/>'read/write JSON']
+    CANARYTEST -->|Pass| LOOP
+    CANARYTEST -->|Fail| ABORT([Abort])
+
+    subgraph LOOP["Main Loop"]
+        direction TB
+        ITER[New iteration] --> SNAPSHOT[Take progress snapshot<br/>git diff size + file count + .goals.json]
+        SNAPSHOT --> STALE[Check stale tasks<br/>Reset if 30min+ idle]
+        STALE --> CHECKPOINT[Git tag checkpoint]
+        CHECKPOINT --> READGOALS[Read .goals.json]
+
+        READGOALS --> NOGOALS{.goals.json<br/>exists?}
+        NOGOALS -->|No + topic| PMPLAN[Dispatch PM<br/>claude -p '/pm:plan topic']
+        NOGOALS -->|No + resume| ABORT2([Abort — nothing to resume])
+        PMPLAN --> ITER
+
+        NOGOALS -->|Yes| FINDPHASE[Find next phase]
+
+        FINDPHASE --> SEARCHTERM{Search term<br/>provided?}
+        SEARCHTERM -->|Yes| MATCHPLAN[Match by planFile<br/>or title]
+        SEARCHTERM -->|No| FIRSTINCOMPLETE[First incomplete<br/>sub-phase]
+        MATCHPLAN --> GOTPHASE
+        FIRSTINCOMPLETE --> GOTPHASE{Phase<br/>found?}
+
+        GOTPHASE -->|No| EMPTYMAJOR{Empty major<br/>phase exists?}
+        EMPTYMAJOR -->|Yes| PLANMAJOR[Dispatch PM<br/>plan the major phase]
+        PLANMAJOR --> ITER
+        EMPTYMAJOR -->|No| ALLDONE([All phases complete!])
+
+        GOTPHASE -->|Yes| GETSTATE[Get pipeline state]
+    end
+
+    GETSTATE --> STATE{State?}
+
+    STATE --> NEEDSPLAN
+    STATE --> PARALLEL
+    STATE --> NEEDSBUILD
+    STATE --> BUILDING
+    STATE --> AWAITINGQA
+    STATE --> QAFAILED
+    STATE --> COMPLETE
+
+    subgraph NEEDSPLAN["needs-plan"]
+        direction TB
+        NP_CHECK{Plan file<br/>exists?}
+        NP_CHECK -->|Yes| NP_P2T[plan-to-tasks.js<br/>Parse ### Task N: Title<br/>Create tasks via CLI]
+        NP_CHECK -->|No| NP_PM[Dispatch PM<br/>claude -p '/pm:plan']
+        NP_P2T -->|Success| NP_DONE[Tasks in .goals.json]
+        NP_P2T -->|Fail| NP_PM
+        NP_PM --> NP_DONE
+    end
+
+    subgraph PARALLEL["Parallel Build Check"]
+        direction TB
+        PAR_CHECK{Multiple independent<br/>needs-build phases?}
+        PAR_CHECK -->|Yes| PAR_DISPATCH[Dispatch builders<br/>simultaneously]
+        PAR_DISPATCH --> PAR_RECONCILE[Reconcile each phase<br/>git diff → task status]
+        PAR_RECONCILE --> PAR_BASELINE[Visual baseline<br/>screenshots]
+        PAR_CHECK -->|No| PAR_SKIP[Single build]
+    end
+
+    subgraph NEEDSBUILD["needs-build"]
+        direction TB
+        NB_VALIDATE[Validate plan] --> NB_DISTILL[Generate briefing]
+        NB_DISTILL --> NB_BUILD[Dispatch Builder<br/>claude -p '/build plan']
+        NB_BUILD --> NB_RECONCILE[Reconcile statuses<br/>git diff → files match → in-progress]
+        NB_RECONCILE --> NB_BASELINE[Visual baseline<br/>screenshots]
+        NB_BASELINE --> NB_TEST{Tests pass?}
+        NB_TEST -->|Yes| NB_DONE[→ awaiting-qa]
+        NB_TEST -->|No| NB_DONE
+    end
+
+    subgraph BUILDING["building (resume)"]
+        direction TB
+        BU_DISTILL[Generate briefing] --> BU_BUILD[Dispatch Builder<br/>claude -p '/build plan']
+        BU_BUILD --> BU_RECONCILE[Reconcile statuses]
+        BU_RECONCILE --> BU_BASELINE[Visual baseline]
+        BU_BASELINE --> BU_TEST{Tests?}
+        BU_TEST --> BU_DONE[Continue]
+    end
+
+    subgraph AWAITINGQA["awaiting-qa"]
+        direction TB
+        QA_DISTILL[Generate briefing] --> QA_DISPATCH[Dispatch QA<br/>claude -p '/qa plan']
+        QA_DISPATCH --> QA_RECONCILE[Reconcile QA statuses<br/>QA success → completed]
+        QA_RECONCILE --> QA_VISUAL{Visual<br/>regression<br/>check}
+        QA_VISUAL -->|Regressions| QA_FAIL[→ qa-failed]
+        QA_VISUAL -->|Clean| QA_DESIGN[Dispatch Design Review<br/>advisory, not blocking]
+        QA_VISUAL -->|Skipped| QA_PASS[→ complete]
+        QA_DESIGN --> QA_PASS
+    end
+
+    subgraph QAFAILED["qa-failed"]
+        direction TB
+        QF_ROUNDS{QA rounds<br/>< 3?}
+        QF_ROUNDS -->|Yes| QF_RESOLVE[Dispatch Resolver<br/>claude -p '/resolve task'<br/>for each failed task]
+        QF_RESOLVE --> QF_REQA[→ awaiting-qa]
+        QF_ROUNDS -->|No| QF_REPLAN{PM replans<br/>< 2?}
+        QF_REPLAN -->|Yes| QF_PM[Dispatch PM<br/>Analyze failures + revise]
+        QF_PM --> QF_REBUILD[→ needs-build]
+        QF_REPLAN -->|No| QF_STOP([Needs human intervention])
+    end
+
+    subgraph COMPLETE["complete"]
+        direction TB
+        CO_ROLLUP[Rollup all statuses<br/>sub-phase → major phase] --> CO_INTEGRATION[Integration check<br/>Verify interface contracts]
+        CO_INTEGRATION --> CO_DECISION[Log decision to<br/>.pm/memory/decisions.md]
+        CO_DECISION --> CO_MERGE[Attempt merge to main]
+        CO_MERGE --> CO_NEXT{More phases?}
+        CO_NEXT -->|Yes| CO_CONTINUE[Continue to next]
+        CO_NEXT -->|Empty major phase| CO_PLAN[Plan it]
+        CO_NEXT -->|No| CO_DONE([Project complete!])
+    end
+
+    NEEDSPLAN --> PROGRESS
+    NEEDSBUILD --> PROGRESS
+    BUILDING --> PROGRESS
+    AWAITINGQA --> PROGRESS
+    QAFAILED --> PROGRESS
+    COMPLETE --> PROGRESS
+
+    subgraph PROGRESS["Progress Check"]
+        direction TB
+        PR_SNAP[Take progress snapshot] --> PR_COMPARE{Git diff grew?<br/>New files?<br/>.goals.json changed?}
+        PR_COMPARE -->|Yes| PR_RESET[Reset no-progress counter]
+        PR_COMPARE -->|No| PR_INC[Increment counter]
+        PR_INC --> PR_LIMIT{3 consecutive<br/>iterations with<br/>zero progress?}
+        PR_LIMIT -->|Yes| PR_STOP([Stop — systemic issue])
+        PR_LIMIT -->|No| PR_CONTINUE[Next iteration]
+        PR_RESET --> PR_CONTINUE
+    end
+
+    PR_CONTINUE --> ITER
+
+    subgraph MONITOR["Agent Monitor (during dispatch)"]
+        direction TB
+        MON_HEART[Heartbeat every 30s<br/>Log silence duration]
+        MON_HEART --> MON_5MIN{Every 5 min}
+        MON_5MIN --> MON_CHECK[Check real progress<br/>git diff + files + .goals.json]
+        MON_CHECK --> MON_PROG{Progress<br/>detected?}
+        MON_PROG -->|Yes| MON_RESET[Reset — agent is working]
+        MON_PROG -->|No + silent| MON_COUNT[Increment check counter]
+        MON_COUNT --> MON_KILL{2 checks<br/>no progress?}
+        MON_KILL -->|Yes| MON_TERM[SIGTERM — 10min of nothing]
+        MON_KILL -->|No| MON_HEART
+        MON_RESET --> MON_HEART
+    end
+
+    style START fill:#1e3a5f,stroke:#4a90d9,color:#f1f5f9
+    style ABORT fill:#5f1e1e,stroke:#d94a4a,color:#f1f5f9
+    style ABORT2 fill:#5f1e1e,stroke:#d94a4a,color:#f1f5f9
+    style ALLDONE fill:#1e5f3a,stroke:#4ad98a,color:#f1f5f9
+    style CO_DONE fill:#1e5f3a,stroke:#4ad98a,color:#f1f5f9
+    style QF_STOP fill:#5f1e1e,stroke:#d94a4a,color:#f1f5f9
+    style PR_STOP fill:#5f1e1e,stroke:#d94a4a,color:#f1f5f9
+    style MON_TERM fill:#5f1e1e,stroke:#d94a4a,color:#f1f5f9
