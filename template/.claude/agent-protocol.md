@@ -103,6 +103,15 @@ DiagramEdge
 
 **Preferred:** Use `lib/pipeline-cli.js` for all .goals.json operations:
 ```bash
+# Project & structure
+node lib/pipeline-cli.js update-project --name "..." --desc "..." --vision "..."
+node lib/pipeline-cli.js add-major-phase --title "..." --desc "..." --produces "a,b" --consumes "c,d"
+node lib/pipeline-cli.js update-major-phase <id|title> --desc "..." --produces "..." --consumes "..."
+node lib/pipeline-cli.js get-major-phase <id|title>
+node lib/pipeline-cli.js add-phase --title "..." --desc "..." --majorPhase <id|title> --produces "..." --consumes "..."
+node lib/pipeline-cli.js add-task <phaseId> --title "..." --desc "..." --files "a.js,b.js"
+
+# Pipeline state
 node lib/pipeline-cli.js add-attempt <taskId> --type build --desc "..."
 node lib/pipeline-cli.js update-attempt <taskId> <attemptId> --outcome success --notes "..."
 node lib/pipeline-cli.js update-status <taskId> in-progress
@@ -110,9 +119,14 @@ node lib/pipeline-cli.js set-pipeline <phaseId> awaiting-qa --agent build
 node lib/pipeline-cli.js rollup <phaseId>
 node lib/pipeline-cli.js rollup-major <majorPhaseId|title>
 node lib/pipeline-cli.js rollup-all
+node lib/pipeline-cli.js get-state <phaseId>
 node lib/pipeline-cli.js check-deps <phaseId>
+node lib/pipeline-cli.js stale-tasks
+
+# Artifacts
+node lib/pipeline-cli.js add-diagram <entityId> --title "..." --jsonFile /tmp/diagram.json
+node lib/pipeline-cli.js add-illustration <entityId> --title "..." --imagePath <png> --htmlSource <html>
 node lib/pipeline-cli.js validate
-node lib/pipeline-cli.js add-diagram <entityId> --title "Diagram Title" --jsonFile /tmp/diagram.json
 ```
 
 This enforces schema validation, status transition rules, QA gates, and atomic writes.

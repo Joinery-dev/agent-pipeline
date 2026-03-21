@@ -92,20 +92,29 @@ Fix issues before proceeding.
 </step>
 
 <step name="create-goals">
-Use lib/pipeline-cli.js:
+Use lib/pipeline-cli.js for ALL .goals.json mutations.
 
-**When planning a major phase:** Break the work into multiple sub-phases, each
-representing a distinct area of work. Each sub-phase gets its own tasks.
-Do NOT put everything in one sub-phase with many tasks.
+**When planning at the project level (major phases only):**
 
-For each sub-phase:
-1. Create the sub-phase with interface contracts:
-   node lib/pipeline-cli.js add-phase --title "Name" --desc "Summary" --planFile "plans/slug.md" --majorPhase majorPhaseId --produces "REST API /api/auth,JWT tokens" --consumes "user database,env config"
+1. Set the project vision:
+   node lib/pipeline-cli.js update-project --name "Name" --vision "The vision" --desc "Description"
 
-   **Interface contracts are required.** Every phase must declare:
-   - `--produces` — what this phase creates that other phases use (APIs, components, data stores, CSS classes, exports)
-   - `--consumes` — what this phase needs from other phases or the environment
-   This is how QA catches cross-phase conflicts (e.g., one phase hiding content another phase created).
+2. Create each major phase:
+   node lib/pipeline-cli.js add-major-phase --title "Name" --desc "Description" --produces "what it creates" --consumes "what it needs"
+
+   Interface contracts are required on major phases — they define the boundaries
+   between large areas of work.
+
+Do NOT create sub-phases or tasks at this level. Ship.js will plan each major
+phase in detail when it gets there.
+
+**When planning a major phase (sub-phases + tasks):**
+
+Break the work into multiple sub-phases, each representing a distinct area.
+Each sub-phase gets its own tasks. Do NOT put everything in one sub-phase.
+
+1. Create each sub-phase with interface contracts:
+   node lib/pipeline-cli.js add-phase --title "Name" --desc "Summary" --planFile "plans/slug.md" --majorPhase "Major Phase Title" --produces "what it creates" --consumes "what it needs"
 
 2. For each task in that sub-phase:
    node lib/pipeline-cli.js add-task phaseId --title "Name" --desc "Description" --files "a.js,b.js"
