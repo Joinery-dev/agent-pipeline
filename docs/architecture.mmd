@@ -1,0 +1,166 @@
+---
+title: Agent Pipeline Architecture
+---
+
+graph TB
+    subgraph USER["👤 User"]
+        CLI["Terminal"]
+        GSP["Goals Side Panel<br/>(Electron)"]
+        NOTIFY["🔔 Notifications<br/>(Menu Bar)"]
+    end
+
+    subgraph ORCHESTRATOR["🚢 ship.js — Autonomous Loop"]
+        LOOP["State Machine"]
+        STALE["Stale Detection"]
+        RECONCILE["Post-Build<br/>Reconciliation"]
+        COST["Cost Tracker"]
+        BRIEFING["Distill Briefing"]
+        CHECKPOINT["Git Checkpoints"]
+    end
+
+    subgraph AGENTS["Agent Dispatches (claude -p)"]
+        PM["📋 PM Agent<br/>/pm:plan"]
+        BUILD["🔨 Builder Agent<br/>/build"]
+        QA["🔍 QA Agent<br/>/qa"]
+        RESOLVE["🔧 Resolver Agent<br/>/resolve"]
+    end
+
+    subgraph STATE[".goals.json — Single Source of Truth"]
+        PROJECT["Project"]
+        MAJOR["MajorPhases[]"]
+        PHASES["Phases[]"]
+        TASKS["Tasks[]"]
+        ATTEMPTS["Attempts[]"]
+        DIAGRAMS["Diagrams[]"]
+    end
+
+    subgraph ENGINE["Pipeline Engine (lib/)"]
+        PIPE["pipeline.js<br/>Schema + Validation"]
+        PCLI["pipeline-cli.js<br/>All Mutations"]
+        SYNC["pipeline-sync.js<br/>Rollup + Orphans"]
+        VALIDATE["validate-plan.js<br/>Plan ↔ Goals"]
+        P2T["plan-to-tasks.js<br/>Parse Plans"]
+        MERGE["merge.js<br/>Safe Merge"]
+        LESSONS["lessons-sync.js<br/>Pattern Graduation"]
+        HYGIENE["memory-hygiene.js<br/>Archive + Validate"]
+        TESTRUN["test-runner.js<br/>Tiered Tests"]
+    end
+
+    subgraph MEMORY["Agent Memory"]
+        PM_MEM[".pm/memory/<br/>status, decisions,<br/>concerns, reviews"]
+        QA_MEM[".qa/memory/<br/>status.json, patterns,<br/>regressions, learnings"]
+        QA_SHOTS[".qa/screenshots/<br/>Visual verification"]
+    end
+
+    subgraph PROTOCOL["Protocol Docs (.claude/)"]
+        AP["agent-protocol.md<br/>Schema + Contracts"]
+        RL["ralph-loop.md<br/>QA 8-Step Protocol"]
+        PMR["pm-reference.md<br/>Memory Formats"]
+        PC["project-conventions.md<br/>Graduated Lessons"]
+    end
+
+    subgraph PLANS["plans/"]
+        PLANFILES["*.md<br/>Plan files<br/>(source of truth<br/>for agents)"]
+    end
+
+    subgraph COMMANDS[".claude/commands/"]
+        CMD_PM["pm.md"]
+        CMD_PLAN["pm:plan.md"]
+        CMD_BUILD["build.md"]
+        CMD_QA["qa.md"]
+        CMD_RESOLVE["resolve.md"]
+        CMD_DEBUG["debug.md"]
+        CMD_MERGE["merge.md"]
+        CMD_HANDOFF["pm:handoff.md"]
+        CMD_REVIEW["pm:review.md"]
+        CMD_DIAGRAM["diagram.md"]
+    end
+
+    %% User interactions
+    CLI -->|"node lib/ship.js"| LOOP
+    CLI -->|"/pm, /build, /qa"| AGENTS
+    GSP -->|reads| STATE
+    GSP -->|renders| DIAGRAMS
+    NOTIFY -->|"hook: Stop"| CLI
+
+    %% Orchestrator flow
+    LOOP -->|"needs-plan"| PM
+    LOOP -->|"needs-build"| BUILD
+    LOOP -->|"awaiting-qa"| QA
+    LOOP -->|"qa-failed"| RESOLVE
+    LOOP -->|"plan exists,<br/>no tasks"| P2T
+    BRIEFING -->|".ship/briefing.md"| AGENTS
+    RECONCILE -->|"git diff → status"| STATE
+    STALE -->|"reset stuck tasks"| STATE
+    COST -->|"track $"| LOOP
+    CHECKPOINT -->|"git tag"| LOOP
+
+    %% Agent → State
+    PM -->|"add-phase,<br/>add-task,<br/>add-diagram"| PCLI
+    BUILD -->|"update-status,<br/>add-attempt"| PCLI
+    QA -->|"update-attempt,<br/>set-pipeline"| PCLI
+    RESOLVE -->|"add-attempt,<br/>update-attempt"| PCLI
+    PCLI -->|"validates + writes"| STATE
+
+    %% Agent → Memory
+    PM -->|writes| PM_MEM
+    QA -->|writes| QA_MEM
+    QA -->|screenshots| QA_SHOTS
+    BUILD -->|reads| PM_MEM
+    BUILD -->|reads| QA_MEM
+
+    %% Agent → Plans
+    PM -->|creates| PLANFILES
+    BUILD -->|reads| PLANFILES
+    QA -->|reads| PLANFILES
+
+    %% Agent → Protocol
+    PM -->|reads| PROTOCOL
+    BUILD -->|reads| PROTOCOL
+    QA -->|reads| RL
+    RESOLVE -->|reads| PROTOCOL
+
+    %% Commands define agents
+    CMD_PM -.->|defines| PM
+    CMD_PLAN -.->|defines| PM
+    CMD_BUILD -.->|defines| BUILD
+    CMD_QA -.->|defines| QA
+    CMD_RESOLVE -.->|defines| RESOLVE
+
+    %% Engine internal
+    PIPE -->|schema| PCLI
+    SYNC -->|rollup| STATE
+    VALIDATE -->|cross-check| PLANFILES
+    VALIDATE -->|cross-check| STATE
+    LESSONS -->|graduate| PC
+    LESSONS -->|reads| QA_MEM
+    HYGIENE -->|archive| PM_MEM
+    HYGIENE -->|archive| QA_MEM
+    TESTRUN -->|tiered| BUILD
+    MERGE -->|safe merge| LOOP
+
+    %% State hierarchy
+    PROJECT --> MAJOR
+    MAJOR --> PHASES
+    PHASES --> TASKS
+    TASKS --> ATTEMPTS
+    PROJECT -.->|optional| DIAGRAMS
+    MAJOR -.->|optional| DIAGRAMS
+    PHASES -.->|optional| DIAGRAMS
+
+    %% Styling
+    classDef user fill:#1e293b,stroke:#4a90d9,color:#f1f5f9
+    classDef orchestrator fill:#1e293b,stroke:#e07a2f,color:#f1f5f9
+    classDef agent fill:#1e293b,stroke:#a853ba,color:#f1f5f9
+    classDef state fill:#1e293b,stroke:#2d6a4f,color:#f1f5f9
+    classDef engine fill:#1e293b,stroke:#4a90d9,color:#f1f5f9
+    classDef memory fill:#1e293b,stroke:#e92a67,color:#f1f5f9
+    classDef protocol fill:#1e293b,stroke:#64748b,color:#f1f5f9
+
+    class CLI,GSP,NOTIFY user
+    class LOOP,STALE,RECONCILE,COST,BRIEFING,CHECKPOINT orchestrator
+    class PM,BUILD,QA,RESOLVE agent
+    class PROJECT,MAJOR,PHASES,TASKS,ATTEMPTS,DIAGRAMS state
+    class PIPE,PCLI,SYNC,VALIDATE,P2T,MERGE,LESSONS,HYGIENE,TESTRUN engine
+    class PM_MEM,QA_MEM,QA_SHOTS memory
+    class AP,RL,PMR,PC protocol

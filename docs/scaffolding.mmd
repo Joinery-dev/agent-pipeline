@@ -1,0 +1,83 @@
+---
+title: Scaffolded Files — npx agent-pipeline init (40 files)
+---
+
+graph LR
+    subgraph COMMANDS[".claude/commands/ (10)"]
+        direction TB
+        pm["pm.md<br/>Status + Planning"]
+        pmplan["pm:plan.md<br/>Create Plans"]
+        pmhand["pm:handoff.md<br/>Session Handoff"]
+        pmrev["pm:review.md<br/>Code Review"]
+        build["build.md<br/>Execute Plans"]
+        qa["qa.md<br/>Validate Builds"]
+        resolve["resolve.md<br/>Fix QA Failures"]
+        debug["debug.md<br/>Diagnostics"]
+        merge["merge.md<br/>Safe Merge"]
+        diagram["diagram.md<br/>System Diagrams"]
+    end
+
+    subgraph PROTOCOL[".claude/ (4)"]
+        direction TB
+        ap["agent-protocol.md<br/>Schema + Contracts"]
+        rl["ralph-loop.md<br/>QA Protocol"]
+        pmr["pm-reference.md<br/>Memory Formats"]
+        pc["project-conventions.md<br/>Graduated Lessons"]
+    end
+
+    subgraph ENGINE["lib/ (11)"]
+        direction TB
+        pipe["pipeline.js<br/>Schema Engine"]
+        pcli["pipeline-cli.js<br/>CLI Mutations"]
+        psync["pipeline-sync.js<br/>Auto Sync"]
+        vplan["validate-plan.js<br/>Plan Validation"]
+        p2t["plan-to-tasks.js<br/>Parse → Tasks"]
+        ship["ship.js<br/>Autonomous Loop"]
+        distill["distill-briefing.js<br/>Agent Briefings"]
+        cost["cost-tracker.js<br/>Token Costs"]
+        hygiene["memory-hygiene.js<br/>Memory Maintenance"]
+        testrun["test-runner.js<br/>Tiered Tests"]
+        mergejs["merge.js<br/>Branch Lifecycle"]
+        lessons["lessons-sync.js<br/>Pattern Graduation"]
+    end
+
+    subgraph VIEWER["app/ (4)"]
+        direction TB
+        vizpage["visualize/page.js<br/>Diagram Viewer"]
+        vizedge["visualize/TurboEdge.js<br/>Edge Component"]
+        vizcss["visualize/visualize.module.css<br/>Turbo Flow Styles"]
+        apidia["api/diagrams/route.js<br/>Diagram API"]
+    end
+
+    subgraph MEMORY["Memory (9)"]
+        direction TB
+        pmstat[".pm/memory/status.md"]
+        pmdec[".pm/memory/decisions.md"]
+        pmcon[".pm/memory/concerns.md"]
+        pmrev2[".pm/memory/reviews.md"]
+        qajson[".qa/memory/status.json"]
+        qareg[".qa/memory/regressions.md"]
+        qapat[".qa/memory/patterns.md"]
+        qalearn[".qa/memory/learnings.txt"]
+    end
+
+    subgraph ROOT["Root (2)"]
+        direction TB
+        goals[".goals.json<br/>Project State"]
+        claude["CLAUDE.md<br/>Project Conventions"]
+        plans["plans/<br/>Plan Files"]
+    end
+
+    classDef cmd fill:#2d1b4e,stroke:#a853ba,color:#f1f5f9
+    classDef proto fill:#1b2e4e,stroke:#4a90d9,color:#f1f5f9
+    classDef eng fill:#1b3e2e,stroke:#52b788,color:#f1f5f9
+    classDef view fill:#3e2e1b,stroke:#e07a2f,color:#f1f5f9
+    classDef mem fill:#3e1b2e,stroke:#e92a67,color:#f1f5f9
+    classDef root fill:#1e293b,stroke:#64748b,color:#f1f5f9
+
+    class pm,pmplan,pmhand,pmrev,build,qa,resolve,debug,merge,diagram cmd
+    class ap,rl,pmr,pc proto
+    class pipe,pcli,psync,vplan,p2t,ship,distill,cost,hygiene,testrun,mergejs,lessons eng
+    class vizpage,vizedge,vizcss,apidia view
+    class pmstat,pmdec,pmcon,pmrev2,qajson,qareg,qapat,qalearn mem
+    class goals,claude,plans root

@@ -1,0 +1,90 @@
+---
+title: Pipeline Flow — ship.js State Machine
+---
+
+stateDiagram-v2
+    [*] --> CheckGoals: ship.js starts
+
+    CheckGoals --> NeedsPlan: no .goals.json
+    CheckGoals --> FindPhase: .goals.json exists
+
+    NeedsPlan --> DispatchPM: topic provided
+    DispatchPM --> FindPhase: plan created
+
+    FindPhase --> EmptyMajor: no sub-phases found
+    FindPhase --> EvalState: sub-phase found
+    FindPhase --> AllDone: no incomplete phases
+
+    EmptyMajor --> DispatchPM: plan major phase
+    DispatchPM --> FindPhase
+
+    EvalState --> NeedsPlanPhase: no tasks
+    EvalState --> NeedsBuild: tasks not-started
+    EvalState --> Building: tasks in-progress
+    EvalState --> AwaitingQA: all built
+    EvalState --> QAFailed: tasks blocked
+    EvalState --> Complete: all completed
+
+    state NeedsPlanPhase {
+        [*] --> CheckPlanFile
+        CheckPlanFile --> PlanToTasks: plan file exists
+        CheckPlanFile --> DispatchPMPlan: no plan file
+        PlanToTasks --> [*]: tasks created (deterministic)
+        DispatchPMPlan --> [*]: PM creates plan + tasks
+    }
+
+    NeedsPlanPhase --> NeedsBuild: tasks populated
+
+    state NeedsBuild {
+        [*] --> ValidatePlan
+        ValidatePlan --> DistillBriefing: valid
+        ValidatePlan --> SkipPhase: invalid
+        DistillBriefing --> DispatchBuilder
+        DispatchBuilder --> Reconcile: builder done
+        Reconcile --> TestGate: statuses updated
+        TestGate --> [*]
+    }
+
+    NeedsBuild --> AwaitingQA: reconciled → awaiting-qa
+    NeedsBuild --> NeedsBuild: reconcile found untouched tasks
+
+    state AwaitingQA {
+        [*] --> DistillQA
+        DistillQA --> DispatchQA
+        DispatchQA --> [*]
+    }
+
+    AwaitingQA --> Complete: QA passes all
+    AwaitingQA --> QAFailed: QA finds failures
+
+    state QAFailed {
+        [*] --> CheckRounds
+        CheckRounds --> DispatchResolver: rounds < max
+        CheckRounds --> EscalatePM: rounds >= max
+        DispatchResolver --> AwaitingQA: fixed
+        EscalatePM --> NeedsPlanPhase: PM revises
+        EscalatePM --> HumanNeeded: 2x replan failed
+    }
+
+    state Complete {
+        [*] --> TryMerge
+        TryMerge --> NextPhase: more phases
+        TryMerge --> ProjectDone: all phases done
+    }
+
+    Complete --> FindPhase: next phase
+    AllDone --> [*]
+    HumanNeeded --> [*]
+
+    note right of Reconcile
+        git diff → match task files[]
+        Update .goals.json statuses
+        Builder can't do this reliably
+        in --print mode
+    end note
+
+    note right of PlanToTasks
+        Deterministic parsing
+        No LLM needed
+        ### Task N: Title → add-task
+    end note
