@@ -149,8 +149,15 @@ with subline "← from Parent" or "→ to Parent".
 - Same color group and naming conventions as parent assigns
 - No missing connections — if parent shows 3 edges in, diagram has 3 entry nodes
 
-Write JSON to temp file, store via:
+**Storage: ALWAYS use .goals.json via the CLI. NEVER write diagrams to
+app/visualize/page.js or any other file.** The visualize page is a viewer that
+reads from .goals.json — do not overwrite it with hardcoded nodes.
+
+Write diagram JSON to a temp file, then store via:
   node lib/pipeline-cli.js add-diagram <entityId> --title "name" --jsonFile /tmp/diagram.json
+
+This is the ONLY way to store diagrams. The Goals Side Panel and /visualize
+page both read from .goals.json.
 </step>
 
 <step name="report">

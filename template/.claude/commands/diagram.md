@@ -56,9 +56,13 @@ Do NOT create diagrams for individual tasks — the code is the source of truth 
 
 ---
 
-## Viewing Diagrams
+## Storage
 
-Diagrams are stored in `.goals.json` via:
+**ALWAYS store diagrams in .goals.json via the CLI. NEVER write diagram nodes/edges
+directly into app/visualize/page.js or any source file.** The visualize page is a
+viewer — it reads from .goals.json automatically.
+
+Store via:
 ```bash
 node lib/pipeline-cli.js add-diagram <entityId> --title "Title" --jsonFile /tmp/diagram.json
 ```
