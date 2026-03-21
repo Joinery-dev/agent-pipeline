@@ -89,20 +89,25 @@ They must match. Derive the diagram FROM the plan — never the other way around
 Do NOT create diagrams for individual tasks.
 
 **Diagram the system being built, NOT the work plan.** The plan file already
-describes the work. The diagram shows the architecture — components, modules,
-pages, APIs, data stores, and how they connect.
+describes the work. Diagrams show the product — what it looks like, how it
+works, how it's structured.
 
-At each level, diagram what the system looks like when this work is done:
-- **Project level** — the major systems/areas and how they integrate
-- **Major phase level** — the components/modules being built and their interfaces
-- **Phase level** — the files, APIs, data flows, and how they connect
+A developer or designer should look at the diagram and understand the system
+being built — not the order of tasks to build it.
 
-Nodes = components, modules, pages, APIs, data stores, services.
-Edges = data flow, API calls, imports, user navigation.
-NOT nodes = tasks, work items, build steps.
+Nodes = components, modules, pages, APIs, data stores, routes, layouts.
+Edges = data flow, API calls, imports, user navigation, shared state.
+NOT nodes = tasks, phases, work items, build steps, milestones.
 
-The diagram should be something a developer looks at and says "oh, that's how
-the system fits together" — not "that's the order we build things."
+**Create multiple diagrams when useful.** An entity can have more than one
+diagram. Use as many as the builders and QA will need to understand the system:
+- **Architecture diagram** — components, modules, how they connect
+- **Page/screen flow** — user journey through the product, navigation paths
+- **Data flow** — where data comes from, how it transforms, where it goes
+- **Tech stack** — frameworks, APIs, databases, deployment infrastructure
+
+Not every project needs all of these. Create the ones that will actually help
+the next agent understand what they're building and how it fits together.
 
 **Nested hierarchy with entry/exit nodes:** Diagrams zoom in like a map. A node
 in the project diagram (e.g., "Auth System") has its own detailed diagram at the
