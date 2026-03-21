@@ -70,7 +70,7 @@ const targetCommands = join(targetDir, '.claude', 'commands');
 
 const commandFiles = [
   'pm.md', 'pm:plan.md', 'pm:handoff.md', 'pm:review.md',
-  'build.md', 'qa.md', 'resolve.md', 'debug.md', 'merge.md', 'diagram.md',
+  'build.md', 'qa.md', 'resolve.md', 'debug.md', 'merge.md', 'diagram.md', 'design-review.md',
 ];
 
 for (const file of commandFiles) {
@@ -114,7 +114,7 @@ const libFiles = [
   'validate-plan.js', 'merge.js', 'lessons-sync.js',
   'ship.js', 'distill-briefing.js', 'cost-tracker.js',
   'memory-hygiene.js', 'test-runner.js', 'plan-to-tasks.js',
-  'visual-check.js',
+  'visual-check.js', 'integration-check.js',
 ];
 
 for (const file of libFiles) {

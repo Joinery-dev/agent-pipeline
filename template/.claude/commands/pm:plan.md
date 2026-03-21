@@ -30,6 +30,12 @@ specific implementation in the plan. The builder decides how to implement.
 
 Bad: "Create a div with className='card' containing an h2 and three span elements"
 Good: "Dashboard card showing 4 KPIs (active projects, completed tasks, team size, automations) with visual hierarchy"
+
+**Include visual asset tasks when the project has a UI.** Plans for web/app projects
+should include tasks for: favicon, OG/social images, placeholder imagery (SVG
+illustrations, gradient backgrounds, CSS art), feature icons. A project without
+visual assets looks unfinished regardless of code quality. The builder can generate
+SVGs, CSS gradients, and simple illustrations — plan for them.
 </step>
 
 <step name="review">
