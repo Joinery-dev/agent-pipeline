@@ -69,7 +69,8 @@ const commandsDir = join(TEMPLATE_DIR, '.claude', 'commands');
 const targetCommands = join(targetDir, '.claude', 'commands');
 
 const commandFiles = [
-  'pm.md', 'pm:plan.md', 'pm:handoff.md', 'pm:review.md',
+  'exec.md',
+  'pm.md', 'pm:plan.md', 'pm:research.md', 'pm:handoff.md', 'pm:review.md',
   'build.md', 'qa.md', 'resolve.md', 'debug.md', 'merge.md', 'diagram.md', 'design-review.md',
 ];
 
@@ -173,6 +174,14 @@ writeIfMissing(
   '.pm/memory/reviews.md'
 );
 
+// ── PM research directory ─────────────────────────────────────────────
+
+const pmResearch = join(targetDir, '.pm', 'research');
+if (!existsSync(pmResearch)) {
+  mkdirSync(pmResearch, { recursive: true });
+  created.push('.pm/research/');
+}
+
 writeIfMissing(
   join(qaMemory, 'status.json'),
   JSON.stringify({ lastRun: null, plan: null, round: 0, verdict: null, checksTotal: 0, checksPassing: 0, criteria: [], forestWarnings: [], trajectory: [] }, null, 2),
@@ -223,6 +232,22 @@ writeIfMissing(
   join(designMemory, 'page-grades.json'),
   JSON.stringify({}, null, 2),
   '.design/memory/page-grades.json'
+);
+
+// ── Exec memory ─────────────────────────────────────────────────
+
+const execMemory = join(targetDir, '.exec', 'memory');
+
+writeIfMissing(
+  join(execMemory, 'decisions.md'),
+  `# Executive Decisions\n\n(none yet)\n`,
+  '.exec/memory/decisions.md'
+);
+
+writeIfMissing(
+  join(execMemory, 'escalation-log.md'),
+  `# Escalation Log\n\n(none yet)\n`,
+  '.exec/memory/escalation-log.md'
 );
 
 // ── Visual language + design protocol ─────────────────────────────
@@ -309,7 +334,9 @@ writeIfMissing(
 ## Agent Pipeline
 
 This project uses the agent pipeline for structured development:
+- \`/exec <topic>\` — strategic project decomposition (vision, phases, contracts, diagrams)
 - \`/pm\` — project status and planning
+- \`/pm:research <topic>\` — research best practices, competitors, and design patterns
 - \`/pm:plan <topic>\` — create plans with goals tracking
 - \`/build <plan>\` — execute plans
 - \`/qa <plan>\` — validate builds
@@ -340,8 +367,8 @@ if (skipped.length > 0) {
 
 console.log(`\nDone! ${created.length} files created, ${skipped.length} skipped.`);
 console.log('\nNext steps:');
-console.log('  1. Add your project details to .goals.json (name, description, vision)');
-console.log('  2. Run /pm to see your project status');
-console.log('  3. Run /pm:plan <topic> to create your first plan');
+console.log('  1. Run /exec <topic> to create your project structure (vision, phases, contracts)');
+console.log('  2. Run node ship.js <topic> for fully autonomous execution');
+console.log('  3. Or run /pm:plan <topic> to plan a single phase manually');
 console.log('  4. Run /build <plan> to start building');
 console.log('  5. Run /qa <plan> to validate the build');

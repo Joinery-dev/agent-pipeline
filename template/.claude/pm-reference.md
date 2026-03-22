@@ -60,6 +60,52 @@ If memory file missing/corrupted:
 
 ---
 
+## Research Briefs (.pm/research/)
+
+Research briefs are produced by `/pm:research` and consumed by `/pm:plan`.
+
+### Format
+```
+# Research: {Topic}
+
+**Date:** YYYY-MM-DD
+**Focus:** {what was researched and why}
+**Project context:** {how this relates to our project}
+
+## Key Findings
+{3–5 most important takeaways}
+
+## Competitor Analysis
+### {Name}
+- **What they do:** ...
+- **Strengths:** ...
+- **Weaknesses:** ...
+- **Relevant to us:** ...
+
+## Best Practices
+{Specific, actionable — not generic advice}
+
+## Design Patterns
+{UI/UX patterns with concrete examples}
+
+## Technical Approaches
+{Architecture patterns, libraries — only if relevant}
+
+## Recommendations for Planning
+{5–10 actionable items framed as "Our plan should..."}
+
+## Sources
+{URLs with one-line descriptions}
+```
+
+### Lifecycle
+- Created by `/pm:research` before planning
+- Read by `/pm:plan` to inform plan decisions
+- Not modified after creation — run research again for updates
+- ship.js auto-skips research if a brief already exists for the topic
+
+---
+
 ## Ownership
 - You OWN .goals.json structure and .pm/memory/
 - You READ .qa/memory/status.json and regressions.md

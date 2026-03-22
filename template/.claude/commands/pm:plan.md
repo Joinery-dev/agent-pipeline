@@ -13,7 +13,10 @@ Creates the plan file AND the goals entries in one step.
 5. Read .pm/memory/ for context, concerns, prior decisions
 6. Read .design/memory/findings.md + visual-drift.md + page-grades.json
 7. Read any existing plans in plans/ that relate to the topic
-8. Explore the codebase around this topic
+8. Read .pm/research/ for any research briefs related to this topic — if a
+   brief exists, use its findings (competitors, best practices, design patterns,
+   recommendations) to inform the plan. Don't repeat the research, build on it.
+9. Explore the codebase around this topic
 
 **If this is a UI phase and `.claude/visual-language.md` doesn't exist or says
 "not yet established":** Create it now, before writing the visual spec. Define
