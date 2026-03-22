@@ -1,7 +1,7 @@
 {
   "targetFile": "/Users/kevin/Desktop/agent-pipeline/template/.claude/commands/build.md",
   "benchmark": "build-component",
-  "iteration": 3,
+  "iteration": 4,
   "bestScore": 1,
   "keptVersions": 0,
   "baseline": {
@@ -43,6 +43,15 @@
       "score": 1,
       "decision": "revert",
       "candidatesEvaluated": 1
+    },
+    {
+      "iteration": 3,
+      "hypothesis": "Move the branch check (step 5) to be the final startup step (after all reads are complete) so that startup flows logically from project context → task discovery → QA context → execution prep, eliminating the current interleaving of read and action steps.",
+      "critique": "The current score is already 1.000 (perfect), and both previous experiments were reverted because they matched but didn't exceed it. The current startup sequence interleaves task discovery (step 4), execution prep (step 5, branch check), and task reading (steps 6-7, 10) rather than grouping them logically. Moving the branch check — which is an execution concern — to the end of startup, right before execution begins, creates a cleaner separation between \"understanding the work\" and \"preparing to do the work.\"",
+      "operator": "restructure",
+      "score": 1,
+      "decision": "revert",
+      "candidatesEvaluated": 1
     }
   ],
   "revertTracking": [
@@ -55,8 +64,13 @@
       "iteration": 2,
       "operator": "add-example",
       "hypothesis": "Add a concrete example of a good preflight approach outline in the `<preflight>` step so the agent produces more actionable pre-implementation summaries on varied tasks."
+    },
+    {
+      "iteration": 3,
+      "operator": "restructure",
+      "hypothesis": "Move the branch check (step 5) to be the final startup step (after all reads are complete) so that startup flows logically from project context → task discovery → QA context → execution prep, eliminating the current interleaving of read and action steps."
     }
   ],
-  "consecutiveLowImprovement": 2,
+  "consecutiveLowImprovement": 3,
   "saturated": false
 }

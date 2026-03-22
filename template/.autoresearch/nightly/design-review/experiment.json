@@ -1,0 +1,26 @@
+{
+  "targetFile": "/Users/kevin/Desktop/agent-pipeline/template/.claude/commands/design-review.md",
+  "benchmark": "design-review",
+  "iteration": 1,
+  "bestScore": 1,
+  "keptVersions": 0,
+  "baseline": {
+    "score": 1,
+    "details": {
+      "redButtonDetected": true,
+      "borderRadiusDetected": true,
+      "wrongFontDetected": true,
+      "dashboardCorrectPass": true,
+      "findingsHasContent": true,
+      "statusUpdated": true
+    },
+    "agentSuccess": true,
+    "durationMs": 82823
+  },
+  "startedAt": "2026-03-22T23:56:07.030Z",
+  "branch": "autoresearch-nightly/design-review-1774223767030",
+  "history": [],
+  "revertTracking": [],
+  "consecutiveLowImprovement": 0,
+  "saturated": false
+}

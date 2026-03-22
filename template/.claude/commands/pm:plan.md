@@ -10,17 +10,17 @@ Creates the plan file AND the goals entries in one step.
 2. Read CLAUDE.md and .claude/agent-protocol.md
 3. Read .claude/project-conventions.md if it exists
 4. Read .claude/visual-language.md if it exists — this is the visual constitution
-5. Read .goals.json for current state and existing phases
-5. Read .pm/memory/ for context, concerns, prior decisions
-6. Read .exec/memory/decisions.md if it exists — exec writes lessons learned
+5. Read .ship/briefing.md for project context. Use `node lib/pipeline-cli.js get-major-phase <title>` to get the major phase being planned. Read .goals.json only if you need full project structure that the briefing doesn't cover.
+6. Read .pm/memory/ for context, concerns, prior decisions
+7. Read .exec/memory/decisions.md if it exists — exec writes lessons learned
    here when it restarts a phase. If this phase was restarted, these lessons
    explain what failed and what to avoid in the new plan.
-7. Read .design/memory/findings.md + visual-drift.md + page-grades.json
-8. Read any existing plans in plans/ that relate to the topic
-9. Read .pm/research/ for any research briefs related to this topic — if a
+8. Read .design/memory/findings.md + visual-drift.md + page-grades.json
+9. Read any existing plans in plans/ that relate to the topic
+10. Read .pm/research/ for any research briefs related to this topic — if a
    brief exists, use its findings (competitors, best practices, design patterns,
    recommendations) to inform the plan. Don't repeat the research, build on it.
-10. Explore the codebase around this topic
+11. Explore the codebase around this topic
 
 **If this is a UI phase and `.claude/visual-language.md` doesn't exist or says
 "not yet established":** Create it now, before writing the visual spec. Define

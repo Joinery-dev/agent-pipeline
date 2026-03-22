@@ -346,7 +346,7 @@ Read everything relevant to the escalation:
 
 1. .exec/memory/decisions.md — prior exec decisions
 2. .exec/memory/escalation-log.md — what's been tried before
-3. .goals.json — full project state, failing phase, attempt history
+3. .ship/briefing.md for escalation context. Read .goals.json only if the briefing is insufficient for diagnosis.
 4. The failing phase's plan file (from planFile field)
 5. .pm/memory/concerns.md and decisions.md
 6. .qa/memory/status.json, patterns.md, regressions.md

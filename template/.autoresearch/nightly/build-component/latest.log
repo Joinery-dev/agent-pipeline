@@ -28,3 +28,18 @@
 4:54:12 PM  🔬 [RESEARCH]  Proposer: analyzing history and forming hypothesis...
 4:55:14 PM  🔬 [RESEARCH]  Benchmark: running agent with modified protocol...
 4:56:06 PM  🔬 [RESEARCH]  Evaluating benchmark result...
+4:56:07 PM  ↩️ [REVERT]  REVERT: 1.000 (+0.000) [restructure] — "Move the branch check (step 5) to be the final startup step (after all reads are complete) so that startup flows logically from project context → task discovery → QA context → execution prep, eliminating the current interleaving of read and action steps."
+4:56:07 PM  ℹ️ [INFO]  
+═══════════════════════════════════════
+4:56:07 PM  ℹ️ [INFO]           AUTORESEARCH COMPLETE
+4:56:07 PM  ℹ️ [INFO]  ═══════════════════════════════════════
+4:56:07 PM  ℹ️ [INFO]  Iterations:     3
+4:56:07 PM  ℹ️ [INFO]  Baseline:       1.000
+4:56:07 PM  ℹ️ [INFO]  Best score:     1.000
+4:56:07 PM  ℹ️ [INFO]  Improvement:    +0.0%
+4:56:07 PM  ℹ️ [INFO]  Kept:           0
+4:56:07 PM  ℹ️ [INFO]  Reverted:       3
+4:56:07 PM  ℹ️ [INFO]  Saturated:      no
+4:56:07 PM  ℹ️ [INFO]  Protocol vers:  0
+4:56:07 PM  ℹ️ [INFO]  Results:        /Users/kevin/Desktop/agent-pipeline/template/.autoresearch/nightly/build-component/results.tsv
+4:56:07 PM  ℹ️ [INFO]  Git tags:       autoresearch-nightly/build/v1..v0

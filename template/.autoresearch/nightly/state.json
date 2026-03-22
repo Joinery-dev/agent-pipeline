@@ -26,13 +26,18 @@
     {
       "target": "build.md",
       "benchmark": "build-component",
-      "status": "running",
-      "budgetHours": 0.04999999999999999
+      "status": "completed",
+      "budgetHours": 0.04999999999999999,
+      "bestScore": 1,
+      "saturated": false,
+      "iterations": 3,
+      "keeps": 0,
+      "reverts": 3
     },
     {
       "target": "design-review.md",
       "benchmark": "design-review",
-      "status": "pending",
+      "status": "running",
       "budgetHours": 0.024999999999999994
     },
     {
