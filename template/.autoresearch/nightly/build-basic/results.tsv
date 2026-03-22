@@ -1,0 +1,2 @@
+iteration	timestamp	hypothesis	score	best_score	delta	decision	duration_ms	eval_details
+0	2026-03-22T23:46:06.431Z	baseline	1	1	-	baseline	45412	{"testsTotal":6,"testsPassed":6,"testsRan":true,"filesExpected":["lib/util.js"],"filesFound":["lib/util.js"],"goalsUpdated":true,"hasAttempt":true,"pipelineState":"awaiting-qa"}

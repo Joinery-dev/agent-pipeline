@@ -4,13 +4,18 @@
     {
       "target": "build.md",
       "benchmark": "build-api",
-      "status": "running",
-      "budgetHours": 0.04999999999999999
+      "status": "completed",
+      "budgetHours": 0.04999999999999999,
+      "bestScore": 1,
+      "saturated": false,
+      "iterations": 2,
+      "keeps": 0,
+      "reverts": 2
     },
     {
       "target": "build.md",
       "benchmark": "build-basic",
-      "status": "pending",
+      "status": "running",
       "budgetHours": 0.059999999999999984
     },
     {
