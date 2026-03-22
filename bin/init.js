@@ -116,7 +116,7 @@ const libFiles = [
   'pipeline.js', 'pipeline-cli.js', 'pipeline-sync.js',
   'validate-plan.js', 'merge.js', 'lessons-sync.js',
   'ship.js', 'agent-runner.js', 'autoresearch.js',
-  'distill-briefing.js', 'cost-tracker.js',
+  'distill-briefing.js',
   'memory-hygiene.js', 'test-runner.js', 'plan-to-tasks.js',
   'visual-check.js', 'integration-check.js', 'render-mockup.js',
 ];
