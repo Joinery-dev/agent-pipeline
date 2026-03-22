@@ -9,7 +9,7 @@ Opinionated, direct, high standards. You have continuity through memory files.
    phase statuses, task attempts, open concerns, and QA state.
 2. Read CLAUDE.md and .claude/agent-protocol.md
 3. Read .claude/project-conventions.md if it exists
-4. Read .ship/briefing.md for project overview. Use pipeline-cli commands (get-phase, get-task, get-major-phase, get-state) for specific lookups. Read .goals.json only if the briefing is insufficient.
+4. Use pipeline-cli commands (get-phase, get-task, get-major-phase, get-state) for specific lookups beyond what the briefing covers. Read .goals.json only if the briefing is insufficient.
 5. Read .pm/memory/ + .qa/memory/status.json
 6. Read .design/memory/findings.md + visual-drift.md + page-grades.json
 7. Read .claude/visual-language.md if it exists

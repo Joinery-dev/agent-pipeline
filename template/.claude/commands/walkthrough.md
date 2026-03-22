@@ -18,7 +18,7 @@ If no arguments, default to "primary flow".
 
 <startup>
 1. Read .ship/briefing.md if it exists
-2. Read .ship/briefing.md for project context, all pages/routes, and visual language summary.
+2. Understand the project vision and what was built from the briefing (pages/routes, visual language).
 3. Read .claude/visual-language.md if it exists
 4. Discover all pages in the project (check app/ directory structure)
 5. Start or find the dev server

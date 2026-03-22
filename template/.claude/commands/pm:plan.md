@@ -10,7 +10,7 @@ Creates the plan file AND the goals entries in one step.
 2. Read CLAUDE.md and .claude/agent-protocol.md
 3. Read .claude/project-conventions.md if it exists
 4. Read .claude/visual-language.md if it exists — this is the visual constitution
-5. Read .ship/briefing.md for project context. Use `node lib/pipeline-cli.js get-major-phase <title>` to get the major phase being planned. Read .goals.json only if you need full project structure that the briefing doesn't cover.
+5. Use `node lib/pipeline-cli.js get-major-phase <title>` to get the major phase being planned. Read .goals.json only if you need full project structure that the briefing doesn't cover.
 6. Read .pm/memory/ for context, concerns, prior decisions
 7. Read .exec/memory/decisions.md if it exists — exec writes lessons learned
    here when it restarts a phase. If this phase was restarted, these lessons

@@ -11,7 +11,7 @@ which tasks passed and which failed — and why.
 2. Read CLAUDE.md and .claude/agent-protocol.md
 3. Read .claude/project-conventions.md if it exists
 4. Read ALL files in .qa/memory/
-5. Read .ship/briefing.md for phase context (tasks, attempts, interface contracts, concerns). Use `node lib/pipeline-cli.js get-phase <id>` for specific phase lookups. Avoid reading .goals.json directly — on large projects it exceeds context limits.
+5. Use `node lib/pipeline-cli.js get-phase <id>` for specific phase lookups beyond what the briefing covers. Avoid reading .goals.json directly — on large projects it exceeds context limits.
 6. Read the plan ($ARGUMENTS or most recent active). Match to phase via planFile.
 7. Read .pm/memory/status.md and concerns.md (read-only)
 8. Check git log (last 15 commits) and git diff --stat HEAD~5

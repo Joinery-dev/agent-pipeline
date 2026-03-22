@@ -316,6 +316,17 @@ for (const bench of benchmarkNames) {
   }
 }
 
+// ── Inline autoresearch ──────────────────────────────────────────────
+
+const inlineFiles = ['collect.js', 'check.js', 'propose.js', 'export.js', 'builder-program.md'];
+for (const file of inlineFiles) {
+  copyIfMissing(
+    join(TEMPLATE_DIR, '.autoresearch', 'inline', file),
+    join(targetDir, '.autoresearch', 'inline', file),
+    `.autoresearch/inline/${file}`
+  );
+}
+
 // ── plans/ directory ──────────────────────────────────────────────────
 
 const plansDir = join(targetDir, 'plans');

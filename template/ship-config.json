@@ -7,5 +7,17 @@
   "progressCheckIntervalMs": 300000,
   "heartbeatIntervalMs": 30000,
   "maxChecksWithoutProgress": 2,
-  "hooks": {}
+  "hooks": {},
+  "inlineAutoresearch": {
+    "enabled": false,
+    "targetAgent": "builder",
+    "targetMetric": "firstPassQARate",
+    "windowSize": 5,
+    "coldStartMinimum": 5,
+    "significanceThreshold": 0.10,
+    "maxActiveConventions": 3,
+    "maxConsecutiveReverts": 3,
+    "proposalTimeoutMs": 120000,
+    "conventionMaxLength": 500
+  }
 }
