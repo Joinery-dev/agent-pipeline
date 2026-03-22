@@ -1,7 +1,7 @@
 {
   "targetFile": "/Users/kevin/Desktop/agent-pipeline/template/.claude/commands/build.md",
   "benchmark": "build-basic",
-  "iteration": 2,
+  "iteration": 3,
   "bestScore": 1,
   "keptVersions": 0,
   "baseline": {
@@ -34,6 +34,15 @@
       "score": 1,
       "decision": "revert",
       "candidatesEvaluated": 1
+    },
+    {
+      "iteration": 2,
+      "hypothesis": "Add a concrete example of well-structured success and failure notes in the `log-outcome` step so the agent produces consistent, QA-friendly attempt notes across all task types.",
+      "critique": "The current protocol scores perfectly on the basic benchmark. The `log-outcome` step tells the agent to \"Format notes per .claude/agent-protocol.md template\" but gives no inline example of what well-structured notes look like. In more complex tasks, vague notes could cause QA to reject the attempt or miss critical context, but for this simple benchmark the notes are adequate. The risk is that without a concrete example, agents may produce inconsistent or unhelpful notes across different task types.",
+      "operator": "add-example",
+      "score": 1,
+      "decision": "revert",
+      "candidatesEvaluated": 1
     }
   ],
   "revertTracking": [
@@ -41,8 +50,13 @@
       "iteration": 1,
       "operator": "remove-bloat",
       "hypothesis": "Remove the `<personality>` section entirely since every trait it mentions is already expressed in `<identity>` or `<guardrails>`, reducing noise without losing any behavioral guidance."
+    },
+    {
+      "iteration": 2,
+      "operator": "add-example",
+      "hypothesis": "Add a concrete example of well-structured success and failure notes in the `log-outcome` step so the agent produces consistent, QA-friendly attempt notes across all task types."
     }
   ],
-  "consecutiveLowImprovement": 1,
+  "consecutiveLowImprovement": 2,
   "saturated": false
 }
