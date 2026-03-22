@@ -1,0 +1,79 @@
+---
+title: "PM Planning Flow"
+---
+
+flowchart TD
+    START(("PM receives\ntopic to plan"))
+
+    START --> CONTEXT
+
+    subgraph CONTEXT["Gather Context"]
+        direction LR
+
+        READ_INTERNAL["📋 Read Internal Context\nBriefing, CLAUDE.md, protocol\nConventions, visual language\n.goals.json, PM memory\nExec lessons, design findings"]
+
+        READ_RESEARCH["📄 Read Research Brief\n.pm/research/ for this topic\nCompetitors, best practices\nDesign patterns, recommendations"]
+
+        READ_CODEBASE["🔎 Explore Codebase\nExisting files and patterns\nRelated code around this topic"]
+    end
+
+    READ_INTERNAL --> PLAN
+    READ_RESEARCH --> PLAN
+    READ_CODEBASE --> PLAN
+
+    PLAN["📝 Write Plan File\nplans/topic-slug.md\nGoal statement\nArchitecture fit\nTasks with success criteria\nWHAT and WHY, never HOW"]
+
+    PLAN --> ISUI{"UI phase?"}
+
+    ISUI -- "yes" --> VSPEC
+    ISUI -- "no" --> REVIEW
+
+    VSPEC["🎨 Visual Specification\nFor each page:\nLayout, hierarchy, mood\nContent flow, key details\nCross-page consistency"]
+
+    VSPEC --> REVIEW
+
+    subgraph REVIEW["Self-Review -- 2 passes"]
+        direction LR
+
+        PASS1["Pass 1: Architecture\nFits existing system?\nCriteria testable?\nTasks ordered correctly?\nOver or under specified?"]
+
+        PASS2["Pass 2: Executability\nBuilder can execute unambiguously?\nDecisions builder would face?\nEach task names codebase area?\nfiles hints populated?\nDependencies explicit?"]
+    end
+
+    PASS1 --> PASS2
+
+    PASS2 --> GOALS
+
+    GOALS["📊 Create Goals Entries\nSub-phases via pipeline-cli\nTasks with descriptions and files\nInterface contracts\nValidate plan against goals"]
+
+    GOALS --> DIAGRAM
+
+    DIAGRAM["📐 Child Diagram\nArchitecture of this phase\nEntry and exit nodes matching parent\nProduct structure, not work plan"]
+
+    DIAGRAM --> HASUI{"UI phase?"}
+
+    HASUI -- "yes" --> ILLUSTRATION
+    HASUI -- "no" --> REPORT
+
+    ILLUSTRATION["🖼 Mockup Illustration\nHTML using visual language tokens\nRender to desktop and mobile PNG\nZooms into parent illustration"]
+
+    ILLUSTRATION --> REPORT
+
+    REPORT(("Plan\nComplete"))
+
+    style START fill:#1a1a2e,stroke:#5a5a8a,stroke-width:2px,color:#c0c0d8
+    style CONTEXT fill:transparent,stroke:#444,stroke-width:2px,stroke-dasharray:8 4,color:#888
+    style READ_INTERNAL fill:#162744,stroke:#4a7fc9,stroke-width:1.5px,color:#dce8f5
+    style READ_RESEARCH fill:#162744,stroke:#4a7fc9,stroke-width:1.5px,color:#dce8f5
+    style READ_CODEBASE fill:#162744,stroke:#4a7fc9,stroke-width:1.5px,color:#dce8f5
+    style PLAN fill:#162744,stroke:#4a7fc9,stroke-width:2px,color:#dce8f5
+    style ISUI fill:#1a1a2e,stroke:#5a5a8a,stroke-width:1.5px,color:#c0c0d8
+    style VSPEC fill:#2a183a,stroke:#9050b6,stroke-width:2px,color:#e8d8f5
+    style REVIEW fill:transparent,stroke:#444,stroke-width:2px,stroke-dasharray:8 4,color:#888
+    style PASS1 fill:#3a2a14,stroke:#d9a050,stroke-width:1.5px,color:#f5edd8
+    style PASS2 fill:#3a2a14,stroke:#d9a050,stroke-width:1.5px,color:#f5edd8
+    style GOALS fill:#162744,stroke:#4a7fc9,stroke-width:2px,color:#dce8f5
+    style DIAGRAM fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+    style HASUI fill:#1a1a2e,stroke:#5a5a8a,stroke-width:1.5px,color:#c0c0d8
+    style ILLUSTRATION fill:#2a183a,stroke:#9050b6,stroke-width:2px,color:#e8d8f5
+    style REPORT fill:#163a24,stroke:#3ca050,stroke-width:2px,color:#dcf0e0

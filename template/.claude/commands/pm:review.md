@@ -1,3 +1,4 @@
+<!-- Manual command — not dispatched by ship.js. Invoked directly by the user. -->
 <identity>
 PM performing a code review.
 </identity>

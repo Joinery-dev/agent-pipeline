@@ -1,0 +1,111 @@
+---
+title: "Executive Initial Planning"
+---
+
+flowchart TD
+    START(("New\nProject"))
+    START --> DISCOVER
+
+    subgraph CONVERSATION["Interactive Discovery with Human"]
+        direction TB
+
+        DISCOVER["💬 Discover\nWhat are we building? Who is it for?\nWhat does done look like?"]
+
+        DISCOVER --> SCOPE["💬 Scope and Priorities\nMust-haves vs nice-to-haves\nReference products or websites\nWhat they do NOT want"]
+
+        SCOPE --> BRAND["💬 Design and Brand\nExisting guidelines, colors, logo?\nDesired mood and personality\nSites they admire"]
+
+        BRAND --> TECHCTX["💬 Technical Context\nFramework or hosting constraints\nExternal integrations needed\nPerformance requirements"]
+
+        TECHCTX --> CONFIRM["💬 Summarize Understanding\nPlay back what was heard\nHuman confirms or corrects"]
+
+        CONFIRM -- "not quite right" --> DISCOVER
+    end
+
+    CONFIRM -- "confirmed" --> EXPLORE
+
+    EXPLORE["🔎 Explore Codebase\nWhat already exists?\nFrameworks, patterns, data models\nNatural seams and dependencies"]
+
+    EXPLORE --> RESEARCH
+
+    RESEARCH["🌐 Research the Space\nCompetitors and how they structure features\nBest practices and common pitfalls\nTechnical approaches others use\nDesign conventions users expect"]
+
+    RESEARCH --> BRIEF(["Write research brief\nPM reads this when\nplanning each phase"])
+
+    BRIEF --> VISION
+
+    VISION["📌 Set the Vision\nConcrete, testable definition of done\nDerived from discovery conversation"]
+
+    VISION --> DECOMPOSE
+
+    subgraph DECOMPOSE["Decompose into Major Phases"]
+        direction TB
+
+        MAP_USER["🧑 Map User Capabilities\nWhat can users DO?\nGroup into demoable units\nMatch competitor feature structure"]
+
+        MAP_USER --> MAP_TECH
+
+        MAP_TECH["🔧 Map Technical Reality\nIdentify shared infrastructure\nPhase 1 owns shared files\nName every contract boundary"]
+
+        MAP_TECH --> ORDER
+
+        ORDER["📊 Order by Risk\nWalking skeleton first\nRisky work early\nMaximize parallelism"]
+
+        ORDER --> PRESSURE
+
+        PRESSURE["🔍 Pressure-Test\nCan I demo each phase alone?\nDoes builder have everything\nfrom prior contracts?\nCan PM split into 2-5 sub-phases?"]
+    end
+
+    PRESSURE --> CONTRACTS(["Interface Contracts\nEvery phase has produces and consumes\nExact names, routes, components"])
+
+    CONTRACTS --> ISUI{"UI project?"}
+
+    ISUI -- "yes" --> VLANG
+    ISUI -- "no" --> DIAGRAM
+
+    VLANG["🎨 Visual Language\nPalette, typography, spacing\nComponent patterns, mood\nAll from discovery conversation"]
+
+    VLANG --> DIAGRAM
+
+    DIAGRAM["📐 Architecture Diagram\nProduct structure, not work plan\nNodes are components, pages, APIs\nMultiple diagrams if useful"]
+
+    DIAGRAM --> HASUI{"UI project?"}
+
+    HASUI -- "yes" --> MOCKUP
+    HASUI -- "no" --> VALIDATE
+
+    MOCKUP["🖼 Project Illustration\nHigh-level mockup of main page\nUses visual language tokens\nParent that phase mockups zoom into"]
+
+    MOCKUP --> VALIDATE
+
+    VALIDATE["Validate Structure\nContracts complete, no cycles\nPhase 1 is a walking skeleton\nRiskiest phase is not last\nWalk each contract from builder POV"]
+
+    VALIDATE --> DONE(("Pipeline\nReady"))
+
+    DONE --> HANDOFF(["ship.js takes over\nFully autonomous from here\nPM plans, Builder builds\nQA validates, Design reviews"])
+
+    style START fill:#1a1a2e,stroke:#5a5a8a,stroke-width:2px,color:#c0c0d8
+    style CONVERSATION fill:transparent,stroke:#4a7fc9,stroke-width:2px,stroke-dasharray:8 4,color:#4a7fc9
+    style DISCOVER fill:#162744,stroke:#4a7fc9,stroke-width:2px,color:#dce8f5
+    style SCOPE fill:#162744,stroke:#4a7fc9,stroke-width:2px,color:#dce8f5
+    style BRAND fill:#162744,stroke:#4a7fc9,stroke-width:2px,color:#dce8f5
+    style TECHCTX fill:#162744,stroke:#4a7fc9,stroke-width:2px,color:#dce8f5
+    style CONFIRM fill:#162744,stroke:#4a7fc9,stroke-width:2.5px,color:#dce8f5
+    style EXPLORE fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+    style RESEARCH fill:#162744,stroke:#4a7fc9,stroke-width:2px,color:#dce8f5
+    style BRIEF fill:#1a1a2e,stroke:#5a5a8a,stroke-width:1.5px,color:#c0c0d8
+    style VISION fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+    style DECOMPOSE fill:transparent,stroke:#c98a4a,stroke-width:2px,stroke-dasharray:8 4,color:#c98a4a
+    style MAP_USER fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+    style MAP_TECH fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+    style ORDER fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+    style PRESSURE fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+    style CONTRACTS fill:#1a1a2e,stroke:#5a5a8a,stroke-width:1.5px,color:#c0c0d8
+    style ISUI fill:#1a1a2e,stroke:#5a5a8a,stroke-width:1.5px,color:#c0c0d8
+    style VLANG fill:#2a183a,stroke:#9050b6,stroke-width:2px,color:#e8d8f5
+    style DIAGRAM fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+    style HASUI fill:#1a1a2e,stroke:#5a5a8a,stroke-width:1.5px,color:#c0c0d8
+    style MOCKUP fill:#2a183a,stroke:#9050b6,stroke-width:2px,color:#e8d8f5
+    style VALIDATE fill:#163a24,stroke:#3ca050,stroke-width:2px,color:#dcf0e0
+    style DONE fill:#163a24,stroke:#3ca050,stroke-width:3px,color:#dcf0e0
+    style HANDOFF fill:#1a1a2e,stroke:#5a5a8a,stroke-width:1.5px,color:#c0c0d8

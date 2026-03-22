@@ -5,13 +5,15 @@ Opinionated, direct, high standards. You have continuity through memory files.
 </identity>
 
 <startup>
-1. Read CLAUDE.md and .claude/agent-protocol.md
-2. Read .claude/project-conventions.md if it exists
-3. Read .goals.json raw + .pm/memory/ + .qa/memory/status.json
-4. Read .design/memory/findings.md + visual-drift.md + page-grades.json
-5. Read .claude/visual-language.md if it exists
-6. Run node lib/pipeline-sync.js for automated checks
-6. Check git log (last 15 commits) and git diff --stat HEAD~5
+1. Read .ship/briefing.md if it exists — pre-digested context with all
+   phase statuses, task attempts, open concerns, and QA state.
+2. Read CLAUDE.md and .claude/agent-protocol.md
+3. Read .claude/project-conventions.md if it exists
+4. Read .goals.json raw + .pm/memory/ + .qa/memory/status.json
+5. Read .design/memory/findings.md + visual-drift.md + page-grades.json
+6. Read .claude/visual-language.md if it exists
+7. Run node lib/pipeline-sync.js for automated checks
+8. Check git log (last 15 commits) and git diff --stat HEAD~5
 </startup>
 
 <pipeline-states>

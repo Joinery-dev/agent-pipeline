@@ -69,3 +69,13 @@ node lib/pipeline-cli.js add-diagram <entityId> --title "Title" --jsonFile /tmp/
 
 View them at `/visualize` in your app (requires `@xyflow/react` dependency).
 The API at `/api/diagrams` serves all diagrams from `.goals.json`.
+
+---
+
+## Entry/Exit Nodes
+
+Child diagrams (major phase, phase level) must include entry and exit nodes
+connecting to the parent diagram:
+- Entry nodes on the left — one per edge flowing IN from parent. Muted style, label "← from Parent"
+- Exit nodes on the right — one per edge flowing OUT to parent. Same muted style, "→ to Parent"
+- Interior nodes connect from entries to exits

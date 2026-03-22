@@ -6,17 +6,21 @@ Creates the plan file AND the goals entries in one step.
 <input>$ARGUMENTS — topic or feature to plan.</input>
 
 <step name="research">
-1. Read CLAUDE.md and .claude/agent-protocol.md
-2. Read .claude/project-conventions.md if it exists
-3. Read .claude/visual-language.md if it exists — this is the visual constitution
-4. Read .goals.json for current state and existing phases
+1. Read .ship/briefing.md if it exists — pre-digested PM context.
+2. Read CLAUDE.md and .claude/agent-protocol.md
+3. Read .claude/project-conventions.md if it exists
+4. Read .claude/visual-language.md if it exists — this is the visual constitution
+5. Read .goals.json for current state and existing phases
 5. Read .pm/memory/ for context, concerns, prior decisions
-6. Read .design/memory/findings.md + visual-drift.md + page-grades.json
-7. Read any existing plans in plans/ that relate to the topic
-8. Read .pm/research/ for any research briefs related to this topic — if a
+6. Read .exec/memory/decisions.md if it exists — exec writes lessons learned
+   here when it restarts a phase. If this phase was restarted, these lessons
+   explain what failed and what to avoid in the new plan.
+7. Read .design/memory/findings.md + visual-drift.md + page-grades.json
+8. Read any existing plans in plans/ that relate to the topic
+9. Read .pm/research/ for any research briefs related to this topic — if a
    brief exists, use its findings (competitors, best practices, design patterns,
    recommendations) to inform the plan. Don't repeat the research, build on it.
-9. Explore the codebase around this topic
+10. Explore the codebase around this topic
 
 **If this is a UI phase and `.claude/visual-language.md` doesn't exist or says
 "not yet established":** Create it now, before writing the visual spec. Define
@@ -35,20 +39,56 @@ Create plans/{topic-slug}.md:
 The plan is the source of detail. Goals entries are concise pointers.
 
 **Describe WHAT and WHY, never HOW.** Plans describe behavior, requirements,
-and success criteria — not implementation. Never write code, JSX, CSS, SQL, or
-specific implementation in the plan. The builder decides how to implement.
+and success criteria — leave implementation to the builder. The builder
+decides HOW to implement.
 
 Bad: "Create a div with className='card' containing an h2 and three span elements"
 Good: "Dashboard card showing 4 KPIs (active projects, completed tasks, team size, automations) with visual hierarchy"
 
-**Include visual asset tasks when the project has a UI.** Plans for web/app projects
-should include tasks for: favicon, OG/social images, placeholder imagery (SVG
-illustrations, gradient backgrounds, CSS art), feature icons. A project without
-visual assets looks unfinished regardless of code quality. The builder can generate
-SVGs, CSS gradients, and simple illustrations — plan for them.
+### Task writing rules
 
-**Visual Specification (required for UI phases).** Add a `## Visual Specification`
-section to the plan. For each page or screen this phase creates, describe:
+Each task is executed by a builder agent with a fresh context window. The
+builder reads the plan literally. Write tasks that builders can execute
+without guessing:
+
+**Sizing:** Each task should touch 1-3 files. If a task would require
+changing 5+ files or introducing a new pattern, split it. If a task is
+just renaming a variable, merge it into an adjacent task. A builder
+processes up to 5 tasks per session — size them so 5 tasks make a logical
+unit of progress.
+
+**files[] hints:** Every task MUST name the specific files it will create
+or modify. Builder uses these to find relevant code without wasting time
+grepping. If you don't know the exact paths, use the patterns:
+`app/page-name/page.js`, `lib/feature.js`, `tests/feature.test.js`.
+
+**Success criteria must be verifiable.** For each criterion, ask: "Can QA
+verify this by running a command, taking a screenshot, or checking a file?"
+If the answer is no, the criterion is too vague.
+
+Good: "Hero section visible without scrolling at 1280x800, uses brand
+primary color (#1a73e8), headline text is 48px or larger"
+Bad: "Hero section looks good and is well-designed"
+
+Good: "API endpoint /api/users returns JSON array, responds within 200ms,
+returns 401 without auth header"
+Bad: "API works correctly"
+
+**Dependencies:** If task B requires task A's output, say so explicitly in
+task B's description: "Depends on: [Task A title]. Uses the [component/API]
+created there."
+
+### Visual asset tasks
+
+Include visual asset tasks when the project has a UI: favicon, OG/social
+images, placeholder imagery (SVG illustrations, gradient backgrounds, CSS
+art), feature icons. A project without visual assets looks unfinished. The
+builder can generate SVGs, CSS gradients, and simple illustrations.
+
+### Visual Specification (required for UI phases)
+
+Add a `## Visual Specification` section to the plan. For each page or
+screen this phase creates, describe:
 
 - **Layout** — what's where, relative sizes, how sections flow
 - **Hierarchy** — what's most prominent, what recedes, what's the eye path
@@ -56,10 +96,13 @@ section to the plan. For each page or screen this phase creates, describe:
 - **Content flow** — user sees X → understands Y → does Z
 - **Key details** — which brand colors dominate, typography choices, image treatment
 - **Cross-page consistency** — how this page relates visually to others
+- **Content** — the actual text for headlines, CTAs, section headings,
+  descriptions. Real copy, not lorem ipsum. If you don't know the exact
+  copy, write plausible content that matches the product's voice and
+  purpose. Builder will use it verbatim.
 
 This is NOT code. It's a visual intent description. The builder reads it to
 understand what the page should feel like. QA checks screenshots against it.
-The design review evaluates whether the builder achieved the described intent.
 
 Example:
 ```
@@ -69,6 +112,11 @@ Hierarchy: Large pull quotes dominate. Section headings support, don't compete.
 Mood: Warm, human, editorial. Brand personality lives here.
 Flow: Story → values → mission → CTA.
 Details: Warm amber accents. Serif headings. Photos feel editorial, not stock.
+Content:
+  Headline: "Built by people who care about craft"
+  Pull quote: "Every detail matters — from the first pixel to the last deploy."
+  CTA: "See what we're building →"
+  Sections: Our Story, What We Value, Our Mission, Join Us
 ```
 
 Read `.pm/memory/concerns.md` for design issues flagged on previous phases —
@@ -108,13 +156,13 @@ Use lib/pipeline-cli.js for ALL .goals.json mutations.
    Interface contracts are required on major phases — they define the boundaries
    between large areas of work.
 
-Do NOT create sub-phases or tasks at this level. Ship.js will plan each major
-phase in detail when it gets there.
+Leave sub-phases and tasks for later. Ship.js will plan each major phase
+in detail when it gets there.
 
 **When planning a major phase (sub-phases + tasks):**
 
 Break the work into multiple sub-phases, each representing a distinct area.
-Each sub-phase gets its own tasks. Do NOT put everything in one sub-phase.
+Each sub-phase gets its own tasks. Spread work across multiple sub-phases.
 
 1. Create each sub-phase with interface contracts:
    node lib/pipeline-cli.js add-phase --title "Name" --desc "Summary" --planFile "plans/slug.md" --majorPhase "Major Phase Title" --produces "what it creates" --consumes "what it needs"
@@ -127,6 +175,18 @@ Each sub-phase gets its own tasks. Do NOT put everything in one sub-phase.
 After all phases and tasks are created:
    node lib/pipeline-cli.js validate
    node lib/validate-plan.js --phase phaseId
+
+**Integration verification:** Check that what this phase `consumes` actually
+exists. For each item in the phase's `consumes` contract:
+- If it comes from a completed upstream phase, verify the code actually
+  delivers it (grep for the API route, component export, database table, etc.)
+- If it comes from a not-yet-completed phase, verify that phase's `produces`
+  matches what you're consuming
+- If something is missing, either add it as a task in this phase or flag it
+  as a concern in .pm/memory/concerns.md
+
+Also verify every task has files[] populated. If any task is missing files[],
+add them now via pipeline-cli before proceeding.
 </step>
 
 <step name="diagram">
@@ -138,7 +198,7 @@ They must match. Derive the diagram FROM the plan — never the other way around
 - Project → project root ID
 - Major phase → majorPhase ID
 - Sub-phase → phase ID
-Do NOT create diagrams for individual tasks.
+Create diagrams at project, major phase, and phase levels only.
 
 **Diagram the system being built, NOT the work plan.** The plan file already
 describes the work. Diagrams show the product — what it looks like, how it
@@ -252,14 +312,14 @@ Tasks cannot be completed without QA — the pipeline engine enforces this."
 </step>
 
 <guardrails>
-- Don't create tasks without a plan file
-- Don't modify existing phases/tasks — only add
-- Don't skip the review step
-- Don't skip the diagram step — every plan gets a diagram
-- Don't skip the visual specification for UI phases — the design review
+- Always create the plan file before creating tasks
+- Always add new phases/tasks — preserve existing ones
+- Always run the review step before creating goals
+- Always create a diagram — every plan gets one
+- Always include a visual specification for UI phases — design review
   and QA check against it. Without a spec, there's no definition of "correct."
-- Don't skip the illustration step for UI phases — QA and design review
-  compare built pages against the mockup illustration
+- Always create illustrations for UI phases — QA and design review
+  compare built pages against the mockup
 - Keep task descriptions concise
 - Follow CLAUDE.md conventions
 </guardrails>

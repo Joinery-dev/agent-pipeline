@@ -1,0 +1,118 @@
+---
+title: "Complete Pipeline Lifecycle"
+---
+
+flowchart TD
+    IDEA(("💡\nHuman has\nan idea"))
+
+    IDEA --> DISCOVER
+
+    subgraph STAGE1["Stage 1: Project Setup -- interactive with human"]
+        direction TB
+
+        DISCOVER["💬 Discovery Conversation\nWhat are we building? For whom?\nMust-haves, brand, technical constraints\nHuman confirms understanding"]
+
+        DISCOVER --> RESEARCH_INIT["🌐 Research the Space\nCompetitors, best practices\nDesign patterns, technical approaches"]
+
+        RESEARCH_INIT --> DECOMPOSE["🧩 Decompose the Project\nSet vision, create major phases\nInterface contracts between phases\nVisual language, architecture diagram"]
+    end
+
+    DECOMPOSE --> FIRST_PHASE
+
+    FIRST_PHASE["PM researches and plans\nfirst major phase"] --> BUILD_START
+
+    subgraph STAGE2["Stage 2: Autonomous Build -- repeats for every phase"]
+        direction TB
+
+        BUILD_START["🔨 Build\nImplement tasks, write tests\nCreate visual assets"]
+
+        BUILD_START --> QA_START["🔍 QA\nVerify success criteria\nCompare to mockup"]
+
+        QA_START --> DESIGN_START["🎨 Design Review\nSpec compliance\nCross-page consistency"]
+
+        DESIGN_START -- "issues found" --> RESOLVE["🔧 Resolve\nSurgical fixes"]
+        RESOLVE --> QA_START
+
+        DESIGN_START -- "approved" --> PHASE_DONE(("Phase\nShips"))
+    end
+
+    QA_START -. "exhausted" .-> ESCALATE
+    ESCALATE["📋 PM Replan or\n🧠 Executive Escalation"] -.-> BUILD_START
+
+    PHASE_DONE --> IS_MAJOR{"Major phase\ncomplete?"}
+
+    IS_MAJOR -- "more sub-phases" --> BUILD_START
+
+    IS_MAJOR -- "yes" --> CHECKPOINT
+
+    subgraph CHECKPOINT_BOX["Executive Checkpoint"]
+        direction TB
+
+        CHECKPOINT["🧠 Review Completed Phase\nRun tests, link check, walkthrough\nVerify contracts, check vision\nExtract lessons, update conventions"]
+
+        CHECKPOINT --> HAS_FIXES{"Issues\nfound?"}
+        HAS_FIXES -- "yes" --> FIX_PLAN["Write fix review\nPM plans fix sub-phase"]
+        FIX_PLAN --> BUILD_START
+    end
+
+    HAS_FIXES -- "clean" --> MORE_MAJOR{"More major\nphases?"}
+
+    MORE_MAJOR -- "yes" --> NEXT_PLAN["PM researches and plans\nnext major phase"]
+    NEXT_PLAN --> BUILD_START
+
+    MORE_MAJOR -- "no" --> FINAL_START
+
+    subgraph STAGE3["Stage 3: Final Review -- interactive with human"]
+        direction TB
+
+        FINAL_START["🧪📦🔗 Technical Checks\nFull test suite, production build\nLink check, content audit"]
+
+        FINAL_START --> FINAL_WALK["🚶 User Journey Walkthroughs\nProduct-specific journeys\nMobile, edge cases"]
+
+        FINAL_WALK --> FINAL_REVIEW["🔍🎨 Project-Level QA and Design"]
+
+        FINAL_REVIEW --> FINAL_EXEC["💬 Executive Final Review\nCompetitive research\nOpen the product for human\nPresent findings, discuss improvements"]
+    end
+
+    FINAL_EXEC --> HUMAN{"Human\ndecision"}
+
+    HUMAN -- "Ship it" --> SHIPPED(("🏁\nProject\nShipped"))
+
+    HUMAN -- "Improve" --> NEW_PHASES["🧠 Exec creates\nimprovement phases"]
+    NEW_PHASES --> BUILD_START
+
+    style IDEA fill:#1a1a2e,stroke:#5a5a8a,stroke-width:2px,color:#c0c0d8
+
+    style STAGE1 fill:transparent,stroke:#4a7fc9,stroke-width:2px,stroke-dasharray:8 4,color:#4a7fc9
+    style DISCOVER fill:#162744,stroke:#4a7fc9,stroke-width:2px,color:#dce8f5
+    style RESEARCH_INIT fill:#162744,stroke:#4a7fc9,stroke-width:2px,color:#dce8f5
+    style DECOMPOSE fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+
+    style FIRST_PHASE fill:#162744,stroke:#4a7fc9,stroke-width:1.5px,color:#dce8f5
+    style NEXT_PLAN fill:#162744,stroke:#4a7fc9,stroke-width:1.5px,color:#dce8f5
+
+    style STAGE2 fill:transparent,stroke:#3ca050,stroke-width:2px,stroke-dasharray:8 4,color:#3ca050
+    style BUILD_START fill:#163a24,stroke:#3ca050,stroke-width:2px,color:#dcf0e0
+    style QA_START fill:#3a2a14,stroke:#d9a050,stroke-width:2px,color:#f5edd8
+    style DESIGN_START fill:#2a183a,stroke:#9050b6,stroke-width:2px,color:#e8d8f5
+    style RESOLVE fill:#3a1818,stroke:#d95050,stroke-width:1.5px,color:#f5dcdc
+    style PHASE_DONE fill:#163a24,stroke:#3ca050,stroke-width:2px,color:#dcf0e0
+    style ESCALATE fill:#2a1a10,stroke:#c98a4a,stroke-width:1.5px,color:#f5e8d4
+
+    style IS_MAJOR fill:#1a1a2e,stroke:#5a5a8a,stroke-width:1.5px,color:#c0c0d8
+    style CHECKPOINT_BOX fill:transparent,stroke:#c98a4a,stroke-width:2px,stroke-dasharray:8 4,color:#c98a4a
+    style CHECKPOINT fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+    style HAS_FIXES fill:#1a1a2e,stroke:#5a5a8a,stroke-width:1.5px,color:#c0c0d8
+    style FIX_PLAN fill:#162744,stroke:#4a7fc9,stroke-width:1.5px,color:#dce8f5
+
+    style MORE_MAJOR fill:#1a1a2e,stroke:#5a5a8a,stroke-width:1.5px,color:#c0c0d8
+
+    style STAGE3 fill:transparent,stroke:#d9a050,stroke-width:2px,stroke-dasharray:8 4,color:#d9a050
+    style FINAL_START fill:#3a1818,stroke:#d95050,stroke-width:2px,color:#f5dcdc
+    style FINAL_WALK fill:#163a24,stroke:#3ca050,stroke-width:2px,color:#dcf0e0
+    style FINAL_REVIEW fill:#3a2a14,stroke:#d9a050,stroke-width:2px,color:#f5edd8
+    style FINAL_EXEC fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+
+    style HUMAN fill:#1a1a2e,stroke:#5a5a8a,stroke-width:2px,color:#c0c0d8
+    style SHIPPED fill:#163a24,stroke:#3ca050,stroke-width:3px,color:#dcf0e0
+    style NEW_PHASES fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4

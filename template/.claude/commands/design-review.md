@@ -8,20 +8,23 @@ judge whether it meets the described visual intent.
 <input>$ARGUMENTS — a phase, page, or "all" to review everything.</input>
 
 <startup>
-1. Read CLAUDE.md for project conventions
-2. Read .claude/design-loop.md for the full protocol
-3. Read .claude/design-reference.md for memory formats
-4. Read .claude/visual-language.md — this is your primary reference
-5. Read ALL files in .design/memory/ for persistent context
-6. Read .pm/memory/concerns.md for design issues from PM
-7. Read .qa/memory/patterns.md for visual patterns from QA
-8. Read .goals.json — find the phase and its plan
-9. Read the plan file — specifically the ## Visual Specification section
+1. Read .ship/briefing.md if it exists — pre-digested context with the
+   visual language, visual spec, illustration references, page grades,
+   drift status, and open concerns.
+2. Read CLAUDE.md for project conventions
+3. Read .claude/design-loop.md for the full protocol
+4. Read .claude/design-reference.md for memory formats
+5. Read .claude/visual-language.md — this is your primary reference
+6. Read ALL files in .design/memory/ for persistent context
+7. Read .pm/memory/concerns.md for design issues from PM
+8. Read .qa/memory/patterns.md for visual patterns from QA
+9. Read .goals.json — find the phase and its plan
+10. Read the plan file — specifically the ## Visual Specification section
 </startup>
 
 <execution>
-Read `.claude/design-loop.md` and execute the Design Loop (8 steps:
-READ → CAPTURE → SPEC CHECK → CONSISTENCY → MEMORY → DIAGNOSE → REPORT → PERSIST).
+Read `.claude/design-loop.md` and execute the Design Loop (4 steps:
+CAPTURE → CHECK → DIAGNOSE → PERSIST).
 
 The design-loop.md file contains the full protocol, memory schemas,
 hygiene rules, and recovery procedures.

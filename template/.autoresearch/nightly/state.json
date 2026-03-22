@@ -1,0 +1,95 @@
+{
+  "startedAt": "2026-03-22T23:31:59.908Z",
+  "protocols": [
+    {
+      "target": "build.md",
+      "benchmark": "build-api",
+      "status": "completed",
+      "budgetHours": 0.041666666666666664,
+      "bestScore": 0,
+      "saturated": false
+    },
+    {
+      "target": "build.md",
+      "benchmark": "build-basic",
+      "status": "completed",
+      "budgetHours": 0.041666666666666664,
+      "bestScore": 0,
+      "saturated": false
+    },
+    {
+      "target": "build.md",
+      "benchmark": "build-component",
+      "status": "completed",
+      "budgetHours": 0.041666666666666664,
+      "bestScore": 0,
+      "saturated": false
+    },
+    {
+      "target": "design-review.md",
+      "benchmark": "design-review",
+      "status": "completed",
+      "budgetHours": 0.041666666666666664,
+      "bestScore": 0,
+      "saturated": false
+    },
+    {
+      "target": "exec.md",
+      "benchmark": "exec-decompose",
+      "status": "completed",
+      "budgetHours": 0.041666666666666664,
+      "bestScore": 0,
+      "saturated": false
+    },
+    {
+      "target": "exec.md",
+      "benchmark": "exec-small-project",
+      "status": "error",
+      "budgetHours": 0.041666666666666664
+    },
+    {
+      "target": "pm:plan.md",
+      "benchmark": "pm-planning",
+      "status": "completed",
+      "budgetHours": 0.041666666666666664,
+      "bestScore": 0,
+      "saturated": false
+    },
+    {
+      "target": "pm:review.md",
+      "benchmark": "pm-review",
+      "status": "completed",
+      "budgetHours": 0.041666666666666664,
+      "bestScore": 0,
+      "saturated": false
+    },
+    {
+      "target": "qa.md",
+      "benchmark": "qa-accuracy",
+      "status": "completed",
+      "budgetHours": 0.041666666666666664,
+      "bestScore": 0,
+      "saturated": false
+    },
+    {
+      "target": "qa.md",
+      "benchmark": "qa-false-positives",
+      "status": "error",
+      "budgetHours": 0.041666666666666664
+    },
+    {
+      "target": "resolve.md",
+      "benchmark": "resolve-precision",
+      "status": "completed",
+      "budgetHours": 0.041666666666666664,
+      "bestScore": 0,
+      "saturated": false
+    },
+    {
+      "target": "ship-config.json",
+      "benchmark": "ship-config",
+      "status": "running",
+      "budgetHours": 0.041666666666666664
+    }
+  ]
+}

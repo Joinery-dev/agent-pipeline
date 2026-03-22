@@ -1,0 +1,76 @@
+---
+title: "Executive Escalation Handling"
+---
+
+flowchart TD
+    TRIGGER(("Pipeline\nStalled"))
+    TRIGGER --> CONTEXT(["Trigger context\nQA exhaustion, design exhaustion\nzero progress, quality gate\npm-plan-failure"])
+
+    CONTEXT --> READ
+
+    READ["📋 Read Current State\nEscalation context from ship.js\n.goals.json: failing phase, attempts\nPlan file for the failing phase\nPM concerns and decisions\nQA status, patterns, regressions\nDesign findings"]
+
+    READ --> HISTORY
+
+    HISTORY["📂 Read Escalation History\n.exec/history/ JSON snapshots\n.exec/memory/escalation-log.md\nHas this phase failed before?\nWhat was tried? What changed?"]
+
+    HISTORY --> RESEARCH
+
+    RESEARCH{"Root cause\nlikely external?"}
+
+    RESEARCH -- "yes, approach may be wrong" --> DEEP["🌐 Deep Research\n5-10 searches, WebFetch\nAlternative approaches\nWrite fresh research brief\nDelete stale brief"]
+
+    RESEARCH -- "no, internal issue" --> QUICK["🔍 Quick Research\n1-3 targeted searches\nOr skip entirely"]
+
+    DEEP --> DIAGNOSE
+    QUICK --> DIAGNOSE
+
+    DIAGNOSE["🔬 Diagnose Root Cause\nBad decomposition?\nWrong technical approach?\nMissing dependency?\nSpec too vague?\nDesign mismatch?\nContract violation?"]
+
+    DIAGNOSE --> DEDUP
+
+    DEDUP{"Same approach\nas a previous\nfailed RESTART?"}
+
+    DEDUP -- "yes" --> FIND_ALT["Find a genuinely\ndifferent approach\nor CONTINUE"]
+    DEDUP -- "no" --> DECIDE
+    FIND_ALT --> DECIDE
+
+    DECIDE{"RESTART or\nCONTINUE?"}
+
+    DECIDE -- "CONTINUE" --> LOG_CONT["Log reasoning\nto .exec/memory/"]
+    LOG_CONT --> CONT_OUT(("Pipeline\nresumes or\nstops"))
+
+    DECIDE -- "RESTART" --> ACT
+
+    subgraph ACT["Restructure"]
+        direction TB
+
+        UPDATE["Update major phase\ndescription and contracts"]
+        UPDATE --> CLEAR["Clear sub-phases and tasks\nfor PM to replan"]
+        CLEAR --> INSTALL["Install dependencies\nif needed"]
+        INSTALL --> CONVENTIONS["Update conventions,\nvisual language, diagram\nif approach changed"]
+        CONVENTIONS --> LESSONS["Write lessons to .exec/memory/\nWhat failed, why, what to avoid"]
+    end
+
+    LESSONS --> RESTART_OUT(("Pipeline\nrestarts with\nfresh research"))
+
+    style TRIGGER fill:#3a1818,stroke:#d95050,stroke-width:2px,color:#f5dcdc
+    style CONTEXT fill:#1a1a2e,stroke:#5a5a8a,stroke-width:1.5px,color:#c0c0d8
+    style READ fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+    style HISTORY fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+    style RESEARCH fill:#1a1a2e,stroke:#5a5a8a,stroke-width:2px,color:#c0c0d8
+    style DEEP fill:#162744,stroke:#4a7fc9,stroke-width:2px,color:#dce8f5
+    style QUICK fill:#162744,stroke:#4a7fc9,stroke-width:1.5px,color:#dce8f5
+    style DIAGNOSE fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+    style DEDUP fill:#1a1a2e,stroke:#5a5a8a,stroke-width:2px,color:#c0c0d8
+    style FIND_ALT fill:#3a1818,stroke:#d95050,stroke-width:1.5px,color:#f5dcdc
+    style DECIDE fill:#1a1a2e,stroke:#5a5a8a,stroke-width:2.5px,color:#c0c0d8
+    style LOG_CONT fill:#1a1a2e,stroke:#5a5a8a,stroke-width:1.5px,color:#c0c0d8
+    style CONT_OUT fill:#3a1818,stroke:#d95050,stroke-width:2px,color:#f5dcdc
+    style ACT fill:transparent,stroke:#444,stroke-width:2px,stroke-dasharray:8 4,color:#888
+    style UPDATE fill:#2a1a10,stroke:#c98a4a,stroke-width:1.5px,color:#f5e8d4
+    style CLEAR fill:#2a1a10,stroke:#c98a4a,stroke-width:1.5px,color:#f5e8d4
+    style INSTALL fill:#2a1a10,stroke:#c98a4a,stroke-width:1.5px,color:#f5e8d4
+    style CONVENTIONS fill:#2a1a10,stroke:#c98a4a,stroke-width:1.5px,color:#f5e8d4
+    style LESSONS fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+    style RESTART_OUT fill:#163a24,stroke:#3ca050,stroke-width:2px,color:#dcf0e0

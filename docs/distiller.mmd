@@ -1,0 +1,94 @@
+---
+title: "Distiller: Agent Briefing System"
+---
+
+flowchart TD
+    %% ══════════════════════════════════════
+    %%  SOURCES — what the distiller reads
+    %% ══════════════════════════════════════
+
+    GOALS[".goals.json\nPhases · Tasks · Attempts\nContracts · Pipeline state"]
+    PM_MEM[".pm/memory/\nStatus · Concerns\nDecisions"]
+    QA_MEM[".qa/memory/\nVerdict · Patterns\nRegressions"]
+    DESIGN_MEM[".design/memory/\nGrade · Findings\nDrift"]
+    EXEC_MEM[".exec/memory/\nDecisions\nEscalation log"]
+    PLANS["plans/*.md\nSuccess criteria\nVisual spec"]
+    CONVENTIONS[".claude/\nConventions\nVisual language"]
+
+    %% ══════════════════════════════════════
+    %%  DISTILLER — the transform
+    %% ══════════════════════════════════════
+
+    GOALS --> DISTILLER
+    PM_MEM --> DISTILLER
+    QA_MEM --> DISTILLER
+    DESIGN_MEM --> DISTILLER
+    EXEC_MEM --> DISTILLER
+    PLANS --> DISTILLER
+    CONVENTIONS --> DISTILLER
+
+    DISTILLER["⚙️ Distiller\ndistill-briefing.js\n\nReads all sources · Filters by agent type\nExtracts relevant context · Writes XML briefing"]
+
+    %% ══════════════════════════════════════
+    %%  OUTPUT — .ship/briefing.md
+    %% ══════════════════════════════════════
+
+    DISTILLER --> BRIEFING
+    BRIEFING[".ship/briefing.md\nFocused XML briefing\ntailored per agent"]
+
+    %% ══════════════════════════════════════
+    %%  PER-AGENT CONTENT
+    %% ══════════════════════════════════════
+
+    BRIEFING --> B_BUILD
+    BRIEFING --> B_QA
+    BRIEFING --> B_RESOLVE
+    BRIEFING --> B_DESIGN
+    BRIEFING --> B_PM
+    BRIEFING --> B_EXEC
+
+    subgraph AGENTS["What each agent receives"]
+        direction TB
+
+        B_BUILD["🔨 Builder\n─────────────────\nProject vision\nMajor phase summary\nSub-phase description + contracts\nSibling tasks in phase\nTarget task + files\nSuccess criteria from plan\nPrevious attempts\nVisual language tokens\nIllustration mockup refs\nPage grades\nSibling interface contracts\nConventions"]
+
+        B_RESOLVE["🔧 Resolver\n─────────────────\nProject vision\nSub-phase description + contracts\nSibling tasks in phase\nTarget task + files\nQA failure criteria\nPrevious attempts + notes\nSibling interfaces\nRelevant QA patterns\nConventions"]
+
+        B_QA["🔍 QA\n─────────────────\nProject vision\nAll major phase summaries\nFull phase detail + all tasks\nAttempt history\nVisual language tokens\nVisual spec from plan\nIllustration mockup refs\nDesign state + page grades\nInterface contracts\nOpen concerns\nConventions"]
+
+        B_DESIGN["🎨 Design Review\n─────────────────\nProject vision\nVisual language (full)\nVisual spec from plan\nIllustration references\nPrevious findings\nCompleted phases\nPage grades + trajectory\nVisual drift status\nOpen concerns\nQA visual patterns"]
+
+        B_PM["📋 PM\n─────────────────\nProject vision\nAll major phases + sub-phases\nTask statuses + attempts\nPM memory status\nOpen concerns\nQA state + forest warnings"]
+
+        B_EXEC["🧠 Executive\n─────────────────\nProject vision + completion %\nAll major phases + contracts\nFailing phases detail\nExec decision history\nQA patterns + regressions\nOpen concerns\nDesign + QA state"]
+    end
+
+    %% ══════════════════════════════════════
+    %%  STYLES
+    %% ══════════════════════════════════════
+
+    %% Sources
+    style GOALS fill:#162744,stroke:#4a7fc9,stroke-width:1.5px,color:#dce8f5
+    style PM_MEM fill:#162744,stroke:#4a7fc9,stroke-width:1.5px,color:#dce8f5
+    style QA_MEM fill:#3a2a14,stroke:#d9a050,stroke-width:1.5px,color:#f5edd8
+    style DESIGN_MEM fill:#2a183a,stroke:#9050b6,stroke-width:1.5px,color:#e8d8f5
+    style EXEC_MEM fill:#2a1a10,stroke:#c98a4a,stroke-width:1.5px,color:#f5e8d4
+    style PLANS fill:#162744,stroke:#4a7fc9,stroke-width:1.5px,color:#dce8f5
+    style CONVENTIONS fill:#1a1a2e,stroke:#5a5a8a,stroke-width:1.5px,color:#c0c0d8
+
+    %% Distiller
+    style DISTILLER fill:#1a2a1a,stroke:#5aaa5a,stroke-width:2.5px,color:#d8f0d8
+
+    %% Briefing
+    style BRIEFING fill:#1a2a1a,stroke:#5aaa5a,stroke-width:2px,color:#d8f0d8
+
+    %% Agent cards
+    style B_BUILD fill:#163a24,stroke:#3ca050,stroke-width:2px,color:#dcf0e0
+    style B_QA fill:#3a2a14,stroke:#d9a050,stroke-width:2px,color:#f5edd8
+    style B_RESOLVE fill:#3a1818,stroke:#d95050,stroke-width:2px,color:#f5dcdc
+    style B_DESIGN fill:#2a183a,stroke:#9050b6,stroke-width:2px,color:#e8d8f5
+    style B_PM fill:#162744,stroke:#4a7fc9,stroke-width:2px,color:#dce8f5
+    style B_EXEC fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+
+    %% Container
+    style AGENTS fill:transparent,stroke:#444,stroke-width:2px,stroke-dasharray:8 4,color:#888

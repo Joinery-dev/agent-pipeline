@@ -11,6 +11,7 @@
 import { cpSync, existsSync, mkdirSync, writeFileSync, readFileSync } from 'fs';
 import { resolve, dirname, join } from 'path';
 import { fileURLToPath } from 'url';
+import { randomUUID } from 'crypto';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const TEMPLATE_DIR = resolve(__dirname, '..', 'template');
@@ -131,7 +132,7 @@ for (const file of libFiles) {
 
 const projectName = targetDir.split('/').pop() || 'My Project';
 const goalsTemplate = {
-  id: crypto.randomUUID(),
+  id: randomUUID(),
   name: projectName,
   description: '',
   vision: '',
