@@ -1,7 +1,7 @@
 {
   "targetFile": "/Users/kevin/Desktop/agent-pipeline/template/.claude/commands/build.md",
   "benchmark": "build-component",
-  "iteration": 2,
+  "iteration": 3,
   "bestScore": 1,
   "keptVersions": 0,
   "baseline": {
@@ -34,6 +34,15 @@
       "score": 1,
       "decision": "revert",
       "candidatesEvaluated": 1
+    },
+    {
+      "iteration": 2,
+      "hypothesis": "Add a concrete example of a good preflight approach outline in the `<preflight>` step so the agent produces more actionable pre-implementation summaries on varied tasks.",
+      "critique": "The current protocol scores perfectly, so there's no failure to fix. However, the `<preflight>` step asks for a 3-5 bullet approach outline but gives no concrete example of what a good one looks like. On more complex tasks (beyond this benchmark), agents may produce vague or unhelpful preflight summaries that don't catch issues early enough, because they lack a model of what \"good\" looks like.",
+      "operator": "add-example",
+      "score": 1,
+      "decision": "revert",
+      "candidatesEvaluated": 1
     }
   ],
   "revertTracking": [
@@ -41,8 +50,13 @@
       "iteration": 1,
       "operator": "remove-bloat",
       "hypothesis": "Remove the `<personality>` section entirely since every instruction it contains is already stated in `<identity>` or `<guardrails>`, reducing noise without changing behavior."
+    },
+    {
+      "iteration": 2,
+      "operator": "add-example",
+      "hypothesis": "Add a concrete example of a good preflight approach outline in the `<preflight>` step so the agent produces more actionable pre-implementation summaries on varied tasks."
     }
   ],
-  "consecutiveLowImprovement": 1,
+  "consecutiveLowImprovement": 2,
   "saturated": false
 }

@@ -76,6 +76,7 @@ These are features that exist (commands, lib tools, diagrams) but ship.js doesn'
 | CB1 | `pm:plan.md` | Same |
 | CB1 | `design-review.md` | Same |
 | CB1 | `resolve.md` | Same |
+| CB1 | `walkthrough.md` | Same |
 
 ### Track F: pipeline.js attempt archival
 

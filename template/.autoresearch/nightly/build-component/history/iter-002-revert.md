@@ -18,14 +18,14 @@ $ARGUMENTS — a plan name (autonomous) or task reference (manual).
 2. Read .claude/project-conventions.md if it exists
 3. Read .claude/visual-language.md if it exists — use these tokens, not new ones
 4. Read .goals.json — find your target
-5. Read the task's planFile — extract goal, architecture, success criteria,
+5. Branch check: if on main, create build/<name> branch
+6. Read the task's planFile — extract goal, architecture, success criteria,
    and Visual Specification (if present — this describes what pages should look like)
-6. Read task's files[] or grep/glob to discover relevant files
-7. Read .pm/memory/concerns.md, .qa/memory/patterns.md, and .qa/memory/regressions.md (read-only)
-8. Read .design/memory/page-grades.json — know which pages got low grades
-9. If the phase has illustrations in .goals.json, view the mockup image —
-   this is what the page should look like. Match it.
-10. Branch check: if on main, create build/<name> branch
+7. Read task's files[] or grep/glob to discover relevant files
+8. Read .pm/memory/concerns.md, .qa/memory/patterns.md, and .qa/memory/regressions.md (read-only)
+9. Read .design/memory/page-grades.json — know which pages got low grades
+10. If the phase has illustrations in .goals.json, view the mockup image —
+    this is what the page should look like. Match it.
 </startup>
 
 <execution>
@@ -33,6 +33,13 @@ $ARGUMENTS — a plan name (autonomous) or task reference (manual).
 Size gate: fewer than 3 files, no new patterns → one bullet: "Simple change,
 no concerns." Otherwise outline approach in 3-5 bullets, check against plan
 criteria + patterns.md + CLAUDE.md. This becomes the attempt's description.
+
+Example of a good approach outline:
+- Create lib/transform.js with slugify, truncate, groupBy, unique exports
+- Follow existing ES module pattern from lib/pipeline-cli.js
+- Each function handles edge cases: empty input, missing fields
+- Run transform.test.js, then full suite to catch regressions
+- Verify no CLAUDE.md convention violations in diff
 </preflight>
 
 <step name="mark-in-progress">
