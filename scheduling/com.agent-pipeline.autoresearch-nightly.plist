@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<!--
+  Nightly auto-research scheduler for agent-pipeline.
+
+  Runs protocol optimization at 2:00 AM daily.
+  If the Mac is asleep at 2am, launchd runs it on wake.
+
+  Install:
+    cp scheduling/com.agent-pipeline.autoresearch-nightly.plist ~/Library/LaunchAgents/
+    launchctl load ~/Library/LaunchAgents/com.agent-pipeline.autoresearch-nightly.plist
+
+  Uninstall:
+    launchctl unload ~/Library/LaunchAgents/com.agent-pipeline.autoresearch-nightly.plist
+    rm ~/Library/LaunchAgents/com.agent-pipeline.autoresearch-nightly.plist
+
+  Test manually:
+    launchctl start com.agent-pipeline.autoresearch-nightly
+
+  Check status:
+    launchctl list | grep autoresearch
+
+  View logs:
+    tail -f .autoresearch/nightly/launchd.log
+-->
+<dict>
+    <key>Label</key>
+    <string>com.agent-pipeline.autoresearch-nightly</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/local/bin/node</string>
+        <string>lib/autoresearch-nightly.js</string>
+        <string>--budget-hours</string>
+        <string>8</string>
+        <string>--candidates</string>
+        <string>3</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/kevin/Desktop/agent-pipeline</string>
+
+    <!-- Run at 2:00 AM daily -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>2</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <!-- Log output -->
+    <key>StandardOutPath</key>
+    <string>/Users/kevin/Desktop/agent-pipeline/.autoresearch/nightly/launchd.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/kevin/Desktop/agent-pipeline/.autoresearch/nightly/launchd.err</string>
+
+    <!-- Environment -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin</string>
+    </dict>
+
+    <!-- Timeout: 10 hours max -->
+    <key>TimeOut</key>
+    <integer>36000</integer>
+
+    <!-- Don't restart on crash -->
+    <key>KeepAlive</key>
+    <false/>
+</dict>
+</plist>
