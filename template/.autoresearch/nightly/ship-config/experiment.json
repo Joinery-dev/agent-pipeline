@@ -1,7 +1,7 @@
 {
   "targetFile": "/Users/kevin/Desktop/agent-pipeline/template/ship-config.json",
   "benchmark": "ship-config",
-  "iteration": 1,
+  "iteration": 2,
   "bestScore": 1,
   "keptVersions": 0,
   "baseline": {
@@ -49,8 +49,24 @@
   },
   "startedAt": "2026-03-22T23:31:59.922Z",
   "branch": "autoresearch-nightly/ship-config-json-1774222319923",
-  "history": [],
-  "revertTracking": [],
-  "consecutiveLowImprovement": 0,
+  "history": [
+    {
+      "iteration": 1,
+      "hypothesis": "Remove the `heartbeatIntervalMs` field since it's explicitly described as observability-only, isn't evaluated, and adds noise the agent must reason about unnecessarily.",
+      "critique": "The config includes `heartbeatIntervalMs` which the eval doesn't check (not in `rangeChecks`) and the task description itself notes it's \"mainly for observability\" — it's non-functional noise that doesn't affect pipeline behavior or scoring. The remaining unchecked fields (`maxDesignRounds`, `maxExecRestarts`) are structural pipeline controls that affect real behavior, so they should stay.",
+      "operator": "remove-bloat",
+      "score": 1,
+      "decision": "revert",
+      "candidatesEvaluated": 1
+    }
+  ],
+  "revertTracking": [
+    {
+      "iteration": 1,
+      "operator": "remove-bloat",
+      "hypothesis": "Remove the `heartbeatIntervalMs` field since it's explicitly described as observability-only, isn't evaluated, and adds noise the agent must reason about unnecessarily."
+    }
+  ],
+  "consecutiveLowImprovement": 1,
   "saturated": false
 }
