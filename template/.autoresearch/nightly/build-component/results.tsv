@@ -1,2 +1,3 @@
 iteration	timestamp	hypothesis	score	best_score	delta	decision	duration_ms	eval_details
 0	2026-03-22T23:51:39.685Z	baseline	1	1	-	baseline	45931	{"testsTotal":8,"testsPassed":8,"testsRan":true,"filesExpected":["lib/transform.js"],"filesFound":["lib/transform.js"],"goalsUpdated":true,"hasAttempt":true,"pipelineState":"awaiting-qa"}
+1	2026-03-22T23:52:50.348Z	Remove the `<personality>` section entirely since every instruction it contains is already stated in `<identity>` or `<guardrails>`, reducing noise without changing behavior.	1	1	0.000	revert	70663	{"testsTotal":8,"testsPassed":8,"testsRan":true,"filesExpected":["lib/transform.js"],"filesFound":["lib/transform.js"],"goalsUpdated":true,"hasAttempt":true,"pipelineState":"awaiting-qa"}

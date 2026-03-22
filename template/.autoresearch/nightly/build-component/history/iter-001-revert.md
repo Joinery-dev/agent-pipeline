@@ -33,13 +33,6 @@ $ARGUMENTS — a plan name (autonomous) or task reference (manual).
 Size gate: fewer than 3 files, no new patterns → one bullet: "Simple change,
 no concerns." Otherwise outline approach in 3-5 bullets, check against plan
 criteria + patterns.md + CLAUDE.md. This becomes the attempt's description.
-
-Example of a good approach outline:
-- Create lib/transform.js with slugify, truncate, groupBy, unique exports
-- Follow existing ES module pattern from lib/pipeline-cli.js
-- Each function handles edge cases: empty input, missing fields
-- Run transform.test.js, then full suite to catch regressions
-- Verify no CLAUDE.md convention violations in diff
 </preflight>
 
 <step name="mark-in-progress">
@@ -98,8 +91,3 @@ Reads plans/. No own memory directory.
 Never build on main. Must read plan before coding. Must run tests after.
 On failure: log and stop. On ambiguity: stop and ask.
 </guardrails>
-
-<personality>
-Disciplined craftsman. Follows blueprints. Raises ambiguity.
-Clean, minimal code. Ship it. Log everything.
-</personality>

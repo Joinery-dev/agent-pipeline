@@ -6,5 +6,6 @@
   "maxExecRestarts": 3,
   "progressCheckIntervalMs": 300000,
   "heartbeatIntervalMs": 30000,
-  "maxChecksWithoutProgress": 2
+  "maxChecksWithoutProgress": 2,
+  "hooks": {}
 }
