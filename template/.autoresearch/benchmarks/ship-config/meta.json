@@ -1,0 +1,8 @@
+{
+  "name": "ship-config",
+  "description": "Tune orchestration parameters for optimal pipeline throughput",
+  "targetProtocol": "ship-config.json",
+  "agent": "ship",
+  "timeout_ms": 600000,
+  "version": 1
+}

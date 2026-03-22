@@ -1,0 +1,44 @@
+{
+  "id": "bench-project",
+  "name": "Benchmark Project",
+  "description": "A minimal project for benchmarking the Builder agent protocol",
+  "vision": "A working utility module with all tests passing",
+  "majorPhases": [
+    {
+      "id": "bench-major",
+      "title": "Utility Module",
+      "description": "Build and test a utility module",
+      "status": "not-started",
+      "phases": [
+        {
+          "id": "bench-phase",
+          "title": "Build Utility Functions",
+          "status": "not-started",
+          "planFile": "plans/util.md",
+          "order": 1,
+          "dependsOn": [],
+          "interfaceContract": {
+            "produces": ["lib/util.js with formatCurrency and parseDate exports"],
+            "consumes": []
+          },
+          "pipeline": {
+            "state": "idle",
+            "lastAgent": null,
+            "lastTimestamp": null
+          },
+          "tasks": [
+            {
+              "id": "bench-task-1",
+              "title": "Implement utility functions",
+              "status": "not-started",
+              "files": ["lib/util.js"],
+              "attempts": [],
+              "createdAt": "2026-01-01T00:00:00.000Z"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "updatedAt": "2026-01-01T00:00:00.000Z"
+}

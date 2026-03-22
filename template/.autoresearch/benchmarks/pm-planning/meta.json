@@ -1,0 +1,8 @@
+{
+  "name": "pm-planning",
+  "description": "Create a well-structured plan with specific tasks from a major phase description",
+  "targetProtocol": "pm:plan.md",
+  "agent": "pm",
+  "timeout_ms": 300000,
+  "version": 1
+}

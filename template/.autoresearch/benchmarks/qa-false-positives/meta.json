@@ -1,0 +1,8 @@
+{
+  "name": "qa-false-positives",
+  "description": "QA precision on mostly-working code — find 1 subtle bug among 5 tasks without false positives",
+  "targetProtocol": "qa.md",
+  "agent": "qa",
+  "timeout_ms": 300000,
+  "version": 1
+}

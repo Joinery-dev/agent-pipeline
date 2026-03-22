@@ -1,0 +1,8 @@
+{
+  "name": "resolve-precision",
+  "description": "Fix exactly what QA flagged without scope creep — measures surgical precision",
+  "targetProtocol": "resolve.md",
+  "agent": "resolve",
+  "timeout_ms": 300000,
+  "version": 1
+}

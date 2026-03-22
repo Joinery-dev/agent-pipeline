@@ -1,0 +1,8 @@
+{
+  "name": "build-basic",
+  "description": "Build a utility module from a plan — tests file creation, test passing, and .goals.json updates",
+  "targetProtocol": "build.md",
+  "agent": "build",
+  "timeout_ms": 300000,
+  "version": 1
+}

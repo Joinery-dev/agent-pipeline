@@ -1,0 +1,44 @@
+{
+  "id": "bench-component-project",
+  "name": "Component Benchmark Project",
+  "description": "A minimal project for benchmarking the Builder agent on data transformation modules",
+  "vision": "A working data transformation module with multiple exports and all tests passing",
+  "majorPhases": [
+    {
+      "id": "bench-component-major",
+      "title": "Data Layer",
+      "description": "Build and test data transformation utilities",
+      "status": "not-started",
+      "phases": [
+        {
+          "id": "bench-component-phase",
+          "title": "Implement Data Transformers",
+          "status": "not-started",
+          "planFile": "plans/data-layer.md",
+          "order": 1,
+          "dependsOn": [],
+          "interfaceContract": {
+            "produces": ["lib/transform.js with slugify, truncate, groupBy, unique exports"],
+            "consumes": []
+          },
+          "pipeline": {
+            "state": "idle",
+            "lastAgent": null,
+            "lastTimestamp": null
+          },
+          "tasks": [
+            {
+              "id": "bench-component-task-1",
+              "title": "Implement data transformers",
+              "status": "not-started",
+              "files": ["lib/transform.js"],
+              "attempts": [],
+              "createdAt": "2026-01-01T00:00:00.000Z"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "updatedAt": "2026-01-01T00:00:00.000Z"
+}

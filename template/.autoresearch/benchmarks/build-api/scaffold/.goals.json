@@ -1,0 +1,44 @@
+{
+  "id": "bench-api-project",
+  "name": "API Benchmark Project",
+  "description": "A minimal project for benchmarking the Builder agent on REST API routes",
+  "vision": "A working REST API route with validation, error handling, and all tests passing",
+  "majorPhases": [
+    {
+      "id": "bench-api-major",
+      "title": "API Routes",
+      "description": "Build and test REST API routes",
+      "status": "not-started",
+      "phases": [
+        {
+          "id": "bench-api-phase",
+          "title": "Implement User Endpoint",
+          "status": "not-started",
+          "planFile": "plans/api-routes.md",
+          "order": 1,
+          "dependsOn": [],
+          "interfaceContract": {
+            "produces": ["lib/routes/users.js with GET and POST user endpoints"],
+            "consumes": ["lib/store.js in-memory data store"]
+          },
+          "pipeline": {
+            "state": "idle",
+            "lastAgent": null,
+            "lastTimestamp": null
+          },
+          "tasks": [
+            {
+              "id": "bench-api-task-1",
+              "title": "Implement user endpoint",
+              "status": "not-started",
+              "files": ["lib/routes/users.js"],
+              "attempts": [],
+              "createdAt": "2026-01-01T00:00:00.000Z"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "updatedAt": "2026-01-01T00:00:00.000Z"
+}

@@ -1,0 +1,55 @@
+{
+  "id": "design-bench-project",
+  "name": "Design Review Benchmark",
+  "description": "A project for benchmarking the Design Review agent protocol",
+  "vision": "A visually consistent web application matching the visual language spec",
+  "majorPhases": [
+    {
+      "id": "design-bench-major",
+      "title": "Homepage & Dashboard",
+      "description": "Build homepage, dashboard, and settings pages",
+      "status": "in-progress",
+      "phases": [
+        {
+          "id": "design-bench-phase",
+          "title": "Build Core Pages",
+          "status": "in-progress",
+          "planFile": "plans/homepage.md",
+          "order": 1,
+          "dependsOn": [],
+          "interfaceContract": {
+            "produces": ["Homepage, Dashboard, and Settings pages"],
+            "consumes": []
+          },
+          "pipeline": {
+            "state": "awaiting-qa",
+            "lastAgent": "build",
+            "lastTimestamp": "2026-03-20T12:00:00.000Z"
+          },
+          "tasks": [
+            {
+              "id": "design-bench-task-1",
+              "title": "Build core pages",
+              "status": "in-progress",
+              "files": ["src/pages/home.html", "src/pages/dashboard.html", "src/pages/settings.html"],
+              "attempts": [
+                {
+                  "id": "attempt-build-1",
+                  "type": "build",
+                  "round": 1,
+                  "description": "Built homepage, dashboard, and settings pages",
+                  "outcome": "success",
+                  "notes": "All three pages built and serving",
+                  "children": [],
+                  "createdAt": "2026-03-20T11:00:00.000Z"
+                }
+              ],
+              "createdAt": "2026-03-20T10:00:00.000Z"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "updatedAt": "2026-03-20T12:00:00.000Z"
+}

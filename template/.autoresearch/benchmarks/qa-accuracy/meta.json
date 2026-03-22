@@ -1,0 +1,8 @@
+{
+  "name": "qa-accuracy",
+  "description": "Detect planted bugs and correctly pass working code — measures QA thoroughness and false positive rate",
+  "targetProtocol": "qa.md",
+  "agent": "qa",
+  "timeout_ms": 300000,
+  "version": 1
+}

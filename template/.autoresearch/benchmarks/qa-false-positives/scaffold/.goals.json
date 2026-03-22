@@ -1,0 +1,131 @@
+{
+  "id": "qa-fp-bench-project",
+  "name": "QA False Positives Benchmark",
+  "description": "A utility library with 5 transform functions — only one has a subtle bug",
+  "vision": "A working transforms module — QA must find the 1 subtle bug and pass the 4 working tasks",
+  "majorPhases": [
+    {
+      "id": "qa-fp-major",
+      "title": "Transforms Module",
+      "description": "Build and validate a transforms utility module",
+      "status": "in-progress",
+      "phases": [
+        {
+          "id": "qa-fp-phase",
+          "title": "Transform Utilities",
+          "status": "in-progress",
+          "planFile": "plans/transforms.md",
+          "order": 1,
+          "dependsOn": [],
+          "interfaceContract": {
+            "produces": ["lib/transforms.js with slugify, truncate, groupBy, unique, and flatten exports"],
+            "consumes": []
+          },
+          "pipeline": {
+            "state": "awaiting-qa",
+            "lastAgent": "build",
+            "lastTimestamp": "2026-03-22T10:00:00.000Z"
+          },
+          "tasks": [
+            {
+              "id": "qa-fp-task-slugify",
+              "title": "Implement slugify",
+              "status": "in-progress",
+              "files": ["lib/transforms.js"],
+              "attempts": [
+                {
+                  "id": "build-att-slugify",
+                  "type": "build",
+                  "round": 1,
+                  "description": "Building slugify function",
+                  "outcome": "success",
+                  "notes": "Implemented slug generation from strings",
+                  "children": [],
+                  "createdAt": "2026-03-22T09:30:00.000Z"
+                }
+              ],
+              "createdAt": "2026-03-22T09:00:00.000Z"
+            },
+            {
+              "id": "qa-fp-task-truncate",
+              "title": "Implement truncate",
+              "status": "in-progress",
+              "files": ["lib/transforms.js"],
+              "attempts": [
+                {
+                  "id": "build-att-truncate",
+                  "type": "build",
+                  "round": 1,
+                  "description": "Building truncate function",
+                  "outcome": "success",
+                  "notes": "Implemented string truncation with ellipsis",
+                  "children": [],
+                  "createdAt": "2026-03-22T09:35:00.000Z"
+                }
+              ],
+              "createdAt": "2026-03-22T09:00:00.000Z"
+            },
+            {
+              "id": "qa-fp-task-groupby",
+              "title": "Implement groupBy",
+              "status": "in-progress",
+              "files": ["lib/transforms.js"],
+              "attempts": [
+                {
+                  "id": "build-att-groupby",
+                  "type": "build",
+                  "round": 1,
+                  "description": "Building groupBy function",
+                  "outcome": "success",
+                  "notes": "Implemented groupBy with key function support",
+                  "children": [],
+                  "createdAt": "2026-03-22T09:40:00.000Z"
+                }
+              ],
+              "createdAt": "2026-03-22T09:00:00.000Z"
+            },
+            {
+              "id": "qa-fp-task-unique",
+              "title": "Implement unique",
+              "status": "in-progress",
+              "files": ["lib/transforms.js"],
+              "attempts": [
+                {
+                  "id": "build-att-unique",
+                  "type": "build",
+                  "round": 1,
+                  "description": "Building unique function",
+                  "outcome": "success",
+                  "notes": "Implemented array deduplication",
+                  "children": [],
+                  "createdAt": "2026-03-22T09:45:00.000Z"
+                }
+              ],
+              "createdAt": "2026-03-22T09:00:00.000Z"
+            },
+            {
+              "id": "qa-fp-task-flatten",
+              "title": "Implement flatten",
+              "status": "in-progress",
+              "files": ["lib/transforms.js"],
+              "attempts": [
+                {
+                  "id": "build-att-flatten",
+                  "type": "build",
+                  "round": 1,
+                  "description": "Building flatten function",
+                  "outcome": "success",
+                  "notes": "Implemented recursive array flattening",
+                  "children": [],
+                  "createdAt": "2026-03-22T09:50:00.000Z"
+                }
+              ],
+              "createdAt": "2026-03-22T09:00:00.000Z"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "updatedAt": "2026-03-22T10:00:00.000Z"
+}

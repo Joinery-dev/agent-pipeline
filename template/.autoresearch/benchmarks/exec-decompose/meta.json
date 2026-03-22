@@ -1,0 +1,8 @@
+{
+  "name": "exec-decompose",
+  "description": "Decompose a project description into major phases with interface contracts",
+  "targetProtocol": "exec.md",
+  "agent": "exec",
+  "timeout_ms": 300000,
+  "version": 1
+}

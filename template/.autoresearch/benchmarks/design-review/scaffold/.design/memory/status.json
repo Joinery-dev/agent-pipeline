@@ -1,0 +1,9 @@
+{
+  "lastRun": null,
+  "phase": null,
+  "round": 0,
+  "overallGrade": null,
+  "specCompliance": { "met": 0, "total": 0 },
+  "findings": { "shipBlockers": 0, "quality": 0, "polish": 0 },
+  "trajectory": []
+}

@@ -1,0 +1,8 @@
+{
+  "name": "design-review",
+  "description": "Detect visual violations against spec — measures design review thoroughness",
+  "targetProtocol": "design-review.md",
+  "agent": "design",
+  "timeout_ms": 300000,
+  "version": 1
+}

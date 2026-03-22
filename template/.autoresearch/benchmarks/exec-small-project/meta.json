@@ -1,0 +1,8 @@
+{
+  "name": "exec-small-project",
+  "description": "Decompose a small project into appropriately-sized phases (not over-decomposed)",
+  "targetProtocol": "exec.md",
+  "agent": "exec",
+  "timeout_ms": 300000,
+  "version": 1
+}

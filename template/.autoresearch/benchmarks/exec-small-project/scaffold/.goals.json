@@ -1,0 +1,6 @@
+{
+  "id": "exec-small-bench-project",
+  "name": "Personal Portfolio",
+  "description": "A 3-page personal portfolio website with home, projects, and contact pages. Simple static site, no database, no auth, no API. Uses Next.js with Tailwind CSS.",
+  "updatedAt": "2026-01-01T00:00:00.000Z"
+}

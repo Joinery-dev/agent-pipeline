@@ -1,0 +1,66 @@
+{
+  "id": "bench-resolve",
+  "name": "Formatter Module",
+  "description": "A number formatting module with currency and amount formatting",
+  "vision": "A robust formatter that handles all edge cases including negatives",
+  "majorPhases": [
+    {
+      "id": "bench-major-fmt",
+      "title": "Formatter Implementation",
+      "description": "Build and test the formatter module",
+      "status": "in-progress",
+      "phases": [
+        {
+          "id": "bench-phase-fmt",
+          "title": "Implement Formatter Functions",
+          "status": "in-progress",
+          "planFile": "plans/formatter.md",
+          "order": 1,
+          "dependsOn": [],
+          "interfaceContract": {
+            "produces": ["lib/formatter.js with formatAmount and formatPercent exports"],
+            "consumes": []
+          },
+          "pipeline": {
+            "state": "qa-failed",
+            "lastAgent": "qa",
+            "lastTimestamp": "2026-03-20T10:00:00.000Z"
+          },
+          "tasks": [
+            {
+              "id": "bench-task-fmt",
+              "title": "Implement formatter functions",
+              "description": "Create formatAmount and formatPercent in lib/formatter.js",
+              "status": "in-progress",
+              "files": ["lib/formatter.js"],
+              "attempts": [
+                {
+                  "id": "attempt-build-1",
+                  "type": "build",
+                  "round": 1,
+                  "description": "Initial implementation of formatter module",
+                  "outcome": "success",
+                  "notes": "All functions implemented, tests written",
+                  "children": [],
+                  "createdAt": "2026-03-19T10:00:00.000Z"
+                },
+                {
+                  "id": "attempt-qa-1",
+                  "type": "qa",
+                  "round": 1,
+                  "description": "QA review of formatter module",
+                  "outcome": "failure",
+                  "notes": "formatAmount does not handle negative numbers — returns undefined instead of a formatted negative string. File: lib/formatter.js, line ~5.",
+                  "children": [],
+                  "createdAt": "2026-03-20T10:00:00.000Z"
+                }
+              ],
+              "createdAt": "2026-03-19T09:00:00.000Z"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "updatedAt": "2026-03-20T10:00:00.000Z"
+}

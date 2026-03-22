@@ -1,0 +1,8 @@
+{
+  "name": "build-api",
+  "description": "Build a REST API route with validation and error handling",
+  "targetProtocol": "build.md",
+  "agent": "build",
+  "timeout_ms": 300000,
+  "version": 1
+}

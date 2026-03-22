@@ -1,0 +1,8 @@
+{
+  "name": "pm-review",
+  "description": "Detect code issues in a review — measures review thoroughness and false positive avoidance",
+  "targetProtocol": "pm:review.md",
+  "agent": "pm",
+  "timeout_ms": 300000,
+  "version": 1
+}

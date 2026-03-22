@@ -1,0 +1,8 @@
+{
+  "name": "build-component",
+  "description": "Build a data transformation module with multiple exports",
+  "targetProtocol": "build.md",
+  "agent": "build",
+  "timeout_ms": 300000,
+  "version": 1
+}

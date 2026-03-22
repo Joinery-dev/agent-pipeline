@@ -71,7 +71,7 @@ const targetCommands = join(targetDir, '.claude', 'commands');
 const commandFiles = [
   'exec.md',
   'pm.md', 'pm:plan.md', 'pm:research.md', 'pm:handoff.md', 'pm:review.md',
-  'build.md', 'qa.md', 'resolve.md', 'debug.md', 'merge.md', 'diagram.md', 'design-review.md',
+  'build.md', 'qa.md', 'resolve.md', 'merge.md', 'diagram.md', 'design-review.md',
 ];
 
 for (const file of commandFiles) {
@@ -113,7 +113,8 @@ copyIfMissing(
 const libFiles = [
   'pipeline.js', 'pipeline-cli.js', 'pipeline-sync.js',
   'validate-plan.js', 'merge.js', 'lessons-sync.js',
-  'ship.js', 'distill-briefing.js', 'cost-tracker.js',
+  'ship.js', 'agent-runner.js', 'autoresearch.js',
+  'distill-briefing.js', 'cost-tracker.js',
   'memory-hygiene.js', 'test-runner.js', 'plan-to-tasks.js',
   'visual-check.js', 'integration-check.js', 'render-mockup.js',
 ];
@@ -143,6 +144,14 @@ writeIfMissing(
   join(targetDir, '.goals.json'),
   JSON.stringify(goalsTemplate, null, 2),
   '.goals.json'
+);
+
+// ── ship-config.json (orchestration parameters) ──────────────────────
+
+copyIfMissing(
+  join(TEMPLATE_DIR, 'ship-config.json'),
+  join(targetDir, 'ship-config.json'),
+  'ship-config.json'
 );
 
 // ── Memory directories ────────────────────────────────────────────────
@@ -278,6 +287,33 @@ if (!existsSync(illustrationsDir)) {
   created.push('.design/illustrations/');
 }
 
+// ── Autoresearch ─────────────────────────────────────────────────────
+
+copyIfMissing(
+  join(TEMPLATE_DIR, '.autoresearch', 'program.md'),
+  join(targetDir, '.autoresearch', 'program.md'),
+  '.autoresearch/program.md'
+);
+
+const benchmarkNames = [
+  'build-basic', 'build-api', 'build-component',
+  'exec-decompose', 'exec-small-project',
+  'qa-accuracy', 'qa-false-positives',
+  'resolve-precision', 'pm-planning', 'pm-review',
+  'design-review', 'ship-config',
+];
+for (const bench of benchmarkNames) {
+  const benchSrc = join(TEMPLATE_DIR, '.autoresearch', 'benchmarks', bench);
+  const benchDest = join(targetDir, '.autoresearch', 'benchmarks', bench);
+  if (!existsSync(benchDest) && existsSync(benchSrc)) {
+    mkdirSync(dirname(benchDest), { recursive: true });
+    cpSync(benchSrc, benchDest, { recursive: true });
+    created.push(`.autoresearch/benchmarks/${bench}/`);
+  } else if (existsSync(benchDest)) {
+    skipped.push(`.autoresearch/benchmarks/${bench}/`);
+  }
+}
+
 // ── plans/ directory ──────────────────────────────────────────────────
 
 const plansDir = join(targetDir, 'plans');
@@ -311,47 +347,9 @@ copyIfMissing(
 
 // ── CLAUDE.md starter ─────────────────────────────────────────────
 
-writeIfMissing(
+copyIfMissing(
+  join(TEMPLATE_DIR, 'CLAUDE.md'),
   join(targetDir, 'CLAUDE.md'),
-  `# ${projectName}
-
-## Commands
-
-- \`npm run dev\` — dev server
-- \`node --test tests/\` — unit tests
-
-## Code Conventions
-
-- ES modules only — no CommonJS
-- Server code in \`lib/\`, routes in \`app/api/\`, UI in \`app/\`, tests in \`tests/\`
-
-## Git Protocols
-
-- Commit to feature branches, not main
-- Never force push
-- Pull before push
-
-## Agent Pipeline
-
-This project uses the agent pipeline for structured development:
-- \`/exec <topic>\` — strategic project decomposition (vision, phases, contracts, diagrams)
-- \`/pm\` — project status and planning
-- \`/pm:research <topic>\` — research best practices, competitors, and design patterns
-- \`/pm:plan <topic>\` — create plans with goals tracking
-- \`/build <plan>\` — execute plans
-- \`/qa <plan>\` — validate builds
-- \`/resolve\` — fix QA failures
-- \`/debug\` — diagnose pipeline issues
-
-See \`.claude/agent-protocol.md\` for the full schema and conventions.
-
-## Do's and Don'ts
-
-- DO ask before committing, pushing, or writing files when the user only asked a question
-- DO distinguish questions from instructions
-- DON'T hardcode values that should be configurable
-- DON'T create files unless necessary — edit existing ones
-`,
   'CLAUDE.md'
 );
 

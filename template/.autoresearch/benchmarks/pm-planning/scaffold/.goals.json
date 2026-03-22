@@ -1,0 +1,21 @@
+{
+  "id": "bench-pm-project",
+  "name": "SecureApp",
+  "description": "A web application with user authentication, role-based access control, and session management",
+  "vision": "A production-ready authentication system with secure login, registration, password reset, and role-based authorization that can be integrated into any web application",
+  "majorPhases": [
+    {
+      "id": "bench-major-auth",
+      "title": "User Authentication",
+      "description": "Implement user registration, login, password reset, and session management. Includes JWT-based auth tokens, bcrypt password hashing, email verification flow, and role-based access control middleware.",
+      "status": "not-started",
+      "order": 0,
+      "interfaceContract": {
+        "produces": ["auth-middleware", "user-model", "auth-routes", "jwt-utils"],
+        "consumes": ["database-connection"]
+      },
+      "phases": []
+    }
+  ],
+  "updatedAt": "2026-03-20T10:00:00.000Z"
+}

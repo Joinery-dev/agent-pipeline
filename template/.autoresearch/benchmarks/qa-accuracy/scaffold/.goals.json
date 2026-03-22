@@ -1,0 +1,93 @@
+{
+  "id": "qa-bench-project",
+  "name": "QA Benchmark Project",
+  "description": "A project with planted bugs for benchmarking the QA agent protocol",
+  "vision": "A working REST API module — QA must find the 2 bugs and pass the 1 working task",
+  "majorPhases": [
+    {
+      "id": "qa-bench-major",
+      "title": "API Module",
+      "description": "Build and validate a REST API utility module",
+      "status": "in-progress",
+      "phases": [
+        {
+          "id": "qa-phase",
+          "title": "REST API Utilities",
+          "status": "in-progress",
+          "planFile": "plans/api.md",
+          "order": 1,
+          "dependsOn": [],
+          "interfaceContract": {
+            "produces": ["lib/api.js with validateInput, countItems, and formatResponse exports"],
+            "consumes": []
+          },
+          "pipeline": {
+            "state": "awaiting-qa",
+            "lastAgent": "build",
+            "lastTimestamp": "2026-03-22T10:00:00.000Z"
+          },
+          "tasks": [
+            {
+              "id": "qa-task-validate",
+              "title": "Implement validateInput",
+              "status": "in-progress",
+              "files": ["lib/api.js"],
+              "attempts": [
+                {
+                  "id": "build-att-validate",
+                  "type": "build",
+                  "round": 1,
+                  "description": "Building validateInput function",
+                  "outcome": "success",
+                  "notes": "Implemented input validation for API requests",
+                  "children": [],
+                  "createdAt": "2026-03-22T09:30:00.000Z"
+                }
+              ],
+              "createdAt": "2026-03-22T09:00:00.000Z"
+            },
+            {
+              "id": "qa-task-count",
+              "title": "Implement countItems",
+              "status": "in-progress",
+              "files": ["lib/api.js"],
+              "attempts": [
+                {
+                  "id": "build-att-count",
+                  "type": "build",
+                  "round": 1,
+                  "description": "Building countItems function",
+                  "outcome": "success",
+                  "notes": "Implemented item counting with filter support",
+                  "children": [],
+                  "createdAt": "2026-03-22T09:35:00.000Z"
+                }
+              ],
+              "createdAt": "2026-03-22T09:00:00.000Z"
+            },
+            {
+              "id": "qa-task-format",
+              "title": "Implement formatResponse",
+              "status": "in-progress",
+              "files": ["lib/api.js"],
+              "attempts": [
+                {
+                  "id": "build-att-format",
+                  "type": "build",
+                  "round": 1,
+                  "description": "Building formatResponse function",
+                  "outcome": "success",
+                  "notes": "Implemented standard API response formatting",
+                  "children": [],
+                  "createdAt": "2026-03-22T09:40:00.000Z"
+                }
+              ],
+              "createdAt": "2026-03-22T09:00:00.000Z"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "updatedAt": "2026-03-22T10:00:00.000Z"
+}
