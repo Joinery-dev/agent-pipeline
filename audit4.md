@@ -272,3 +272,122 @@ If estimated total > 120K tokens (60% of 200K window), log a warning. If > 160K 
 When agents do need .goals.json data, they currently must read the entire file. A `get-phase --full <phaseId>` command that returns only one phase's data (with tasks and attempts) would let agents get what they need without loading 250 tasks.
 
 **Fix:** Add `get-phase-full <phaseId>` that returns the phase object with its parent major phase context but without sibling phases or other major phases. Agents use this instead of reading the raw file.
+
+---
+
+## PROMPT CORRECTNESS AUDIT
+
+**Date:** 2026-03-22
+**Method:** 61 automated tests (prompt-audit.test.js) checking CLI command existence, file references, cross-agent format contracts, contradictions, ownership conflicts, distiller output tags.
+**Results:** 56 pass, 5 fail.
+
+### CRITICAL — Features exist in commands but ship.js doesn't dispatch them
+
+Ship.js was externally rewritten during this session. Several features have agent commands, lib tools, and diagrams — but ship.js no longer dispatches them.
+
+### P1. Exec checkpoint never dispatched
+
+exec.md Mode 3 (Phase Checkpoint) exists with 6 steps, `--checkpoint` argument support, and guardrails. Ship.js has no `runExecCheckpoint()` function. The `case 'complete'` goes directly from rollup to next phase with no checkpoint between major phases.
+
+Affected files: exec.md checkpoint mode, exec-checkpoint.mmd diagram, checkpoint guardrails.
+
+### P2. Final review cycle never runs
+
+exec.md Mode 4 (Final Review) exists with 7 steps, `--final-review` argument support. `walkthrough.md`, `lib/screenshot-grid.js`, `lib/link-check.js` all exist. Ship.js `case 'complete'` when all phases are done just sets `pipelineSuccess = true` and stops. None of the 10-step final review runs.
+
+Affected files: exec.md final review mode, walkthrough.md, screenshot-grid.js, link-check.js, final-review.mmd diagram.
+
+### P3. Interactive exec mode never used
+
+`agent-runner.js` has `interactive: true` with `stdio: 'inherit'`. exec.md discover step uses AskUserQuestion. Ship.js dispatches exec with standard `runAgent()` using `-p` mode — exec cannot ask the human questions.
+
+Affected files: agent-runner.js interactive option, exec.md discover step.
+
+### P4. Checkpoint-fixes wiring disconnected
+
+exec.md write-fixes step writes to `.exec/memory/checkpoint-fixes.md`. Ship.js never reads this file. Even if the checkpoint ran (it doesn't per P1), the fix review would be written but never acted on.
+
+### P5. buildFailureSummary not implemented
+
+The concept of synthesizing failure notes from task attempts for PM replan prompts was designed but no `buildFailureSummary()` function exists in ship.js. PM replan prompts use the generic message without specific failure details.
+
+### P6. restartFailureContext not implemented
+
+`runResearch()` accepts a `failureContext` parameter, but no code passes it. After exec RESTART, research runs fresh without knowing what failed. `forceResearch` IS present and working — only the context is missing.
+
+---
+
+### HIGH — Prompt contract issues
+
+### P7. Design review ownership section is structurally ambiguous
+
+Ownership says "READS AND WRITES .pm/memory/concerns.md" and "READS plan files, .goals.json (never modifies)." The cross-writes to PM concerns and QA patterns are correct and documented, but the section structure makes it easy to misread the scope. Test flagged it.
+
+**Fix:** Restructure into explicit "OWNS (read+write)", "CROSS-WRITES (shared)", "READS (read-only)" sections.
+
+### P8. PM ownership declaration not in pm.md
+
+`pm.md` says "You own the structure" but doesn't explicitly declare `.pm/memory/` ownership. That's in `pm-reference.md` line 110. If PM doesn't read pm-reference.md (only reads it "when you need to write to .pm/memory/ files"), the ownership context may be missing.
+
+**Fix:** Add ownership section to pm.md itself.
+
+---
+
+### CONFIRMED WORKING (from prompt audit tests)
+
+**Cross-agent format contracts — all 7 tests pass:**
+- QA diagnosis format (root cause, files, criteria) → Resolver reads it correctly
+- Builder attempt notes → QA reads via .goals.json
+- PM plan success criteria → Builder reads via planFile
+- PM Visual Specification (Layout/Hierarchy/Mood) → QA checks against it
+- PM Visual Specification → Design Review checks against it
+- Exec decisions.md lessons → PM:plan reads on restart
+- Exec checkpoint-fixes format is defined (but not wired — see P4)
+
+**No contradictions — all 6 tests pass:**
+- Builder: creates branch, doesn't stay on main
+- Resolver: ONLY QA diagnosis scope, no exploring
+- QA: tree blocking / forest advisory — consistent throughout
+- PM:plan: WHAT and WHY, never HOW — no code in templates
+- Exec: guardrails prevent creating plans or tasks
+- Design: evaluates against spec, not personal taste
+
+**Ownership — 3 of 5 tests pass:**
+- .design/memory/ exclusively owned by design-review
+- .exec/memory/ owned by exec
+- PM concerns.md shared write documented
+- (2 minor issues: P7 and P8 above)
+
+**Distiller output — all 4 tests pass:**
+- Builder gets vision, target, success-criteria, previous-attempts, visual-language, illustrations
+- QA gets visual-language, visual-spec, illustrations, design-state, page-grades
+- Design gets previous-findings, page-grades, visual-drift
+- Exec gets failing-phase details
+
+**CLI commands — all valid:**
+- All pipeline-cli commands referenced in 13 agent prompts exist in the CLI
+- 2 false positives from regex (flag values parsed as commands)
+
+---
+
+## COMBINED PRIORITY SUMMARY (all audits)
+
+| Source | Finding | Priority |
+|--------|---------|----------|
+| audit4 P1 | Exec checkpoint not dispatched | Critical |
+| audit4 P2 | Final review not dispatched | Critical |
+| audit4 P3 | Interactive exec not used | Critical |
+| audit4 P4 | Checkpoint-fixes not wired | Critical |
+| audit4 P5 | buildFailureSummary missing | High |
+| audit4 P6 | restartFailureContext missing | High |
+| audit4 R1 | --resume false "all complete" with empty majorPhases | Critical |
+| audit4 R2 | QA round counter inflated on crash | Medium |
+| audit4 R3 | Exec escalation counter resets on --resume | Medium |
+| audit4 R4 | Merge permanently skipped after rollup | Medium |
+| audit4 CB1 | Agents read full .goals.json (context blowup) | High |
+| audit4 CB2 | Attempt history unbounded (context blowup) | High |
+| audit4 CB3 | exec.md 10K tokens — should split | Medium |
+| audit4 CB4 | Briefings include all phases, not just relevant | Medium |
+| audit4 CB5 | No context budget pre-flight check | Medium |
+| audit4 P7 | Design ownership ambiguous | Low |
+| audit4 P8 | PM ownership not in pm.md | Low |
