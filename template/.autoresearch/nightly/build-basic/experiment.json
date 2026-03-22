@@ -1,7 +1,7 @@
 {
   "targetFile": "/Users/kevin/Desktop/agent-pipeline/template/.claude/commands/build.md",
   "benchmark": "build-basic",
-  "iteration": 3,
+  "iteration": 4,
   "bestScore": 1,
   "keptVersions": 0,
   "baseline": {
@@ -43,6 +43,15 @@
       "score": 1,
       "decision": "revert",
       "candidatesEvaluated": 1
+    },
+    {
+      "iteration": 3,
+      "hypothesis": "Move `self-review` before `verify` so the agent catches and fixes diff issues before running tests, and fold `preflight` into the `mark-in-progress` step to eliminate the floating pre-step block and create a cleaner linear flow.",
+      "critique": "The current protocol scores perfectly. The \"worst\" result is 1.0 across all iterations. No specific behavior is causing a low score. However, the current step ordering has a structural inefficiency: `preflight` sits outside the numbered step sequence as a floating block, and `self-review` happens after `verify` — meaning if the diff review catches issues, tests need to be re-run. Reordering self-review before verify would let the agent catch and fix diff issues before running the test suite, avoiding wasted test cycles on code that hasn't been self-reviewed yet.",
+      "operator": "restructure",
+      "score": 1,
+      "decision": "revert",
+      "candidatesEvaluated": 1
     }
   ],
   "revertTracking": [
@@ -55,8 +64,13 @@
       "iteration": 2,
       "operator": "add-example",
       "hypothesis": "Add a concrete example of well-structured success and failure notes in the `log-outcome` step so the agent produces consistent, QA-friendly attempt notes across all task types."
+    },
+    {
+      "iteration": 3,
+      "operator": "restructure",
+      "hypothesis": "Move `self-review` before `verify` so the agent catches and fixes diff issues before running tests, and fold `preflight` into the `mark-in-progress` step to eliminate the floating pre-step block and create a cleaner linear flow."
     }
   ],
-  "consecutiveLowImprovement": 2,
+  "consecutiveLowImprovement": 3,
   "saturated": false
 }
