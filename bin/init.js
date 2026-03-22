@@ -12,6 +12,7 @@ import { cpSync, existsSync, mkdirSync, writeFileSync, readFileSync } from 'fs';
 import { resolve, dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { randomUUID } from 'crypto';
+import { execSync } from 'child_process';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const TEMPLATE_DIR = resolve(__dirname, '..', 'template');
@@ -354,9 +355,33 @@ copyIfMissing(
   'CLAUDE.md'
 );
 
+// ── Playwright config ─────────────────────────────────────────────────
+
+copyIfMissing(
+  join(TEMPLATE_DIR, 'playwright.config.js'),
+  join(targetDir, 'playwright.config.js'),
+  'playwright.config.js'
+);
+
+// ── Install Playwright ────────────────────────────────────────────────
+
+console.log('\nInstalling Playwright...');
+try {
+  execSync('npm install --save-dev @playwright/test', {
+    cwd: targetDir, stdio: 'inherit', timeout: 120000,
+  });
+  execSync('npx playwright install chromium', {
+    cwd: targetDir, stdio: 'inherit', timeout: 120000,
+  });
+  console.log('Playwright + Chromium installed successfully.');
+} catch {
+  console.warn('\nWarning: Could not install Playwright automatically.');
+  console.warn('Run manually: npm install -D @playwright/test && npx playwright install chromium');
+}
+
 // ── Report ────────────────────────────────────────────────────────────
 
-console.log('Created:');
+console.log('\nCreated:');
 for (const f of created) console.log(`  + ${f}`);
 
 if (skipped.length > 0) {

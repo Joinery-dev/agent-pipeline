@@ -21,3 +21,18 @@
 4:33:44 PM  🔬 [RESEARCH]  Proposer: analyzing history and forming hypothesis...
 4:35:47 PM  🔬 [RESEARCH]  Benchmark: running agent with modified protocol...
 4:36:48 PM  🔬 [RESEARCH]  Evaluating benchmark result...
+4:36:48 PM  ↩️ [REVERT]  REVERT: 0.000 (-1.000) [add-example] — "Set `progressCheckIntervalMs` to 180000 and `maxChecksWithoutProgress` to 3 as concrete examples of the optimal mid-range values the task describes, so the starting config itself demonstrates the target configuration and reduces risk of the agent over-correcting."
+4:36:48 PM  ℹ️ [INFO]  
+═══════════════════════════════════════
+4:36:48 PM  ℹ️ [INFO]           AUTORESEARCH COMPLETE
+4:36:48 PM  ℹ️ [INFO]  ═══════════════════════════════════════
+4:36:48 PM  ℹ️ [INFO]  Iterations:     2
+4:36:48 PM  ℹ️ [INFO]  Baseline:       1.000
+4:36:48 PM  ℹ️ [INFO]  Best score:     1.000
+4:36:48 PM  ℹ️ [INFO]  Improvement:    +0.0%
+4:36:48 PM  ℹ️ [INFO]  Kept:           0
+4:36:48 PM  ℹ️ [INFO]  Reverted:       2
+4:36:48 PM  ℹ️ [INFO]  Saturated:      no
+4:36:48 PM  ℹ️ [INFO]  Protocol vers:  0
+4:36:48 PM  ℹ️ [INFO]  Results:        /Users/kevin/Desktop/agent-pipeline/template/.autoresearch/nightly/ship-config/results.tsv
+4:36:48 PM  ℹ️ [INFO]  Git tags:       autoresearch-nightly/ship-config-json/v1..v0

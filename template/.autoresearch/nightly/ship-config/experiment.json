@@ -1,7 +1,7 @@
 {
   "targetFile": "/Users/kevin/Desktop/agent-pipeline/template/ship-config.json",
   "benchmark": "ship-config",
-  "iteration": 2,
+  "iteration": 3,
   "bestScore": 1,
   "keptVersions": 0,
   "baseline": {
@@ -58,6 +58,15 @@
       "score": 1,
       "decision": "revert",
       "candidatesEvaluated": 1
+    },
+    {
+      "iteration": 2,
+      "hypothesis": "Set `progressCheckIntervalMs` to 180000 and `maxChecksWithoutProgress` to 3 as concrete examples of the optimal mid-range values the task describes, so the starting config itself demonstrates the target configuration and reduces risk of the agent over-correcting.",
+      "critique": "The current config starts with `progressCheckIntervalMs: 300000` (5 minutes, upper end of the recommended 2-5 minute range) and `maxChecksWithoutProgress: 2` (lower end of the 1-4 range). While the agent successfully tunes these to 180000 and 3 respectively, the starting values don't exemplify the optimal settings described in the task guidance. If the agent ever chose to leave values as-is (a valid \"no changes needed\" reasoning path), `maxChecksWithoutProgress: 2` combined with `progressCheckIntervalMs: 300000` gives a 10-minute stall timeout — right at the edge of the recommended 5-10 minute window, leaving no margin.",
+      "operator": "add-example",
+      "score": 0,
+      "decision": "revert",
+      "candidatesEvaluated": 1
     }
   ],
   "revertTracking": [
@@ -65,8 +74,13 @@
       "iteration": 1,
       "operator": "remove-bloat",
       "hypothesis": "Remove the `heartbeatIntervalMs` field since it's explicitly described as observability-only, isn't evaluated, and adds noise the agent must reason about unnecessarily."
+    },
+    {
+      "iteration": 2,
+      "operator": "add-example",
+      "hypothesis": "Set `progressCheckIntervalMs` to 180000 and `maxChecksWithoutProgress` to 3 as concrete examples of the optimal mid-range values the task describes, so the starting config itself demonstrates the target configuration and reduces risk of the agent over-correcting."
     }
   ],
-  "consecutiveLowImprovement": 1,
+  "consecutiveLowImprovement": 2,
   "saturated": false
 }

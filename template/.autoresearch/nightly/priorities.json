@@ -1,0 +1,114 @@
+{
+  "updatedAt": "2026-03-22T00:00:00Z",
+  "priorities": [
+    {
+      "target": "build.md",
+      "benchmark": "build-basic",
+      "budgetShare": 0.12,
+      "reason": "Zero data — needs baseline. Fundamental protocol (file creation + tests). Fix path resolution first.",
+      "suggestedOperators": [
+        "baseline-only"
+      ]
+    },
+    {
+      "target": "build.md",
+      "benchmark": "build-api",
+      "budgetShare": 0.1,
+      "reason": "Zero data — needs baseline. API variant likely has different failure modes from basic.",
+      "suggestedOperators": [
+        "baseline-only"
+      ]
+    },
+    {
+      "target": "build.md",
+      "benchmark": "build-component",
+      "budgetShare": 0.1,
+      "reason": "Zero data — needs baseline. Component variant covers UI code generation.",
+      "suggestedOperators": [
+        "baseline-only"
+      ]
+    },
+    {
+      "target": "qa.md",
+      "benchmark": "qa-accuracy",
+      "budgetShare": 0.12,
+      "reason": "Zero data — needs baseline. QA accuracy is critical — false negatives let bugs ship.",
+      "suggestedOperators": [
+        "baseline-only"
+      ]
+    },
+    {
+      "target": "qa.md",
+      "benchmark": "qa-false-positives",
+      "budgetShare": 0.1,
+      "reason": "Zero data — needs baseline. False positives waste resolve cycles.",
+      "suggestedOperators": [
+        "baseline-only"
+      ]
+    },
+    {
+      "target": "resolve.md",
+      "benchmark": "resolve-precision",
+      "budgetShare": 0.1,
+      "reason": "Zero data — needs baseline. Precision matters — imprecise fixes cause regressions.",
+      "suggestedOperators": [
+        "baseline-only"
+      ]
+    },
+    {
+      "target": "exec.md",
+      "benchmark": "exec-decompose",
+      "budgetShare": 0.08,
+      "reason": "Zero data — needs baseline. Decomposition quality drives downstream build quality.",
+      "suggestedOperators": [
+        "baseline-only"
+      ]
+    },
+    {
+      "target": "exec.md",
+      "benchmark": "exec-small-project",
+      "budgetShare": 0.06,
+      "reason": "Zero data — errored tonight. Needs baseline after path fix.",
+      "suggestedOperators": [
+        "baseline-only"
+      ]
+    },
+    {
+      "target": "pm:plan.md",
+      "benchmark": "pm-planning",
+      "budgetShare": 0.06,
+      "reason": "Zero data — needs baseline. Planning quality affects build scope accuracy.",
+      "suggestedOperators": [
+        "baseline-only"
+      ]
+    },
+    {
+      "target": "pm:review.md",
+      "benchmark": "pm-review",
+      "budgetShare": 0.05,
+      "reason": "Zero data — needs baseline.",
+      "suggestedOperators": [
+        "baseline-only"
+      ]
+    },
+    {
+      "target": "design-review.md",
+      "benchmark": "design-review",
+      "budgetShare": 0.05,
+      "reason": "Zero data — needs baseline.",
+      "suggestedOperators": [
+        "baseline-only"
+      ]
+    },
+    {
+      "target": "ship-config.json",
+      "benchmark": "ship-config",
+      "budgetShare": 0.06,
+      "reason": "Already at 1.000 baseline — minimal headroom. Keep small budget for validation after other protocols change. Add JSON-only output constraint to mutation prompt.",
+      "suggestedOperators": [
+        "constrain-output-format",
+        "adjust-boundary-values"
+      ]
+    }
+  ]
+}

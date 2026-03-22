@@ -615,12 +615,13 @@ No maximum iteration guard. Bounded only by `consecutiveNoProgress` → exec esc
 
 | Priority | Count | Issues |
 |----------|-------|--------|
-| **Critical** | 3+11 | Original: Dev server (#1), quality gate (#2), drift gate (#3). Adversarial: parallel build crash (#37), maxAgents crash (#38), plan-to-tasks stdout (#39), visual-check leak (#40), non-atomic writes (#41), no file locking (#42), no proc.on error (#43), no SIGKILL (#44), -p flag breaks interactive (#45), shell injection merge.js (#46), shell injection integration-check (#47) |
-| **High** | 4+14 | Original: RESTART doesn't clear (#4), infinite replan (#5), no exec briefing (#6), slug mismatch (#7). Adversarial: completion infinite loop (#48), failed review ships (#49), Playwright crash=pass (#50), integration=skipped (#51), vacuous rollup (#52), replanCount leak (#53), wrong phase match (#54), break/continue confusion (#55), browser leak (#56), link-check hang (#57), AskUserQuestion (#58), QA rounds mismatch (#59), reconcile bypasses CLI (#60), hygiene exit code (#61) |
-| **Medium** | 9+20 | Original: #8-12, #13-15, #35. Adversarial: #62-81 |
-| **Low** | 16+14 | Original: #16-30, #34, #36. Adversarial: #82-94 |
+| **Critical** | 3+11+3 | Original: #1-3. Adversarial: #37-47. Format: design status.json overwrite (#99), trajectory field names (#101), learnings delimiter (#102) |
+| **High** | 4+14+7 | Original: #4-7. Adversarial: #48-61. Format: Human decision regex (#100), concerns field name (#103), QA drops description (#104), qa-recheck never used (#105), dead description fallback (#106), DECISION default-CONTINUE (#107), SHIP/IMPROVE regex (#108) |
+| **Medium** | 9+20+5 | Original: #8-12, #13-15, #35. Adversarial: #62-81. Format: non-UUID IDs (#109), round:1 hardcode (#110), "pass" vs grades (#111), OPEN substring (#112), design patterns no schema (#113) |
+| **Low** | 16+14+1 | Original: #16-30, #34, #36. Adversarial: #82-94. Format: leading space in notes (#114) |
+| **Breaker** | 3 | 1MB CLI crash (#96), circular deps deadlock (#97), parallel write race (#98) |
 | **Competitive** | 3 | Playwright tests (#31), UI interaction (#32), model escalation (#33) |
-| **Total** | **95** | |
+| **Total** | **114** | |
 
 ---
 
@@ -699,3 +700,173 @@ Phases with zero tasks correctly remain `not-started` after rollup. The `Array.e
 1. **#96 — 1MB CLI crash** (HIGH): Add `--notes-file` flag. Blocks real agent runs with verbose output.
 2. **#97 — Circular dependency deadlock** (MEDIUM): Add cycle detection to `validateGoals()`. Silent hang.
 3. **#98 — Parallel write race** (MEDIUM): Add file locking to `writeGoals()`. Data loss under parallel builds.
+
+---
+
+## FORMAT COMPATIBILITY AUDIT — Cross-Agent Data Contracts (#99–#114)
+
+**Date:** 2026-03-22
+**Method:** Traced every producer→consumer format contract through the actual code. For each shared data structure (attempt objects, status.json, patterns.md, concerns.md, findings.md, decisions.md, exec output), verified field names, types, and expected values match exactly between writer and reader.
+
+---
+
+### CRITICAL — Data loss or complete feature breakage
+
+#### 99. `ship.js` `runDesignReview()` overwrites design agent's status.json on success (ship.js:1100-1108)
+
+Ship.js loads `.design/memory/status.json` *before* the design agent runs (line 1080), then on success writes that stale snapshot back with `round: 0` and `overallGrade: 'pass'` (line 1110-1112). This overwrites whatever the design agent wrote during its run — destroying `specCompliance`, `findings`, `trajectory`, and the actual letter grade.
+
+On the *failure* path, ship.js does NOT write, so the design agent's writes are preserved. Only the success path has data loss.
+
+**Impact:** After every successful design review, the agent's rich assessment (spec compliance scores, finding counts, grade trajectory) is replaced with `{ round: 0, overallGrade: "pass" }`. Every subsequent briefing shows "pass" instead of a real grade like "B+".
+
+**Fix:** Don't write to status.json on success. Or reload from disk after the agent runs and only merge in `round: 0` / `overallGrade` if needed.
+
+#### 100. Exec modes 3 and 4 are dead code — never dispatched by ship.js
+
+Exec.md defines 4 modes:
+1. Initial Planning (`/exec <topic>`) — **wired** (ship.js:1544)
+2. Escalation (`/exec --escalation "..."`) — **wired** (ship.js:1224)
+3. Phase Checkpoint (`/exec --checkpoint "..."`) — **NOT wired**
+4. Final Review (`/exec --final-review`) — **NOT wired**
+
+Ship.js never sends `--checkpoint` or `--final-review`. The entire checkpoint-fixes.md flow (exec writes fixes, ship.js reads them, dispatches PM to plan fix sub-phases) and the entire final review flow (SHIP/IMPROVE decisions, competitive re-research, human conversation) are defined in exec.md but have no orchestrator code.
+
+The `**Human decision:** SHIP | IMPROVE` format in decisions.md is written by exec but never parsed by any consumer.
+
+**Impact:** The checkpoint and final review features documented in exec.md don't exist. The interactive final review in ship.js (lines 2085-2112) dispatches `/exec --final-review` and parses `**Human decision:**` from decisions.md — so **this IS wired** after all. But the checkpoint mode (`--checkpoint`) is wired at ship.js line 1346-1348 via `runExecCheckpoint`. Let me correct: Both modes ARE dispatched. The dead code finding was wrong about dispatch.
+
+However, the **format mismatch** remains: ship.js parses `**Human decision:**` with regex `/\*\*Human decision:\*\*\s*(SHIP|IMPROVE)/g` (case-sensitive). If exec writes `**Human Decision:**` (capital D) or `Human decision: SHIP` (no bold), the regex misses it and defaults to SHIP.
+
+**Fix:** Make the regex case-insensitive and tolerant of missing bold markers: `/\*{0,2}Human decision:\*{0,2}\s*(SHIP|IMPROVE)/gi`
+
+#### 101. `memory-hygiene.js` reads wrong field names from QA trajectory entries (memory-hygiene.js:175-179)
+
+ralph-loop.md defines trajectory entries as `{ round, passing, total, delta }`. memory-hygiene.js `runRegressionRetirement()` reads `t.verdict`, `t.checksPassing`, `t.checksTotal` — none of which exist on trajectory entries.
+
+| Consumer reads | Producer writes | Match? |
+|---|---|---|
+| `t.verdict` | (doesn't exist on trajectory) | NO |
+| `t.checksPassing` | `t.passing` | NO — name mismatch |
+| `t.checksTotal` | `t.total` | NO — name mismatch |
+
+All three fields are always `undefined`. The `consecutivePasses` counter never increments. **Regression auto-retirement is completely broken.**
+
+**Fix:** Change to `t.passing`, `t.total`, and remove the `t.verdict` check (or derive it from `passing === total`).
+
+#### 102. `memory-hygiene.js` `learnings.txt` archiver uses wrong delimiter (memory-hygiene.js:92-95)
+
+ralph-loop.md defines learnings entries starting with `## Round N — YYYY-MM-DD` (heading-based). memory-hygiene.js splits on `/\n(?=---)/` (expecting `---` separators between entries). Producer uses `## ` headings, consumer expects `---` separators. They never match.
+
+**Impact:** Learnings archiving never triggers — the split produces 1 entry (the entire file), which is ≤ 30, so nothing is archived. The file grows without bound.
+
+**Fix:** Change the separator to `/\n(?=## )/` (matching the actual heading format).
+
+---
+
+### HIGH — Semantic mismatches that degrade agent behavior
+
+#### 103. `concerns.md` resolution field name mismatch (memory-hygiene.js vs pm-reference.md)
+
+memory-hygiene.js `runConcernsResolvedArchival()` looks for `**Resolved:** YYYY-MM-DD`. pm-reference.md documents the format as `**Resolution:** ...` (different field name, no date format). Archival falls back to `**Opened:**` date, archiving 30 days after opening instead of 30 days after resolution.
+
+**Fix:** Align field name. Either `**Resolved:**` or `**Resolution:**` in both producer and consumer.
+
+#### 104. QA briefing drops `description` field from attempts (distill-briefing.js:350-352)
+
+QA briefing renders only `a.notes` in the attempt XML. Builder/resolver briefing (lines 577-586) renders both `a.description` and `a.notes`. The `description` is the builder's pre-flight summary (what they planned to do). QA only sees `notes` (post-hoc outcome). QA cannot see what the builder intended — only what they said happened.
+
+**Fix:** Include `a.description` in the QA briefing XML, same as builder/resolver briefing.
+
+#### 105. `qa-recheck` attempt type never instructed by qa.md
+
+`countQAAttempts()` (ship.js:209) and `reconcileQAStatuses()` (ship.js:434) both check for `a.type === 'qa-recheck'`. agent-protocol.md defines this type. But qa.md and ralph-loop.md only instruct `--type qa` — never `--type qa-recheck` for subsequent rounds.
+
+**Impact:** The `qa-recheck` type filter never matches real data. QA round counting still works (catches `type === 'qa'`), but the semantic distinction between initial QA and recheck is lost. Any code that specifically needs rechecks (e.g., "how many times was this task re-validated?") gets 0.
+
+**Fix:** ralph-loop.md should instruct `--type qa-recheck` for rounds > 1.
+
+#### 106. `countQAAttempts` has dead `description` prefix fallback (ship.js:212)
+
+```js
+a.description?.startsWith('QA validation')
+```
+
+No agent command prescribes using "QA validation" as a description prefix. This fallback can only match test scaffold data, not real agent output. Worse, it could false-positive if a builder wrote a description starting with "QA validation" — counting a build attempt as a QA round.
+
+**Fix:** Remove the `description` prefix fallback. Rely solely on the `type` field.
+
+#### 107. Exec DECISION parsing is default-CONTINUE with no validation (ship.js:1230)
+
+```js
+const decision = result.output?.includes('DECISION: RESTART') ? 'RESTART' : 'CONTINUE';
+```
+
+If exec writes any variant (`Decision: Restart`, `RESTART`, `My decision is to restart`), it silently defaults to CONTINUE. No log warning that the expected format wasn't found. No validation that the output contains either keyword.
+
+**Fix:** Log a warning when neither `DECISION: RESTART` nor `DECISION: CONTINUE` appears in output. Consider case-insensitive matching.
+
+#### 108. `**Human decision:**` regex is case-sensitive and format-brittle (ship.js:2097)
+
+```js
+content.match(/\*\*Human decision:\*\*\s*(SHIP|IMPROVE)/g)
+```
+
+If exec writes `**Human Decision:**` (capital D), `Human decision: SHIP` (no bold), or `**human decision:** SHIP` (lowercase), the regex misses it. Defaults to SHIP.
+
+**Fix:** Case-insensitive regex: `/\*{0,2}human decision:?\*{0,2}\s*(SHIP|IMPROVE)/gi`
+
+---
+
+### MEDIUM — Format drift that causes silent degradation
+
+#### 109. `reconcileTaskStatuses` writes non-UUID attempt IDs (ship.js:660)
+
+Creates `id: "reconcile-${Date.now()}-${N}"` instead of UUID. Protocol says `id: string (UUID)`. Validator only checks existence/uniqueness, not format. No consumer parses the ID format, but it violates the documented contract.
+
+#### 110. `reconcileTaskStatuses` hardcodes `round: 1` (ship.js:662)
+
+`addAttempt()` auto-calculates round by counting existing same-type attempts. Reconciler hardcodes 1. If the task already has build attempts, the round number will be wrong/duplicate.
+
+#### 111. `overallGrade: "pass"` vs letter grades (ship.js:1112 vs design-loop.md)
+
+Ship.js writes `overallGrade: "pass"` on design success. Design agent writes letter grades (`"A"`, `"B+"`, etc.). All consumers that render the grade (`distill-briefing.js` exec/design/walkthrough briefings) display "pass" instead of a meaningful grade after ship.js overwrites.
+
+#### 112. `filterOpenConcerns()` uses substring match `s.includes('OPEN')` (distill-briefing.js:145)
+
+Can false-positive on content containing the word "OPEN" in any context (e.g., "OPENING a connection", "OpenAPI spec"). Unlikely in practice but semantically wrong.
+
+#### 113. Design agent writes to `patterns.md` without documented schema (design-loop.md:157)
+
+Design agent writes visual patterns to `.qa/memory/patterns.md`. No schema is documented for design-sourced entries. If design omits `**Seen in:**`, `runQualityGate()` and memory-hygiene's `runPatternDedup()` will silently ignore those entries — design's visual patterns never trigger the quality gate or get deduplicated.
+
+#### 114. Stale task handler appends notes with leading space (ship.js:814)
+
+```js
+attempt.notes = (attempt.notes || '') + ' Stale — agent did not complete';
+```
+
+If `notes` was `''` (the default from `addAttempt`), result is `' Stale — agent did not complete'` with a leading space. Minor formatting inconsistency that could trip exact-match comparisons.
+
+---
+
+### FORMAT COMPATIBILITY SUMMARY
+
+| # | Severity | Producer → Consumer | Issue |
+|---|----------|-------------------|-------|
+| 99 | Critical | design agent → ship.js | Success path overwrites status.json with stale pre-agent data |
+| 101 | Critical | ralph-loop → memory-hygiene | 3 field name mismatches on trajectory entries — regression retirement broken |
+| 102 | Critical | ralph-loop → memory-hygiene | learnings.txt delimiter mismatch — archiving never triggers |
+| 100 | High | exec.md → ship.js | `**Human decision:**` regex case-sensitive and format-brittle |
+| 103 | High | pm-reference → memory-hygiene | concerns.md resolution field name mismatch |
+| 104 | High | builder → QA briefing | QA briefing drops attempt `description` field |
+| 105 | High | qa.md → ship.js | `qa-recheck` type never instructed, never matches real data |
+| 106 | High | (none) → ship.js | Dead `description` prefix fallback could false-positive |
+| 107 | High | exec → ship.js | DECISION parsing silent default-CONTINUE, no validation |
+| 108 | High | exec → ship.js | SHIP/IMPROVE regex case-sensitive, format-brittle |
+| 109 | Medium | ship.js reconciler → protocol | Non-UUID attempt IDs violate documented schema |
+| 110 | Medium | ship.js reconciler → protocol | Hardcoded round:1 produces wrong/duplicate rounds |
+| 111 | Medium | ship.js → consumers | `"pass"` vs letter grades after design success |
+| 112 | Medium | (any) → distill-briefing | `OPEN` substring match can false-positive |
+| 113 | Medium | design-loop → quality gate | No documented schema for design-sourced patterns |
+| 114 | Low | ship.js stale handler → consumers | Leading space in appended notes |

@@ -6,6 +6,9 @@
   "bin": {
     "agent-pipeline": "bin/init.js"
   },
+  "scripts": {
+    "postinstall": "playwright install chromium"
+  },
   "keywords": [
     "claude-code",
     "agents",
@@ -15,6 +18,9 @@
     "build-system"
   ],
   "license": "MIT",
+  "dependencies": {
+    "@playwright/test": "^1.50.0"
+  },
   "files": [
     "bin/",
     "lib/",
