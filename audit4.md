@@ -391,3 +391,158 @@ Ownership says "READS AND WRITES .pm/memory/concerns.md" and "READS plan files, 
 | audit4 CB5 | No context budget pre-flight check | Medium |
 | audit4 P7 | Design ownership ambiguous | Low |
 | audit4 P8 | PM ownership not in pm.md | Low |
+
+---
+
+## FORMAT COMPATIBILITY AUDIT — Cross-Agent Data Contracts
+
+**Date:** 2026-03-22
+**Method:** Traced every producer→consumer format contract through the actual code. For each shared data structure (attempt objects, status.json, patterns.md, concerns.md, findings.md, decisions.md, exec output), verified field names, types, and expected values match exactly between writer and reader.
+
+---
+
+### CRITICAL — Data loss or complete feature breakage
+
+#### FC-1. `ship.js` `runDesignReview()` overwrites design agent's status.json on success (ship.js:1100-1108)
+
+Ship.js loads `.design/memory/status.json` *before* the design agent runs (line 1080), then on success writes that stale snapshot back with `round: 0` and `overallGrade: 'pass'` (line 1110-1112). This overwrites whatever the design agent wrote during its run — destroying `specCompliance`, `findings`, `trajectory`, and the actual letter grade.
+
+On the *failure* path, ship.js does NOT write, so the design agent's writes are preserved. Only the success path has data loss.
+
+**Impact:** After every successful design review, the agent's rich assessment (spec compliance scores, finding counts, grade trajectory) is replaced with `{ round: 0, overallGrade: "pass" }`. Every subsequent briefing shows "pass" instead of a real grade like "B+".
+
+**Fix:** Don't write to status.json on success. Or reload from disk after the agent runs and only merge in `round: 0` / `overallGrade` if needed.
+
+#### FC-2. `memory-hygiene.js` reads wrong field names from QA trajectory entries (memory-hygiene.js:175-179)
+
+ralph-loop.md defines trajectory entries as `{ round, passing, total, delta }`. memory-hygiene.js `runRegressionRetirement()` reads `t.verdict`, `t.checksPassing`, `t.checksTotal` — none of which exist on trajectory entries.
+
+| Consumer reads | Producer writes | Match? |
+|---|---|---|
+| `t.verdict` | (doesn't exist on trajectory) | NO |
+| `t.checksPassing` | `t.passing` | NO — name mismatch |
+| `t.checksTotal` | `t.total` | NO — name mismatch |
+
+All three fields are always `undefined`. The `consecutivePasses` counter never increments. **Regression auto-retirement is completely broken.**
+
+**Fix:** Change to `t.passing`, `t.total`, and remove the `t.verdict` check (or derive it from `passing === total`).
+
+#### FC-3. `memory-hygiene.js` `learnings.txt` archiver uses wrong delimiter (memory-hygiene.js:92-95)
+
+ralph-loop.md defines learnings entries starting with `## Round N — YYYY-MM-DD` (heading-based). memory-hygiene.js splits on `/\n(?=---)/` (expecting `---` separators between entries). Producer uses `## ` headings, consumer expects `---` separators. They never match.
+
+**Impact:** Learnings archiving never triggers — the split produces 1 entry (the entire file), which is ≤ 30, so nothing is archived. The file grows without bound.
+
+**Fix:** Change the separator to `/\n(?=## )/` (matching the actual heading format).
+
+---
+
+### HIGH — Semantic mismatches that degrade agent behavior
+
+#### FC-4. `**Human decision:**` regex is case-sensitive and format-brittle (ship.js:2097)
+
+```js
+content.match(/\*\*Human decision:\*\*\s*(SHIP|IMPROVE)/g)
+```
+
+If exec writes `**Human Decision:**` (capital D), `Human decision: SHIP` (no bold), or `**human decision:** SHIP` (lowercase), the regex misses it. Defaults to SHIP.
+
+**Fix:** Case-insensitive regex: `/\*{0,2}human decision:?\*{0,2}\s*(SHIP|IMPROVE)/gi`
+
+#### FC-5. `concerns.md` resolution field name mismatch (memory-hygiene.js vs pm-reference.md)
+
+memory-hygiene.js `runConcernsResolvedArchival()` looks for `**Resolved:** YYYY-MM-DD`. pm-reference.md documents the format as `**Resolution:** ...` (different field name, no date format). Archival falls back to `**Opened:**` date, archiving 30 days after opening instead of 30 days after resolution.
+
+**Fix:** Align field name. Either `**Resolved:**` or `**Resolution:**` in both producer and consumer.
+
+#### FC-6. QA briefing drops `description` field from attempts (distill-briefing.js:350-352)
+
+QA briefing renders only `a.notes` in the attempt XML. Builder/resolver briefing (lines 577-586) renders both `a.description` and `a.notes`. The `description` is the builder's pre-flight summary (what they planned to do). QA only sees `notes` (post-hoc outcome). QA cannot see what the builder intended — only what they said happened.
+
+**Fix:** Include `a.description` in the QA briefing XML, same as builder/resolver briefing.
+
+#### FC-7. `qa-recheck` attempt type never instructed by qa.md
+
+`countQAAttempts()` (ship.js:209) and `reconcileQAStatuses()` (ship.js:434) both check for `a.type === 'qa-recheck'`. agent-protocol.md defines this type. But qa.md and ralph-loop.md only instruct `--type qa` — never `--type qa-recheck` for subsequent rounds.
+
+**Impact:** The `qa-recheck` type filter never matches real data. QA round counting still works (catches `type === 'qa'`), but the semantic distinction between initial QA and recheck is lost.
+
+**Fix:** ralph-loop.md should instruct `--type qa-recheck` for rounds > 1.
+
+#### FC-8. `countQAAttempts` has dead `description` prefix fallback (ship.js:212)
+
+```js
+a.description?.startsWith('QA validation')
+```
+
+No agent command prescribes using "QA validation" as a description prefix. This fallback can only match test scaffold data, not real agent output. Worse, it could false-positive if a builder wrote a description starting with "QA validation" — counting a build attempt as a QA round.
+
+**Fix:** Remove the `description` prefix fallback. Rely solely on the `type` field.
+
+#### FC-9. Exec DECISION parsing is default-CONTINUE with no validation (ship.js:1230)
+
+```js
+const decision = result.output?.includes('DECISION: RESTART') ? 'RESTART' : 'CONTINUE';
+```
+
+If exec writes any variant (`Decision: Restart`, `RESTART`, `My decision is to restart`), it silently defaults to CONTINUE. No log warning that the expected format wasn't found.
+
+**Fix:** Log a warning when neither `DECISION: RESTART` nor `DECISION: CONTINUE` appears in output. Consider case-insensitive matching.
+
+---
+
+### MEDIUM — Format drift that causes silent degradation
+
+#### FC-10. `reconcileTaskStatuses` writes non-UUID attempt IDs (ship.js:660)
+
+Creates `id: "reconcile-${Date.now()}-${N}"` instead of UUID. Protocol says `id: string (UUID)`. Validator only checks existence/uniqueness, not format. No consumer parses the ID format, but it violates the documented contract.
+
+#### FC-11. `reconcileTaskStatuses` hardcodes `round: 1` (ship.js:662)
+
+`addAttempt()` auto-calculates round by counting existing same-type attempts. Reconciler hardcodes 1. If the task already has build attempts, the round number will be wrong/duplicate.
+
+#### FC-12. `overallGrade: "pass"` vs letter grades (ship.js:1112 vs design-loop.md)
+
+Ship.js writes `overallGrade: "pass"` on design success. Design agent writes letter grades (`"A"`, `"B+"`, etc.). All consumers that render the grade (`distill-briefing.js` exec/design/walkthrough briefings) display "pass" instead of a meaningful grade after ship.js overwrites.
+
+#### FC-13. `filterOpenConcerns()` uses substring match `s.includes('OPEN')` (distill-briefing.js:145)
+
+Can false-positive on content containing the word "OPEN" in any context (e.g., "OPENING a connection", "OpenAPI spec"). Unlikely in practice but semantically wrong.
+
+#### FC-14. Design agent writes to `patterns.md` without documented schema (design-loop.md:157)
+
+Design agent writes visual patterns to `.qa/memory/patterns.md`. No schema is documented for design-sourced entries. If design omits `**Seen in:**`, `runQualityGate()` and memory-hygiene's `runPatternDedup()` will silently ignore those entries — design's visual patterns never trigger the quality gate or get deduplicated.
+
+---
+
+### LOW
+
+#### FC-15. Stale task handler appends notes with leading space (ship.js:814)
+
+```js
+attempt.notes = (attempt.notes || '') + ' Stale — agent did not complete';
+```
+
+If `notes` was `''` (the default from `addAttempt`), result is `' Stale — agent did not complete'` with a leading space.
+
+---
+
+### FORMAT COMPATIBILITY SUMMARY
+
+| # | Severity | Producer → Consumer | Issue |
+|---|----------|-------------------|-------|
+| FC-1 | Critical | design agent → ship.js | Success path overwrites status.json with stale pre-agent data |
+| FC-2 | Critical | ralph-loop → memory-hygiene | 3 field name mismatches on trajectory — regression retirement broken |
+| FC-3 | Critical | ralph-loop → memory-hygiene | learnings.txt delimiter mismatch — archiving never triggers |
+| FC-4 | High | exec.md → ship.js | `**Human decision:**` regex case-sensitive and format-brittle |
+| FC-5 | High | pm-reference → memory-hygiene | concerns.md resolution field name mismatch |
+| FC-6 | High | builder → QA briefing | QA briefing drops attempt `description` field |
+| FC-7 | High | qa.md → ship.js | `qa-recheck` type never instructed, never matches real data |
+| FC-8 | High | (none) → ship.js | Dead `description` prefix fallback could false-positive |
+| FC-9 | High | exec → ship.js | DECISION parsing silent default-CONTINUE, no validation |
+| FC-10 | Medium | ship.js reconciler → protocol | Non-UUID attempt IDs violate documented schema |
+| FC-11 | Medium | ship.js reconciler → protocol | Hardcoded round:1 produces wrong/duplicate rounds |
+| FC-12 | Medium | ship.js → consumers | `"pass"` vs letter grades after design success |
+| FC-13 | Medium | (any) → distill-briefing | `OPEN` substring match can false-positive |
+| FC-14 | Medium | design-loop → quality gate | No documented schema for design-sourced patterns |
+| FC-15 | Low | ship.js stale handler → consumers | Leading space in appended notes |
