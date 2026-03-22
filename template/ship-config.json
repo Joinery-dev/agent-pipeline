@@ -5,5 +5,6 @@
   "maxBuildBatch": 5,
   "maxExecRestarts": 3,
   "progressCheckIntervalMs": 300000,
+  "heartbeatIntervalMs": 30000,
   "maxChecksWithoutProgress": 2
 }
