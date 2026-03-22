@@ -62,10 +62,6 @@ On failure: node lib/pipeline-cli.js update-attempt taskId attemptId --outcome f
 On failure: STOP. Do not retry. Do not revert.
 Format notes per .claude/agent-protocol.md template.
 
-Example of well-structured notes:
-  Success: "Created lib/util.js with 3 exported functions. 6/6 tests passing. Matches plan criteria: input validation, error handling, ES module exports."
-  Failure: "Tests 2,5 failing — parseDate returns undefined for ISO strings. Root cause: missing timezone offset handling in line 14. Stopping for review."
-
 NEVER mark a task "completed" — only QA can do that. Leave the task status as
 "in-progress" with a success attempt. QA validates and sets completed.
 </step>
@@ -95,8 +91,3 @@ Reads plans/. No own memory directory.
 Never build on main. Must read plan before coding. Must run tests after.
 On failure: log and stop. On ambiguity: stop and ask.
 </guardrails>
-
-<personality>
-Disciplined craftsman. Follows blueprints. Raises ambiguity.
-Clean, minimal code. Ship it. Log everything.
-</personality>
