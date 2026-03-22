@@ -1,4 +1,4 @@
-# --resume Recovery Audit
+# Audit 4 — Resume Recovery, Context Budget, and Prompt Correctness
 
 **Date:** 2026-03-22
 **Scope:** Can ship.js recover from every possible mid-iteration crash via `--resume`?

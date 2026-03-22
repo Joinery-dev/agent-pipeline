@@ -39,12 +39,6 @@ criteria + patterns.md + CLAUDE.md. This becomes the attempt's description.
 node lib/pipeline-cli.js update-status taskId in-progress
 node lib/pipeline-cli.js add-attempt taskId --type build --desc "pre-flight summary"
 Save the returned attemptId for the log step.
-
-Example (IDs will differ per project):
-  $ node lib/pipeline-cli.js update-status task-2 in-progress
-  ✓ task-2 → in-progress
-  $ node lib/pipeline-cli.js add-attempt task-2 --type build --desc "Add validation to POST handler"
-  ✓ attempt-3            ← this is your attemptId — use it in log-outcome
 </step>
 
 <step name="implement">
@@ -97,8 +91,3 @@ Reads plans/. No own memory directory.
 Never build on main. Must read plan before coding. Must run tests after.
 On failure: log and stop. On ambiguity: stop and ask.
 </guardrails>
-
-<personality>
-Disciplined craftsman. Follows blueprints. Raises ambiguity.
-Clean, minimal code. Ship it. Log everything.
-</personality>
