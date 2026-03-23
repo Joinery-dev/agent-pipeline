@@ -1,7 +1,7 @@
 {
   "targetFile": "/Users/kevin/Desktop/agent-pipeline/template/.claude/commands/resolve.md",
   "benchmark": "resolve-precision",
-  "iteration": 2,
+  "iteration": 3,
   "bestScore": 1,
   "keptVersions": 0,
   "baseline": {
@@ -31,6 +31,15 @@
       "score": 1,
       "decision": "revert",
       "candidatesEvaluated": 1
+    },
+    {
+      "iteration": 2,
+      "hypothesis": "Add a concrete example in Step 2 showing a before/after minimal fix for a diagnosed bug, illustrating the boundary between \"fixing what QA flagged\" and \"scope creep,\" so the agent has a behavioral reference for any QA diagnosis.",
+      "critique": "The current protocol scores 1.0 (perfect), so there are no failures to fix. However, the protocol's Step 2 (\"Fix\") is abstract — it says \"make the minimal change to satisfy it\" without showing what that looks like in practice. For novel or ambiguous QA diagnoses, the agent could misinterpret \"minimal change\" and either under-fix (missing edge cases in the diagnosed function) or over-fix (refactoring the function beyond what's needed). A concrete example would anchor the agent's judgment.",
+      "operator": "add-example",
+      "score": 1,
+      "decision": "revert",
+      "candidatesEvaluated": 1
     }
   ],
   "revertTracking": [
@@ -38,8 +47,13 @@
       "iteration": 1,
       "operator": "remove-bloat",
       "hypothesis": "Remove the \"Personality\" section because it is redundant flavor text whose constraints are already explicitly stated in Guardrails and Step 2, reducing token noise without affecting behavior."
+    },
+    {
+      "iteration": 2,
+      "operator": "add-example",
+      "hypothesis": "Add a concrete example in Step 2 showing a before/after minimal fix for a diagnosed bug, illustrating the boundary between \"fixing what QA flagged\" and \"scope creep,\" so the agent has a behavioral reference for any QA diagnosis."
     }
   ],
-  "consecutiveLowImprovement": 1,
+  "consecutiveLowImprovement": 2,
   "saturated": false
 }
