@@ -78,6 +78,13 @@ Bad: "API works correctly"
 task B's description: "Depends on: [Task A title]. Uses the [component/API]
 created there."
 
+### Visual asset tasks
+
+Include visual asset tasks when the project has a UI: favicon, OG/social
+images, placeholder imagery (SVG illustrations, gradient backgrounds, CSS
+art), feature icons. A project without visual assets looks unfinished. The
+builder can generate SVGs, CSS gradients, and simple illustrations.
+
 ### Visual Specification (required for UI phases)
 
 Add a `## Visual Specification` section to the plan. For each page or
