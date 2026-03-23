@@ -201,7 +201,7 @@ Report format:
   "criteria": [{ "id": "", "description": "", "source": "", "taskTitle": "",
     "passes": false, "severity": "CRITICAL|HIGH|MEDIUM", "lastTestedRound": 1, "notes": "" }],
   "forestWarnings": [{ "id": "", "description": "", "risk": "HIGH|MEDIUM|LOW",
-    "context": "", "suggestion": "", "round": 1 }],
+    "category": "code|pipeline", "context": "", "suggestion": "", "round": 1 }],
   "trajectory": [{ "round": 1, "passing": 0, "total": 0, "delta": null }]
 }
 ```
