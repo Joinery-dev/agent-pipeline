@@ -77,6 +77,37 @@ Forest findings are **WARNING** (advisory, not blocking). Risk levels: HIGH, MED
 
 Run forest findings through a review agent (Agent tool) to catch false positives before reporting.
 
+### Interactive browser verification
+
+If the plan has success criteria describing user flows (navigation, form
+submission, state changes, authentication), verify them interactively:
+
+1. Identify criteria that require interaction (clicking, typing, navigating)
+2. For each flow, write a scenario JSON to `.qa/scenarios/<phaseId>/`:
+   ```json
+   {
+     "name": "User can sign up and reach dashboard",
+     "steps": [
+       { "action": "goto", "value": "/signup" },
+       { "action": "fill", "selector": "input[name='email']", "value": "test@example.com" },
+       { "action": "fill", "selector": "input[name='password']", "value": "pass123" },
+       { "action": "click", "selector": "button[type='submit']" },
+       { "action": "waitForURL", "value": "/dashboard" },
+       { "action": "assertVisible", "selector": "h1", "text": "Welcome" }
+     ]
+   }
+   ```
+3. Run: `node lib/browser-test.js --scenario <file> --phase <phaseId>`
+4. On success, a Playwright spec file is auto-generated in `tests/qa/` as a
+   permanent regression test
+5. Failed interactive tests are **tree findings** (blocking)
+
+**Available actions:** `goto`, `click` (selector or text), `fill`, `select`,
+`check`, `uncheck`, `waitForURL`, `waitForSelector`, `assertVisible`,
+`assertText`, `assertURL`, `assertNotVisible`, `screenshot`, `wait`
+
+If no interactive criteria exist in the plan, skip this step.
+
 ### Forest test codification
 
 After forest analysis, encode HIGH and MEDIUM cross-cutting findings as

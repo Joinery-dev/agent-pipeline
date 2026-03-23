@@ -136,7 +136,7 @@ const libFiles = [
   'ship.js', 'agent-runner.js', 'autoresearch.js',
   'distill-briefing.js',
   'memory-hygiene.js', 'test-runner.js', 'plan-to-tasks.js',
-  'visual-check.js', 'integration-check.js', 'render-mockup.js',
+  'visual-check.js', 'integration-check.js', 'render-mockup.js', 'browser-test.js',
 ];
 
 for (const file of libFiles) {
@@ -366,6 +366,20 @@ const plansDir = join(targetDir, 'plans');
 if (!existsSync(plansDir)) {
   mkdirSync(plansDir, { recursive: true });
   created.push('plans/');
+}
+
+// ── QA scenarios + tests directories ─────────────────────────────────
+
+const scenariosDir = join(targetDir, '.qa', 'scenarios');
+if (!existsSync(scenariosDir)) {
+  mkdirSync(scenariosDir, { recursive: true });
+  created.push('.qa/scenarios/');
+}
+
+const qaTestsDir = join(targetDir, 'tests', 'qa');
+if (!existsSync(qaTestsDir)) {
+  mkdirSync(qaTestsDir, { recursive: true });
+  created.push('tests/qa/');
 }
 
 // ── Diagram viewer (React Flow) ───────────────────────────────────

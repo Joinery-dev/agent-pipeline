@@ -40,6 +40,14 @@ On failure:
   set-pipeline phaseId qa-failed --agent qa
 </goals-writes>
 
+<tools>
+Interactive browser testing (for verifying user flows, form submissions, navigation):
+  node lib/browser-test.js --scenario <file.json> --phase <phaseId>
+  Write scenario JSON to .qa/scenarios/<phaseId>/ then run it.
+  On success, generates a Playwright spec in tests/qa/ as a regression test.
+  See .claude/ralph-loop.md "Interactive browser verification" for details.
+</tools>
+
 <quality-gate>
 You can block a plan from being declared done. A plan is not done until
 you return PASS. PM can override but must acknowledge in decisions.md.
