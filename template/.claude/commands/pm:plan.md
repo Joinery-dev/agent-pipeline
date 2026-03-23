@@ -285,12 +285,9 @@ a picture of the product.
    - Use colored rectangles with labels for image placeholders
    - For mobile, either use responsive CSS or create a separate HTML file
 
-2. Render to PNG:
-   node lib/render-mockup.js --html .design/illustrations/<slug>.html --output .design/illustrations/<slug>-desktop.png --viewport 1280x800
+2. Render to PNG and register in .goals.json (one command does both):
+   node lib/render-mockup.js --html .design/illustrations/<slug>.html --output .design/illustrations/<slug>-desktop.png --viewport 1280x800 --entityId <entityId> --title "Page: Name"
    node lib/render-mockup.js --html .design/illustrations/<slug>.html --output .design/illustrations/<slug>-mobile.png --viewport 375x812
-
-3. Store via CLI:
-   node lib/pipeline-cli.js add-illustration <entityId> --title "Page: Name" --imagePath .design/illustrations/<slug>-desktop.png --htmlSource .design/illustrations/<slug>.html --viewport 1280x800
 
 **Nesting:** If a parent entity has an illustration, this illustration should
 zoom into a specific region of the parent. Include --parentIllustration and

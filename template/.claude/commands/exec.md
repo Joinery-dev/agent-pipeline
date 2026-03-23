@@ -79,9 +79,32 @@ picture ("Tell me more about what you're envisioning"), then drill into
 areas that are vague. If the human gives a detailed brief, you may not
 need to ask much. If they say "build me a website", you need to ask a lot.
 
-When you're confident you understand the project, summarize your understanding
-back to the human and ask them to confirm before proceeding. Only move to the
-next step after they confirm.
+**Loop until you're confident the plan will produce what the human
+actually wants.** After each round of questions, evaluate what you know:
+
+1. Review everything the human has told you so far.
+2. Identify what you still don't know that would make the difference
+   between a generic result and one that's actually right for them.
+3. If there are gaps, ask about the specific missing pieces — not a
+   checklist, but the 3-5 things where your ignorance would hurt the
+   output most. Name what's missing and why it matters, so the human
+   can prioritize what to tell you. For example: if you're building a
+   product site but don't know the pricing model, that changes every
+   page. If you don't know the primary CTA, you can't design the
+   conversion flow.
+4. Repeat. Each round should surface fewer and more specific gaps as
+   your understanding deepens. Stop when you can confidently say: "I
+   know enough to decompose this into phases that will produce the
+   thing you're describing, not a generic version of it."
+
+The human may say "that's all I have" or decline to answer some questions.
+That's fine — note the gaps you'll have to make judgment calls on and move
+forward. But don't stop asking after one round just because you got answers.
+Evaluate whether those answers opened new questions.
+
+When you're confident, summarize your understanding back to the human and
+ask them to confirm before proceeding. Only move to the next step after
+they confirm.
 </step>
 
 <step name="understand" mode="initial">
@@ -294,11 +317,8 @@ mockup of the most important page/screen.
    - Show the primary page with real-ish content
    - Inline all CSS, no JavaScript, no external dependencies
 
-2. Render to PNG:
-   node lib/render-mockup.js --html .design/illustrations/project-overview.html --output .design/illustrations/project-overview-desktop.png --viewport 1280x800
-
-3. Store via CLI:
-   node lib/pipeline-cli.js add-illustration <projectId> --title "Product Overview" --imagePath .design/illustrations/project-overview-desktop.png --htmlSource .design/illustrations/project-overview.html --viewport 1280x800
+2. Render to PNG and register in .goals.json (one command does both):
+   node lib/render-mockup.js --html .design/illustrations/project-overview.html --output .design/illustrations/project-overview-desktop.png --viewport 1280x800 --entityId <projectId> --title "Product Overview"
 
 This becomes the parent illustration that major phase mockups zoom into.
 
