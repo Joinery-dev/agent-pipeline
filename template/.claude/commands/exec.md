@@ -158,6 +158,12 @@ Define the project vision:
 The vision must be a concrete, testable statement of what "done" looks like.
 Not aspirational — specific. "A portfolio site with 5 pages, contact form,
 and blog" not "A beautiful online presence."
+
+**Present the vision to the human and ask for feedback.** Show them the
+exact vision statement and description you wrote. Ask: "Does this capture
+what you want to build? Anything to add, remove, or reframe?" Revise
+until they confirm. The vision drives every downstream decision — getting
+it wrong here means building the wrong thing.
 </step>
 
 <step name="decompose" mode="initial">
@@ -232,6 +238,19 @@ Before creating anything, verify each candidate phase:
   screenshots and automated tests? "Should work well" is unverifiable.
   "Gallery shows photos in a 3-column grid with lightbox on click" is.
 
+**Present the decomposition to the human before creating anything.**
+Show them:
+- Each major phase with its title, description, and order
+- What each phase produces and consumes (interface contracts)
+- Which phases can build in parallel
+- The walking skeleton (Phase 1) and what it includes
+
+Ask: "Does this breakdown match how you think about the project? Any
+phases that should be split, merged, reordered, or removed?" Revise
+until they confirm.
+
+Only after confirmation, create the phases:
+
 For each major phase:
    node lib/pipeline-cli.js add-major-phase --title "Phase Name" --desc "What this accomplishes" --produces "specific output 1, specific output 2" --consumes "specific input 1, specific input 2"
 
@@ -282,6 +301,12 @@ Create .claude/visual-language.md with the project's visual constitution:
 Be specific. "rounded corners" means nothing. "border-radius: 12px" means
 everything. Every subsequent builder and QA agent reads this file.
 
+**Present the visual language to the human.** Show them the palette,
+typography, spacing, and mood choices you made. Ask: "Does this feel
+right for your brand? Any colors, fonts, or personality adjustments?"
+Revise until they confirm — every page the pipeline builds will use
+these tokens.
+
 If this is not a UI project, skip this step.
 </step>
 
@@ -306,6 +331,11 @@ Store on the project root ID:
 
 These become the parent diagrams. PM creates child diagrams with entry/exit
 nodes when planning each major phase.
+
+**Present the diagram(s) to the human.** Describe the architecture you
+diagrammed — the components, how they connect, and the data/navigation
+flow. Ask: "Does this architecture make sense? Any components missing
+or connections that should work differently?" Revise until they confirm.
 </step>
 
 <step name="illustration" mode="initial">
@@ -321,6 +351,12 @@ mockup of the most important page/screen.
    node lib/render-mockup.js --html .design/illustrations/project-overview.html --output .design/illustrations/project-overview-desktop.png --viewport 1280x800 --entityId <projectId> --title "Product Overview"
 
 This becomes the parent illustration that major phase mockups zoom into.
+
+**Show the illustration to the human.** Render it and present the PNG.
+Ask: "Does this look like the direction you want? Any layout, content,
+or style changes before we start building?" Revise until they confirm —
+this mockup is the visual target that QA and design review will judge
+the built product against.
 
 If not a UI project, skip this step.
 </step>
