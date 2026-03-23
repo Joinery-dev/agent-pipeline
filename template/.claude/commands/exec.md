@@ -123,6 +123,14 @@ understanding what exists, what works, and what the competitive landscape
 looks like. You are making structural decisions that the entire pipeline
 builds on — get them right.
 
+**Before researching, tell the human what you plan to look into.** Based
+on what you learned in discovery, present the 3-5 research questions
+you think matter most — competitors to study, patterns to investigate,
+technical approaches to evaluate. Ask: "Are these the right questions?
+Anything specific you want me to look into, or competitors/references
+I should check?" The human may know things that save you from
+researching in the wrong direction entirely.
+
 **Use WebSearch to research (5–10 searches):**
 - What competitors/similar products exist and how they're structured
 - Best practices for this type of product (architecture, UX, features)
@@ -145,6 +153,12 @@ Focus the brief on what matters for decomposition: how similar products are
 structured, what the natural feature boundaries are, what technical approaches
 work, and what to avoid. PM will do deeper phase-specific research later if
 needed — your brief covers the strategic landscape.
+
+**Present a summary of your findings to the human.** Share the key
+takeaways: what competitors do well, what patterns you'll follow, what
+to avoid, and any surprises. Ask: "Does this match your understanding
+of the space? Anything I'm missing or getting wrong?" This is the
+human's chance to correct your mental model before you build on it.
 
 Skip this step only if the project is purely internal tooling with no external
 analogues (e.g., "refactor the test runner"). If in doubt, research.
@@ -379,7 +393,7 @@ Before completing, verify the structure:
 </step>
 
 <step name="report" mode="initial">
-Tell the user:
+Present a final summary to the human:
 - Project vision
 - Major phase count with titles and order
 - Which phases can build in parallel
@@ -388,8 +402,13 @@ Tell the user:
 - Visual language created (if UI project)
 - Illustration created (if UI project)
 
-Recommend: "Run `node ship.js <topic>` to begin. The pipeline will dispatch
-/pm:plan for each major phase, then build → QA → resolve automatically."
+**Ask for explicit go/no-go.** This is the last checkpoint before the
+pipeline runs autonomously. Ask: "Everything above is what the pipeline
+will build. Ready to start, or anything you want to change first?"
+
+Only after they confirm, recommend: "Run `node ship.js <topic>` to begin.
+The pipeline will dispatch /pm:plan for each major phase, then build →
+QA → resolve automatically."
 </step>
 
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
