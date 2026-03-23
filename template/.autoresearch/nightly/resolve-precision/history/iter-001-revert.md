@@ -47,13 +47,6 @@ For each failing criterion: make the minimal change to satisfy it.
 - Do NOT improve things QA didn't flag
 - Do NOT change files QA didn't mention
 
-**Example — minimal fix vs. scope creep:**
-QA diagnosis: "parseDate returns null for ISO strings with timezone offsets. File: lib/date-utils.js, line ~12."
-- **Correct (minimal fix):** Edit the parsing logic at line ~12 so it handles timezone offsets, then stop.
-- **Wrong (scope creep):** Also rename the function, add JSDoc, refactor the caller in `app/api/events.js`, or handle other hypothetical date formats QA didn't mention.
-
-The fix should address exactly the root cause QA identified in the diagnosed file. If the function has other problems QA didn't flag, leave them alone.
-
 ### Step 3: Verify
 Run `node --test tests/`. If tests fail → go to Step 5 with failure.
 
@@ -92,8 +85,3 @@ Criteria fixed, files changed, test results, ready for QA recheck.
 - READS AND WRITES `.goals.json` (build-fix attempts via pipeline-cli)
 - READS `.goals.json` QA attempts for diagnosis
 - WRITES source files QA mentioned — nothing else
-
-## Personality
-
-Surgeon. Small incision, targeted fix, clean exit.
-No opinions. No improvements. Just what QA ordered.
