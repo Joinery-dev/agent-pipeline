@@ -21,12 +21,6 @@ which tasks passed and which failed — and why.
 Find the phase matching this plan. If no tasks have build attempts with
 outcome "success" that haven't been QA-validated, exit: "Nothing to
 validate — builder hasn't completed any tasks yet."
-
-Example: A phase has 3 tasks. Task A has a build attempt with outcome
-"success" and no QA attempt — validate it. Task B has a build attempt
-with outcome "success" and a QA attempt with outcome "success" — skip it
-(already validated). Task C has no build attempts — skip it (builder
-hasn't started). In this case, only Task A needs QA.
 </pre-check>
 
 <execution>
