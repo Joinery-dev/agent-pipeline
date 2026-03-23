@@ -15,6 +15,7 @@
       { "script": ".autoresearch/inline/collect.js", "args": ["--trigger", "post-resolve"], "timeout": 5000 }
     ],
     "phase-complete": [
+      { "script": ".autoresearch/inline/collect.js", "args": ["--trigger", "phase-complete"], "timeout": 5000 },
       { "script": ".autoresearch/inline/report.js", "args": ["--generate"], "timeout": 10000 }
     ]
   }

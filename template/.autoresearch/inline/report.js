@@ -46,26 +46,99 @@ function readSignals() {
 // ── Summary metrics ──────────────────────────────────────────────────────
 
 function computeSummary(signals) {
-  if (signals.length === 0) return null;
+  const taskSignals = signals.filter(s => s.type !== 'phase');
+  if (taskSignals.length === 0) return null;
 
-  const firstPassCount = signals.filter(s => s.firstPassQA).length;
+  const firstPassCount = taskSignals.filter(s => s.builder?.firstPassQA).length;
 
   return {
-    totalTasks: signals.length,
-    firstPassQARate: firstPassCount / signals.length,
-    avgBuildAttempts: signals.reduce((s, r) => s + (r.buildAttempts || 0), 0) / signals.length,
-    avgFixAttempts: signals.reduce((s, r) => s + (r.fixAttempts || 0), 0) / signals.length,
-    avgRoundsToComplete: signals.reduce((s, r) => s + (r.roundsToComplete || 0), 0) / signals.length,
+    totalTasks: taskSignals.length,
+    firstPassQARate: firstPassCount / taskSignals.length,
+    avgBuildAttempts: taskSignals.reduce((s, r) => s + (r.builder?.buildAttempts || 0), 0) / taskSignals.length,
+    avgFixAttempts: taskSignals.reduce((s, r) => s + (r.builder?.fixAttempts || 0), 0) / taskSignals.length,
+    avgRoundsToComplete: taskSignals.reduce((s, r) => s + (r.roundsToComplete || 0), 0) / taskSignals.length,
   };
+}
+
+// ── Per-agent analysis ───────────────────────────────────────────────────
+
+function analyzePerAgent(signals) {
+  const taskSignals = signals.filter(s => s.type !== 'phase');
+  const phaseSignals = signals.filter(s => s.type === 'phase');
+
+  if (taskSignals.length === 0) return {};
+
+  // ── Builder signal → maps to build-basic, build-api, build-component benchmarks
+  const builderFailureCounts = {};
+  for (const s of taskSignals) {
+    for (const cat of s.builder?.failureCategories || []) {
+      builderFailureCounts[cat] = (builderFailureCounts[cat] || 0) + 1;
+    }
+  }
+  const builderTopFailures = Object.entries(builderFailureCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([category, count]) => ({ category, count }));
+
+  const firstPassCount = taskSignals.filter(s => s.builder?.firstPassQA).length;
+
+  const builder = {
+    targetBenchmarks: ['build-basic', 'build-api', 'build-component'],
+    firstPassQARate: +(firstPassCount / taskSignals.length).toFixed(3),
+    avgBuildAttempts: +(taskSignals.reduce((s, r) => s + (r.builder?.buildAttempts || 0), 0) / taskSignals.length).toFixed(2),
+    avgFixAttempts: +(taskSignals.reduce((s, r) => s + (r.builder?.fixAttempts || 0), 0) / taskSignals.length).toFixed(2),
+    topFailures: builderTopFailures,
+    tasks: taskSignals.length,
+  };
+
+  // ── QA signal → maps to qa-accuracy, qa-false-positives benchmarks
+  const totalQAAttempts = taskSignals.reduce((s, r) => s + (r.qa?.attempts || 0), 0);
+  const totalQAFailures = taskSignals.reduce((s, r) => s + (r.qa?.failures || 0), 0);
+  const totalQASuccesses = taskSignals.reduce((s, r) => s + (r.qa?.successes || 0), 0);
+  const totalRechecks = taskSignals.reduce((s, r) => s + (r.qa?.rechecks || 0), 0);
+  const recheckSuccesses = taskSignals.filter(s => s.qa?.recheckSuccessRate === 1.0).length;
+
+  const qa = {
+    targetBenchmarks: ['qa-accuracy', 'qa-false-positives'],
+    totalAttempts: totalQAAttempts,
+    failureRate: totalQAAttempts > 0 ? +(totalQAFailures / totalQAAttempts).toFixed(3) : null,
+    successRate: totalQAAttempts > 0 ? +(totalQASuccesses / totalQAAttempts).toFixed(3) : null,
+    recheckCount: totalRechecks,
+    recheckSuccessRate: totalRechecks > 0 ? +(recheckSuccesses / taskSignals.filter(s => (s.qa?.rechecks || 0) > 0).length).toFixed(3) : null,
+    tasks: taskSignals.length,
+  };
+
+  // ── Resolver signal → maps to resolve-precision benchmark
+  const tasksWithResolve = taskSignals.filter(s => (s.resolver?.attempts || 0) > 0);
+  const resolveSucceeded = tasksWithResolve.filter(s => s.resolver?.succeeded).length;
+
+  const resolver = {
+    targetBenchmarks: ['resolve-precision'],
+    tasksRequiringResolve: tasksWithResolve.length,
+    fixSuccessRate: tasksWithResolve.length > 0 ? +(resolveSucceeded / tasksWithResolve.length).toFixed(3) : null,
+    avgFixAttempts: tasksWithResolve.length > 0 ? +(tasksWithResolve.reduce((s, r) => s + (r.resolver?.fixAttempts || 0), 0) / tasksWithResolve.length).toFixed(2) : null,
+  };
+
+  // ── PM signal → maps to pm-planning benchmark
+  const pm = {
+    targetBenchmarks: ['pm-planning', 'pm-review'],
+    phasesCompleted: phaseSignals.length,
+    avgQARoundsPerPhase: phaseSignals.length > 0 ? +(phaseSignals.reduce((s, r) => s + (r.pm?.qaRoundsNeeded || 0), 0) / phaseSignals.length).toFixed(2) : null,
+    avgCompletionRate: phaseSignals.length > 0 ? +(phaseSignals.reduce((s, r) => s + (r.pm?.completionRate || 0), 0) / phaseSignals.length).toFixed(3) : null,
+  };
+
+  return { builder, qa, resolver, pm };
 }
 
 // ── Failure analysis ─────────────────────────────────────────────────────
 
 function analyzeFailures(signals) {
-  // Top categories
+  const taskSignals = signals.filter(s => s.type !== 'phase');
+
+  // Top categories (from builder failures)
   const categoryCounts = {};
-  for (const s of signals) {
-    for (const cat of s.failureCategories || []) {
+  for (const s of taskSignals) {
+    for (const cat of s.builder?.failureCategories || []) {
       categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
     }
   }
@@ -75,16 +148,14 @@ function analyzeFailures(signals) {
     .map(([category, count]) => ({
       category,
       count,
-      rate: +(count / signals.length).toFixed(3),
+      rate: taskSignals.length > 0 ? +(count / taskSignals.length).toFixed(3) : 0,
     }));
 
   // By complexity tier
   const tiers = { low: [], medium: [], high: [] };
-  for (const s of signals) {
-    const c = s.complexity || 1;
-    if (c <= 2) tiers.low.push(s);
-    else if (c <= 4) tiers.medium.push(s);
-    else tiers.high.push(s);
+  for (const s of taskSignals) {
+    const tier = s.complexityTier || 'medium';
+    if (tiers[tier]) tiers[tier].push(s);
   }
 
   const failuresByComplexity = {};
@@ -92,13 +163,13 @@ function analyzeFailures(signals) {
     if (items.length === 0) continue;
     failuresByComplexity[tier] = {
       tasks: items.length,
-      firstPassRate: +(items.filter(s => s.firstPassQA).length / items.length).toFixed(3),
+      firstPassRate: +(items.filter(s => s.builder?.firstPassQA).length / items.length).toFixed(3),
     };
   }
 
   // By task type
   const typeGroups = {};
-  for (const s of signals) {
+  for (const s of taskSignals) {
     const type = s.taskType || 'general';
     if (!typeGroups[type]) typeGroups[type] = [];
     typeGroups[type].push(s);
@@ -108,7 +179,7 @@ function analyzeFailures(signals) {
   for (const [type, items] of Object.entries(typeGroups)) {
     const failureCats = {};
     for (const s of items) {
-      for (const cat of s.failureCategories || []) {
+      for (const cat of s.builder?.failureCategories || []) {
         failureCats[cat] = (failureCats[cat] || 0) + 1;
       }
     }
@@ -116,7 +187,7 @@ function analyzeFailures(signals) {
 
     failuresByTaskType[type] = {
       tasks: items.length,
-      firstPassRate: +(items.filter(s => s.firstPassQA).length / items.length).toFixed(3),
+      firstPassRate: +(items.filter(s => s.builder?.firstPassQA).length / items.length).toFixed(3),
       topFailure: topFailure ? topFailure[0] : null,
     };
   }
@@ -127,9 +198,11 @@ function analyzeFailures(signals) {
 // ── Trend analysis ───────────────────────────────────────────────────────
 
 function analyzeTrends(signals) {
+  const taskSignals = signals.filter(s => s.type !== 'phase');
+
   // Group by phase
   const phases = {};
-  for (const s of signals) {
+  for (const s of taskSignals) {
     const key = s.phaseId || 'unknown';
     if (!phases[key]) phases[key] = { signals: [], firstTs: s.ts };
     phases[key].signals.push(s);
@@ -139,7 +212,7 @@ function analyzeTrends(signals) {
     .sort((a, b) => a[1].firstTs.localeCompare(b[1].firstTs))
     .map(([phaseId, data]) => ({
       phaseId,
-      rate: +(data.signals.filter(s => s.firstPassQA).length / data.signals.length).toFixed(3),
+      rate: +(data.signals.filter(s => s.builder?.firstPassQA).length / data.signals.length).toFixed(3),
       tasks: data.signals.length,
     }));
 
@@ -266,6 +339,7 @@ function generateReport() {
   } catch {}
 
   const summary = computeSummary(signals);
+  const perAgent = analyzePerAgent(signals);
   const failureAnalysis = analyzeFailures(signals);
   const trends = analyzeTrends(signals);
   const qaPatterns = extractQAPatterns();
@@ -274,8 +348,9 @@ function generateReport() {
   return {
     generatedAt: new Date().toISOString(),
     projectHash,
-    reportVersion: 2,
+    reportVersion: 3,
     summary,
+    perAgent,
     failureAnalysis,
     trends,
     qaPatterns,

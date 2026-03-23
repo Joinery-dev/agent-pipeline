@@ -171,32 +171,41 @@ function collectSignals(phaseId, trigger) {
       const key = `${phase.id}:${task.id}`;
       if (existingKeys.has(key)) continue;
 
-      // Compute fields
-      const buildAttempts = attempts.filter(a => a.type === 'build').length;
-      const fixAttempts = attempts.filter(a => a.type === 'build-fix').length;
-      const qaCount = qaAttempts.length;
+      // ── Per-agent signal extraction ──
 
-      // firstPassQA: QA succeeded AND zero fix attempts
+      // Builder signal
+      const buildCount = attempts.filter(a => a.type === 'build').length;
+      const fixCount = attempts.filter(a => a.type === 'build-fix').length;
       const hasQASuccess = qaAttempts.some(a => a.outcome === 'success');
-      const firstPassQA = hasQASuccess && fixAttempts === 0;
+      const firstPassQA = hasQASuccess && fixCount === 0;
 
-      // Failure categories from QA failure notes
-      const failureCategories = [];
+      const builderFailureCategories = [];
       for (const qa of qaAttempts) {
         if (qa.outcome === 'failure' && qa.notes) {
-          failureCategories.push(...extractFailureCategories(qa.notes));
+          builderFailureCategories.push(...extractFailureCategories(qa.notes));
         }
       }
 
-      // Complexity proxy and tier
+      // QA signal
+      const qaFailures = qaAttempts.filter(a => a.outcome === 'failure');
+      const qaSuccesses = qaAttempts.filter(a => a.outcome === 'success');
+      const qaRechecks = attempts.filter(a => a.type === 'qa-recheck');
+      // False positive heuristic: QA failed a task, resolver made no meaningful change,
+      // but qa-recheck passed. We can't detect this perfectly, so we track recheck success rate.
+      const recheckSuccessRate = qaRechecks.length > 0
+        ? qaRechecks.filter(a => a.outcome === 'success').length / qaRechecks.length
+        : null;
+
+      // Resolver signal
+      const resolveAttempts = attempts.filter(a => a.type === 'build-fix');
+      const resolveSucceeded = resolveAttempts.length > 0 && hasQASuccess;
+      const resolveRounds = resolveAttempts.length;
+
+      // Task metadata
       const filesCount = task.files?.length || 0;
       const complexity = filesCount + 1;
       const complexityTier = complexity <= 2 ? 'low' : complexity <= 4 ? 'medium' : 'high';
-
-      // Task type from file extensions
       const taskType = deriveTaskType(task.files || []);
-
-      // Rounds to complete
       const maxRound = attempts.reduce((max, a) => Math.max(max, a.round || 0), 0);
 
       const record = {
@@ -204,22 +213,61 @@ function collectSignals(phaseId, trigger) {
         phaseId: phase.id,
         taskId: task.id,
         taskTitle: task.title,
-        agent: 'builder',
         complexity,
         complexityTier,
         taskType,
-        firstPassQA,
-        buildAttempts,
-        fixAttempts,
-        qaAttempts: qaCount,
-        failureCategories: [...new Set(failureCategories)],
         filesCount,
         roundsToComplete: maxRound,
         trigger,
+        // Per-agent signal
+        builder: {
+          buildAttempts: buildCount,
+          fixAttempts: fixCount,
+          firstPassQA,
+          failureCategories: [...new Set(builderFailureCategories)],
+        },
+        qa: {
+          attempts: qaAttempts.length,
+          failures: qaFailures.length,
+          successes: qaSuccesses.length,
+          rechecks: qaRechecks.length,
+          recheckSuccessRate,
+        },
+        resolver: {
+          attempts: resolveRounds,
+          succeeded: resolveSucceeded,
+          fixAttempts: fixCount,
+        },
       };
 
       appendFileSync(SIGNALS_PATH, JSON.stringify(record) + '\n');
       existingKeys.add(key);
+      collected++;
+    }
+
+    // ── Phase-level signal (PM / Exec) ──
+    const phaseKey = `phase:${phase.id}`;
+    if (!existingKeys.has(phaseKey) && phase.pipeline?.state === 'complete') {
+      const qaRounds = phase.pipeline?.qaRoundsCumulative || 0;
+      const taskCount = (phase.tasks || []).length;
+      const completedTasks = (phase.tasks || []).filter(t => t.status === 'completed').length;
+
+      const phaseRecord = {
+        ts: new Date().toISOString(),
+        phaseId: phase.id,
+        type: 'phase',
+        trigger,
+        pm: {
+          taskCount,
+          completedTasks,
+          completionRate: taskCount > 0 ? completedTasks / taskCount : 0,
+          qaRoundsNeeded: qaRounds,
+          planRequired: !!phase.planFile,
+        },
+      };
+
+      appendFileSync(SIGNALS_PATH, JSON.stringify(phaseRecord) + '\n');
+      existingKeys.add(phaseKey);
       collected++;
     }
   }
