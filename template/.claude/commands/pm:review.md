@@ -21,6 +21,7 @@ For each file changed:
 - No duplication of existing utils
 - No security issues (SQL injection, XSS, command injection)
 - Tests exist or are noted as missing
+- Consistent with decisions.md
 </checklist>
 
 <output>

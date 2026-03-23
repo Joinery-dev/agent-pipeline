@@ -71,7 +71,7 @@ const commandsDir = join(TEMPLATE_DIR, '.claude', 'commands');
 const targetCommands = join(targetDir, '.claude', 'commands');
 
 const commandFiles = [
-  'exec.md',
+  'exec.md', 'exec:escalation.md',
   'pm.md', 'pm:plan.md', 'pm:research.md', 'pm:handoff.md', 'pm:review.md',
   'build.md', 'qa.md', 'resolve.md', 'walkthrough.md', 'audit.md', 'merge.md', 'diagram.md', 'design-review.md',
 ];
