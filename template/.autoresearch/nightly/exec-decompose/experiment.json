@@ -1,0 +1,30 @@
+{
+  "targetFile": "/Users/kevin/Desktop/agent-pipeline/template/.claude/commands/exec.md",
+  "benchmark": "exec-decompose",
+  "iteration": 2,
+  "bestScore": 1,
+  "keptVersions": 0,
+  "baseline": {
+    "score": 1,
+    "details": {
+      "phaseCount": 6,
+      "phaseCountInRange": true,
+      "allHaveProduces": true,
+      "allHaveConsumes": true,
+      "hasVision": true,
+      "noDuplicateProduces": true,
+      "allDescriptionsSpecific": true,
+      "isAcyclic": true,
+      "allHaveTitleAndDesc": true,
+      "errors": []
+    },
+    "agentSuccess": true,
+    "durationMs": 79333
+  },
+  "startedAt": "2026-03-22T23:59:46.198Z",
+  "branch": "autoresearch-nightly/exec-1774223986198",
+  "history": [],
+  "revertTracking": [],
+  "consecutiveLowImprovement": 0,
+  "saturated": false
+}

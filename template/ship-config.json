@@ -7,9 +7,22 @@
   "progressCheckIntervalMs": 300000,
   "heartbeatIntervalMs": 30000,
   "maxChecksWithoutProgress": 2,
-  "hooks": {},
+  "hooks": {
+    "post-qa": [
+      { "script": ".autoresearch/inline/collect.js", "args": ["--trigger", "post-qa"], "timeout": 5000 }
+    ],
+    "post-resolve": [
+      { "script": ".autoresearch/inline/collect.js", "args": ["--trigger", "post-resolve"], "timeout": 5000 }
+    ],
+    "iteration-start": [
+      { "script": ".autoresearch/inline/check.js", "timeout": 30000 }
+    ],
+    "phase-complete": [
+      { "script": ".autoresearch/inline/check.js", "timeout": 5000 }
+    ]
+  },
   "inlineAutoresearch": {
-    "enabled": false,
+    "enabled": true,
     "targetAgent": "builder",
     "targetMetric": "firstPassQARate",
     "windowSize": 5,

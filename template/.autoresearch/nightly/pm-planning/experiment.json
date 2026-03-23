@@ -1,0 +1,28 @@
+{
+  "targetFile": "/Users/kevin/Desktop/agent-pipeline/template/.claude/commands/pm:plan.md",
+  "benchmark": "pm-planning",
+  "iteration": 1,
+  "bestScore": 1,
+  "keptVersions": 0,
+  "baseline": {
+    "score": 1,
+    "details": {
+      "planFileCreated": true,
+      "planFilePath": "plans/user-auth.md",
+      "subPhasesCount": 3,
+      "tasksCount": 9,
+      "tasksWithFullFields": 9,
+      "planHasSuccessCriteria": true,
+      "descriptiveTitles": 9,
+      "planReferencesContract": true
+    },
+    "agentSuccess": true,
+    "durationMs": 74944
+  },
+  "startedAt": "2026-03-23T00:08:15.565Z",
+  "branch": "autoresearch-nightly/pm-plan-1774224495565",
+  "history": [],
+  "revertTracking": [],
+  "consecutiveLowImprovement": 0,
+  "saturated": false
+}

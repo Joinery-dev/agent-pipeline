@@ -73,7 +73,7 @@ const targetCommands = join(targetDir, '.claude', 'commands');
 const commandFiles = [
   'exec.md',
   'pm.md', 'pm:plan.md', 'pm:research.md', 'pm:handoff.md', 'pm:review.md',
-  'build.md', 'qa.md', 'resolve.md', 'merge.md', 'diagram.md', 'design-review.md',
+  'build.md', 'qa.md', 'resolve.md', 'walkthrough.md', 'audit.md', 'merge.md', 'diagram.md', 'design-review.md',
 ];
 
 for (const file of commandFiles) {
@@ -259,6 +259,12 @@ writeIfMissing(
   join(execMemory, 'escalation-log.md'),
   `# Escalation Log\n\n(none yet)\n`,
   '.exec/memory/escalation-log.md'
+);
+
+writeIfMissing(
+  join(execMemory, 'escalation-count.json'),
+  `{"count": 0}\n`,
+  '.exec/memory/escalation-count.json'
 );
 
 // ── Visual language + design protocol ─────────────────────────────

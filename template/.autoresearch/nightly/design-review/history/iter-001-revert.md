@@ -28,16 +28,11 @@ CAPTURE → CHECK → DIAGNOSE → PERSIST).
 </execution>
 
 <ownership>
-OWNS (read + write):
-- .design/memory/ — all files (status.json, findings.md, visual-drift.md, page-grades.json)
-
-CROSS-WRITES (shared with other agents):
-- .pm/memory/concerns.md — writes QUALITY+ findings
-- .qa/memory/patterns.md — writes recurring visual patterns
-
-READS (read-only):
-- .claude/visual-language.md (recommends updates, PM decides)
-- plans/, .goals.json, all other memory directories
+- **OWNS** `.design/memory/` — no other agent writes here
+- **READS** `.claude/visual-language.md` (recommends updates, PM decides)
+- **READS AND WRITES** `.pm/memory/concerns.md` — QUALITY+ findings
+- **READS AND WRITES** `.qa/memory/patterns.md` — recurring visual patterns
+- **READS** plan files, `.goals.json`, all other memory (never modifies)
 </ownership>
 
 <modes>

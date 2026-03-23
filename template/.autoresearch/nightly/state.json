@@ -37,25 +37,40 @@
     {
       "target": "design-review.md",
       "benchmark": "design-review",
-      "status": "running",
-      "budgetHours": 0.024999999999999994
+      "status": "completed",
+      "budgetHours": 0.024999999999999994,
+      "bestScore": 1,
+      "saturated": false,
+      "iterations": 1,
+      "keeps": 0,
+      "reverts": 1
     },
     {
       "target": "exec.md",
       "benchmark": "exec-decompose",
-      "status": "pending",
-      "budgetHours": 0.039999999999999994
+      "status": "completed",
+      "budgetHours": 0.039999999999999994,
+      "bestScore": 1,
+      "saturated": false,
+      "iterations": 1,
+      "keeps": 0,
+      "reverts": 0
     },
     {
       "target": "exec.md",
       "benchmark": "exec-small-project",
-      "status": "pending",
-      "budgetHours": 0.029999999999999992
+      "status": "completed",
+      "budgetHours": 0.029999999999999992,
+      "bestScore": 1,
+      "saturated": false,
+      "iterations": 1,
+      "keeps": 0,
+      "reverts": 0
     },
     {
       "target": "pm:plan.md",
       "benchmark": "pm-planning",
-      "status": "pending",
+      "status": "running",
       "budgetHours": 0.029999999999999992
     },
     {

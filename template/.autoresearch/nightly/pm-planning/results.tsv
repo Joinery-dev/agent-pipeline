@@ -1,0 +1,2 @@
+iteration	timestamp	hypothesis	score	best_score	delta	decision	duration_ms	eval_details
+0	2026-03-23T00:09:30.614Z	baseline	1	1	-	baseline	74944	{"planFileCreated":true,"planFilePath":"plans/user-auth.md","subPhasesCount":3,"tasksCount":9,"tasksWithFullFields":9,"planHasSuccessCriteria":true,"descriptiveTitles":9,"planReferencesContract":true}

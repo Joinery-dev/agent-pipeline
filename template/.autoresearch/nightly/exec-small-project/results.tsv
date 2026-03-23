@@ -1,0 +1,2 @@
+iteration	timestamp	hypothesis	score	best_score	delta	decision	duration_ms	eval_details
+0	2026-03-23T00:05:15.309Z	baseline	1	1	-	baseline	69404	{"phaseCount":3,"phaseCountInRange":true,"allHaveProduces":true,"allHaveConsumes":true,"hasVision":true,"allDescriptionsSpecific":true,"noTooGranularPhases":true,"allHaveTitleAndDesc":true,"isAcyclic":true,"tooGranularPhases":[],"errors":[]}

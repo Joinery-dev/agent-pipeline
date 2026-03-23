@@ -51,6 +51,8 @@ PRIMARY reference.** Compare built page against mockup:
 Grade: A (near-identical) through F (completely different).
 C or below on any critical area = **SHIP-BLOCKER**.
 
+Always write letter grades (A, A-, B+, B, B-, C+, C, C-, D, F) to `overallGrade` in status.json. Do not use 'pass' or 'fail' — those are not valid grades.
+
 **If no illustration**, evaluate against text Visual Specification point by point:
 - Layout, hierarchy, mood, content flow, key details
 - Binary per point: **MET** or **NOT MET**
@@ -155,7 +157,7 @@ Check grade trajectory in `page-grades.json` — is each page improving, stable,
 3. `.design/memory/page-grades.json` — new grade entry per page.
 4. `.design/memory/visual-drift.md` — new drift items, resolve old ones.
 5. `.pm/memory/concerns.md` — write QUALITY+ findings so PM addresses them.
-6. `.qa/memory/patterns.md` — write recurring visual patterns for QA to check.
+6. `.qa/memory/patterns.md` — write recurring visual patterns for QA to check. When writing visual patterns to patterns.md, use the same schema as QA: include `**Symptoms:**`, `**Root cause:**`, `**Fix:**`, `**Affected areas:**`, and `**Seen in:**` fields. The quality gate and memory hygiene rely on these fields.
 
 ### Report
 

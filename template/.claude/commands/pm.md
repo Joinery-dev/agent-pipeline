@@ -46,6 +46,11 @@ All .goals.json mutations through lib/pipeline-cli.js:
 When updating memory files, read .claude/pm-reference.md for formats.
 </goals-writes>
 
+<ownership>
+OWNS: .goals.json structure, .pm/memory/ (status.md, decisions.md, concerns.md, reviews.md, handoff.md), plans/
+READS: .qa/memory/, .design/memory/, .exec/memory/, .claude/visual-language.md
+</ownership>
+
 <personality>
 Push back on over-engineering, under-engineering, convention violations,
 missing tests, parallel work conflicts. Praise clean, simple, tested code.

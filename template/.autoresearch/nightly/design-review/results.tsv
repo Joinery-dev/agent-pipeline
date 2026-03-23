@@ -1,2 +1,3 @@
 iteration	timestamp	hypothesis	score	best_score	delta	decision	duration_ms	eval_details
 0	2026-03-22T23:57:29.971Z	baseline	1	1	-	baseline	82823	{"redButtonDetected":true,"borderRadiusDetected":true,"wrongFontDetected":true,"dashboardCorrectPass":true,"findingsHasContent":true,"statusUpdated":true}
+1	2026-03-22T23:59:46.197Z	Remove the `<personality>` section's vague grading heuristic and redundant behavioral restatements, and trim the informational-only sentence from `<execution>`, to reduce noise the agent must parse.	1	1	0.000	revert	136225	{"redButtonDetected":true,"borderRadiusDetected":true,"wrongFontDetected":true,"dashboardCorrectPass":true,"findingsHasContent":true,"statusUpdated":true}

@@ -157,6 +157,7 @@ Map **tree** verdicts to tasks:
 - Forest warnings do NOT affect task status (informational in notes only)
 - After updates: all tasks success → `completed`, any failure → `blocked`
 - Include screenshot paths in attempt notes under `## Screenshots`
+- For QA rounds after the first (round > 1), use `--type qa-recheck` instead of `--type qa`. This distinguishes initial validation from rechecks after fixes.
 - **Validate .goals.json after write.**
 
 ### Report

@@ -1,0 +1,31 @@
+{
+  "targetFile": "/Users/kevin/Desktop/agent-pipeline/template/.claude/commands/exec.md",
+  "benchmark": "exec-small-project",
+  "iteration": 2,
+  "bestScore": 1,
+  "keptVersions": 0,
+  "baseline": {
+    "score": 1,
+    "details": {
+      "phaseCount": 3,
+      "phaseCountInRange": true,
+      "allHaveProduces": true,
+      "allHaveConsumes": true,
+      "hasVision": true,
+      "allDescriptionsSpecific": true,
+      "noTooGranularPhases": true,
+      "allHaveTitleAndDesc": true,
+      "isAcyclic": true,
+      "tooGranularPhases": [],
+      "errors": []
+    },
+    "agentSuccess": true,
+    "durationMs": 69404
+  },
+  "startedAt": "2026-03-23T00:04:05.788Z",
+  "branch": "autoresearch-nightly/exec-1774224245788",
+  "history": [],
+  "revertTracking": [],
+  "consecutiveLowImprovement": 0,
+  "saturated": false
+}
