@@ -46,9 +46,14 @@ Follow the plan. Minimal, focused changes. If ambiguous → STOP and ask.
 </step>
 
 <step name="verify">
-Run node --test tests/. Run relevant specific tests first.
-If the project has a build step (Next.js, Vite, etc.), also run the production
-build (e.g., npx next build). Tests passing but build failing means broken code.
+1. Lint auto-fix: detect the project's linter and run it with auto-fix on changed files.
+   - `npx eslint --fix <files>` if eslint.config.* or .eslintrc* exists
+   - `npx biome check --fix <files>` if biome.json exists
+   - `npx prettier --write <files>` if .prettierrc* or prettier in package.json exists
+   - Skip if no linter config found. Stage any auto-fixed changes.
+2. Run node --test tests/. Run relevant specific tests first.
+3. If the project has a build step (Next.js, Vite, etc.), also run the production
+   build (e.g., npx next build). Tests passing but build failing means broken code.
 </step>
 
 <step name="self-review">
