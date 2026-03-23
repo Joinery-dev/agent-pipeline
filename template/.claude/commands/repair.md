@@ -194,19 +194,29 @@ last 50 lines of the ship log, the decisions log, and prior diagnostics.
 
 ### Execution
 
-You may make BOTH state fixes AND code fixes:
+You make TWO types of fix. Both are important but they serve different purposes:
 
-**State fixes** (repair script `.ship/repair-{id}.sh`):
+**State fixes** (repair script `.ship/repair-{id}.sh`) — **unblocks the current run**:
 - Reset pipeline state via `node lib/pipeline-cli.js set-pipeline`
 - Update task statuses via `node lib/pipeline-cli.js update-status`
 - Clear stale counters or flags in `.goals.json`
-- These unblock the CURRENT run so the retry loop can continue
+- These take effect IMMEDIATELY when the script runs
+- The retry loop will re-enter the pipeline with the fixed state
+- **PRIORITIZE THIS** — state fixes are the only thing that helps the current run
 
-**Code fixes** (direct edits to `lib/` files):
+**Code fixes** (direct edits to `lib/` files) — **prevents recurrence, NOT for current run**:
 - Fix the logic bug in `lib/ship.js` that caused the premature exit
-- This prevents the bug from recurring on retry and in future runs
 - Run `node --test tests/` after any code changes — must pass
 - If tests fail, revert and try state-only fix instead
+
+CRITICAL LIMITATION: Node.js ESM modules are cached at import time. The
+running ship.js process has the OLD code in memory. Your code edits are
+saved to disk but the retry loop still runs the old function definitions.
+Code fixes only take effect on the NEXT `--resume` run or in future runs.
+
+This means: for the retry to succeed, you MUST write a state fix (repair
+script) that works around the bug. The code fix prevents it from happening
+again, but cannot save this run by itself.
 
 ### Step-by-step
 
@@ -216,18 +226,22 @@ You may make BOTH state fixes AND code fixes:
    - The stuck phase and its state
    - What should have happened
    - What actually happened
-3. **Fix the code** (if it's a logic bug in lib/):
+3. **Fix the state FIRST** (always do this):
+   - Write `.ship/repair-{id}.sh` with pipeline-cli commands
+   - This is what unblocks the current retry
+   - Example: if getFailedTasks() returned empty because tasks are in-progress
+     instead of blocked, the script should set them to blocked via pipeline-cli
+4. **Fix the code** (if it's a logic bug in lib/):
    - Edit the relevant function in `lib/ship.js`
    - Run `node --test tests/`
-   - If tests pass, the fix is live for the retry
-4. **Fix the state** (if goals.json needs unblocking):
-   - Write `.ship/repair-{id}.sh` with pipeline-cli commands
-5. **Log to `.ship/repairs.md`** — describe the root cause and fix
+   - This prevents the bug from recurring in future runs
+5. **Log to `.ship/repairs.md`** — describe the root cause, state fix, and code fix
 
 ### Guardrails (diagnose-exit)
 
-- You CAN modify `lib/` files — this is the whole point, logic bugs need code fixes
+- You CAN modify `lib/` files — but remember code changes don't help the current run
 - You CANNOT modify user project code (app/, components/, etc.)
+- You MUST write a state fix repair script — this is what actually unblocks the retry
 - You MUST run tests after code changes
 - You MUST capture diagnostics before fixing (future attempts need them)
 - You MUST log the root cause and fix to `.ship/repairs.md`
