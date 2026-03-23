@@ -125,8 +125,14 @@
     {
       "target": "ship-config.json",
       "benchmark": "ship-config",
-      "status": "running",
-      "budgetHours": 0.029999999999999992
+      "status": "completed",
+      "budgetHours": 0.029999999999999992,
+      "bestScore": 1,
+      "saturated": false,
+      "iterations": 1,
+      "keeps": 0,
+      "reverts": 1
     }
-  ]
+  ],
+  "completedAt": "2026-03-23T00:39:24.595Z"
 }

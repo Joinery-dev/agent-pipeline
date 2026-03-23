@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-03-22T00:00:00Z",
+  "updatedAt": "2026-03-23T00:00:00Z",
   "priorities": [
     {
       "target": "build.md",
       "benchmark": "build-basic",
-      "budgetShare": 0.12,
-      "reason": "Zero data — needs baseline. Fundamental protocol (file creation + tests). Fix path resolution first.",
+      "budgetShare": 0.05,
+      "reason": "Baseline 1.000 — eval ceiling. Minimal budget for regression detection until eval is hardened with fractional scoring.",
       "suggestedOperators": [
         "baseline-only"
       ]
@@ -13,8 +13,8 @@
     {
       "target": "build.md",
       "benchmark": "build-api",
-      "budgetShare": 0.1,
-      "reason": "Zero data — needs baseline. API variant likely has different failure modes from basic.",
+      "budgetShare": 0.05,
+      "reason": "Baseline 1.000 — eval ceiling. Same blocker as build-basic. Hold for eval hardening.",
       "suggestedOperators": [
         "baseline-only"
       ]
@@ -22,8 +22,8 @@
     {
       "target": "build.md",
       "benchmark": "build-component",
-      "budgetShare": 0.1,
-      "reason": "Zero data — needs baseline. Component variant covers UI code generation.",
+      "budgetShare": 0.05,
+      "reason": "Baseline 1.000 — eval ceiling. 3 operators already tried with no signal.",
       "suggestedOperators": [
         "baseline-only"
       ]
@@ -31,8 +31,8 @@
     {
       "target": "qa.md",
       "benchmark": "qa-accuracy",
-      "budgetShare": 0.12,
-      "reason": "Zero data — needs baseline. QA accuracy is critical — false negatives let bugs ship.",
+      "budgetShare": 0.05,
+      "reason": "Baseline 1.000 — eval ceiling. High-priority candidate for eval hardening (add harder fixtures with subtle bugs).",
       "suggestedOperators": [
         "baseline-only"
       ]
@@ -40,8 +40,8 @@
     {
       "target": "qa.md",
       "benchmark": "qa-false-positives",
-      "budgetShare": 0.1,
-      "reason": "Zero data — needs baseline. False positives waste resolve cycles.",
+      "budgetShare": 0.05,
+      "reason": "Baseline 1.000 — eval ceiling. Needs borderline-case fixtures that test false positive discrimination.",
       "suggestedOperators": [
         "baseline-only"
       ]
@@ -49,8 +49,8 @@
     {
       "target": "resolve.md",
       "benchmark": "resolve-precision",
-      "budgetShare": 0.1,
-      "reason": "Zero data — needs baseline. Precision matters — imprecise fixes cause regressions.",
+      "budgetShare": 0.05,
+      "reason": "Baseline 1.000 — eval ceiling. 3 operators tried. Needs eval that checks fix minimality and diff quality.",
       "suggestedOperators": [
         "baseline-only"
       ]
@@ -58,8 +58,8 @@
     {
       "target": "exec.md",
       "benchmark": "exec-decompose",
-      "budgetShare": 0.08,
-      "reason": "Zero data — needs baseline. Decomposition quality drives downstream build quality.",
+      "budgetShare": 0.05,
+      "reason": "Baseline 1.000 — proposer couldn't find improvements. Needs eval that scores contract completeness and phase quality.",
       "suggestedOperators": [
         "baseline-only"
       ]
@@ -67,8 +67,8 @@
     {
       "target": "exec.md",
       "benchmark": "exec-small-project",
-      "budgetShare": 0.06,
-      "reason": "Zero data — errored tonight. Needs baseline after path fix.",
+      "budgetShare": 0.05,
+      "reason": "Baseline 1.000 — proposer errored, no useful signal. Hold for eval improvement.",
       "suggestedOperators": [
         "baseline-only"
       ]
@@ -76,8 +76,8 @@
     {
       "target": "pm:plan.md",
       "benchmark": "pm-planning",
-      "budgetShare": 0.06,
-      "reason": "Zero data — needs baseline. Planning quality affects build scope accuracy.",
+      "budgetShare": 0.05,
+      "reason": "Baseline 1.000 — eval ceiling. Needs scoring on task specificity and dependency ordering.",
       "suggestedOperators": [
         "baseline-only"
       ]
@@ -86,7 +86,7 @@
       "target": "pm:review.md",
       "benchmark": "pm-review",
       "budgetShare": 0.05,
-      "reason": "Zero data — needs baseline.",
+      "reason": "Baseline 1.000 — eval ceiling. Needs harder review fixtures with subtle issues.",
       "suggestedOperators": [
         "baseline-only"
       ]
@@ -95,7 +95,7 @@
       "target": "design-review.md",
       "benchmark": "design-review",
       "budgetShare": 0.05,
-      "reason": "Zero data — needs baseline.",
+      "reason": "Baseline 1.000 — eval ceiling. Needs multi-dimensional scoring on feedback quality.",
       "suggestedOperators": [
         "baseline-only"
       ]
@@ -103,11 +103,10 @@
     {
       "target": "ship-config.json",
       "benchmark": "ship-config",
-      "budgetShare": 0.06,
-      "reason": "Already at 1.000 baseline — minimal headroom. Keep small budget for validation after other protocols change. Add JSON-only output constraint to mutation prompt.",
+      "budgetShare": 0.05,
+      "reason": "Baseline 1.000 — eval only checks ranges, not optimality. Needs eval that measures parameter interaction effects.",
       "suggestedOperators": [
-        "constrain-output-format",
-        "adjust-boundary-values"
+        "baseline-only"
       ]
     }
   ]

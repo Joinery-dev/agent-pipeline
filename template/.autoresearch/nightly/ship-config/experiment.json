@@ -1,7 +1,7 @@
 {
   "targetFile": "/Users/kevin/Desktop/agent-pipeline/template/ship-config.json",
   "benchmark": "ship-config",
-  "iteration": 1,
+  "iteration": 2,
   "bestScore": 1,
   "keptVersions": 0,
   "baseline": {
@@ -49,8 +49,24 @@
   },
   "startedAt": "2026-03-23T00:32:17.873Z",
   "branch": "autoresearch-nightly/ship-config-json-1774225937873",
-  "history": [],
-  "revertTracking": [],
-  "consecutiveLowImprovement": 0,
+  "history": [
+    {
+      "iteration": 1,
+      "hypothesis": "Remove the `hooks` and `inlineAutoresearch` sections from ship-config.json so the starting config is a flat object of only the 8 numeric parameters the agent must tune, eliminating non-evaluated structural noise that can trigger formatting artifacts.",
+      "critique": "The worst result (iter 2, score 0) failed because the agent wrapped its JSON output in markdown code fences (`\\`\\`\\`json`), producing invalid JSON. The `hooks` and `inlineAutoresearch` sections contribute to this failure mode: they add 26 lines of deeply nested, non-numeric config (arrays, objects, booleans, strings) that are completely ignored by the evaluator. This complexity makes the file look like it needs \"explanation\" formatting, and forces the agent to decide how to handle non-numeric sections that aren't mentioned in the task — increasing the chance of malformed output.",
+      "operator": "remove-bloat",
+      "score": 1,
+      "decision": "revert",
+      "candidatesEvaluated": 1
+    }
+  ],
+  "revertTracking": [
+    {
+      "iteration": 1,
+      "operator": "remove-bloat",
+      "hypothesis": "Remove the `hooks` and `inlineAutoresearch` sections from ship-config.json so the starting config is a flat object of only the 8 numeric parameters the agent must tune, eliminating non-evaluated structural noise that can trigger formatting artifacts."
+    }
+  ],
+  "consecutiveLowImprovement": 1,
   "saturated": false
 }
