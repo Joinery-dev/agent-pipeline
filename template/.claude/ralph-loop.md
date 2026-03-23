@@ -75,6 +75,14 @@ Forest findings are **WARNING** (advisory, not blocking). Risk levels: HIGH, MED
 
 **The overall verdict is based ONLY on tree checks.** Forest warnings go in attempt notes as informational.
 
+**HUMAN-REQUIRED findings:** If you discover something that NO agent can fix — missing API keys, missing credentials, external service configuration, business decisions that need human input, ambiguous requirements that could go either way — flag it with `"category": "human-required"` in forestWarnings. This pauses the pipeline and sends a push notification to the human. Examples:
+- No API key configured for a core feature (`.env` missing `ANTHROPIC_API_KEY`)
+- External service needs manual setup (DNS, OAuth app registration)
+- Business logic ambiguity ("should deleted users see their old data?")
+- License/legal questions the agent can't answer
+
+Do NOT use human-required for things agents can fix (code bugs, test failures, lint issues).
+
 Run forest findings through a review agent (Agent tool) to catch false positives before reporting.
 
 ### Interactive browser verification
@@ -232,7 +240,7 @@ Report format:
   "criteria": [{ "id": "", "description": "", "source": "", "taskTitle": "",
     "passes": false, "severity": "CRITICAL|HIGH|MEDIUM", "lastTestedRound": 1, "notes": "" }],
   "forestWarnings": [{ "id": "", "description": "", "risk": "HIGH|MEDIUM|LOW",
-    "category": "code|pipeline", "context": "", "suggestion": "", "round": 1 }],
+    "category": "code|pipeline|human-required", "context": "", "suggestion": "", "round": 1 }],
   "trajectory": [{ "round": 1, "passing": 0, "total": 0, "delta": null }]
 }
 ```

@@ -1,4 +1,10 @@
 {
+  "notify": {
+    "enabled": true,
+    "ntfyTopic": "agent-pipeline",
+    "priority": "high",
+    "tags": ["robot", "warning"]
+  },
   "maxQARounds": 3,
   "maxPMReplans": 2,
   "maxDesignRounds": 3,
