@@ -21,6 +21,11 @@ Creates the plan file AND the goals entries in one step.
    brief exists, use its findings (competitors, best practices, design patterns,
    recommendations) to inform the plan. Don't repeat the research, build on it.
 11. Explore the codebase around this topic
+12. **Use Context7 MCP for technical decisions.** When the plan involves
+   specific frameworks or libraries, call `resolve-library-id` then
+   `query-docs` to verify current APIs and best practices. Don't rely on
+   training data for framework configuration, component APIs, or
+   integration patterns — look them up.
 
 **If this is a UI phase and `.claude/visual-language.md` doesn't exist or says
 "not yet established":** Create it now, before writing the visual spec. Define

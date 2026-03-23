@@ -28,6 +28,14 @@ Parse the topic for focus hints. If none given, default to all categories:
 Use WebSearch to research the topic. Run multiple searches targeting different
 angles. Aim for 5–10 searches total, adjusting based on what you find.
 
+**Use Context7 MCP for technical research.** For any frameworks, libraries,
+or APIs relevant to the topic, call `resolve-library-id` then `query-docs`
+to get current documentation. This ensures recommendations are based on
+actual current APIs, not outdated training data. Especially important for:
+- Framework features and configuration options
+- Library APIs and best practices
+- Integration patterns between tools
+
 **Search strategy:**
 1. Start broad: "[topic] best practices 2025" or "[topic] examples"
 2. Find competitors: "best [category] apps/websites 2025"

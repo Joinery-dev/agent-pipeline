@@ -131,6 +131,11 @@ Anything specific you want me to look into, or competitors/references
 I should check?" The human may know things that save you from
 researching in the wrong direction entirely.
 
+**Use Context7 MCP for technical research.** For any frameworks, libraries,
+or APIs the project will use, call `resolve-library-id` then `query-docs`
+to get current documentation — not your training data. This ensures the
+architecture and patterns you recommend actually match the latest APIs.
+
 **Use WebSearch to research (5–10 searches):**
 - What competitors/similar products exist and how they're structured
 - Best practices for this type of product (architecture, UX, features)
