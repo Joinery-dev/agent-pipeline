@@ -92,13 +92,18 @@
     {
       "target": "qa.md",
       "benchmark": "qa-accuracy",
-      "status": "running",
-      "budgetHours": 0.059999999999999984
+      "status": "completed",
+      "budgetHours": 0.059999999999999984,
+      "bestScore": 1,
+      "saturated": false,
+      "iterations": 2,
+      "keeps": 0,
+      "reverts": 2
     },
     {
       "target": "qa.md",
       "benchmark": "qa-false-positives",
-      "status": "pending",
+      "status": "running",
       "budgetHours": 0.04999999999999999
     },
     {

@@ -1,0 +1,63 @@
+{
+  "targetFile": "/Users/kevin/Desktop/agent-pipeline/template/.claude/commands/qa.md",
+  "benchmark": "qa-false-positives",
+  "iteration": 1,
+  "bestScore": 1,
+  "keptVersions": 0,
+  "baseline": {
+    "score": 1,
+    "details": {
+      "bugDetected": true,
+      "falsePositives": [],
+      "correctPasses": [
+        "qa-fp-task-slugify",
+        "qa-fp-task-truncate",
+        "qa-fp-task-unique",
+        "qa-fp-task-flatten"
+      ],
+      "diagnosisScore": 1,
+      "pipelineState": "qa-failed",
+      "pipelineCorrect": true,
+      "qaAttempts": {
+        "qa-fp-task-groupby": [
+          {
+            "outcome": "failure",
+            "notes": "BUG: groupBy does not skip items with null/undefined keys. At lib/transforms.js:44-51, null/undefined keys are coerced to string keys 'null'/'undefined' instead of being excluded. Fix: add a guard (key == null) continue before grouping."
+          }
+        ],
+        "qa-fp-task-slugify": [
+          {
+            "outcome": "success",
+            "notes": "All criteria met: simple strings, multiple spaces, special chars, and empty string all handled correctly"
+          }
+        ],
+        "qa-fp-task-truncate": [
+          {
+            "outcome": "success",
+            "notes": "All criteria met: truncation with ellipsis, no-truncation for short/exact strings, empty string handled"
+          }
+        ],
+        "qa-fp-task-unique": [
+          {
+            "outcome": "success",
+            "notes": "All criteria met: deduplicates numbers and strings, preserves first-occurrence order, empty array handled"
+          }
+        ],
+        "qa-fp-task-flatten": [
+          {
+            "outcome": "success",
+            "notes": "All criteria met: depth-1 default, Infinity depth, empty array, and depth-0 all work correctly"
+          }
+        ]
+      }
+    },
+    "agentSuccess": true,
+    "durationMs": 75954
+  },
+  "startedAt": "2026-03-23T00:22:02.771Z",
+  "branch": "autoresearch-nightly/qa-1774225322771",
+  "history": [],
+  "revertTracking": [],
+  "consecutiveLowImprovement": 0,
+  "saturated": false
+}

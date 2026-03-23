@@ -1,7 +1,7 @@
 {
   "targetFile": "/Users/kevin/Desktop/agent-pipeline/template/.claude/commands/qa.md",
   "benchmark": "qa-accuracy",
-  "iteration": 2,
+  "iteration": 3,
   "bestScore": 1,
   "keptVersions": 0,
   "baseline": {
@@ -56,6 +56,15 @@
       "score": 1,
       "decision": "revert",
       "candidatesEvaluated": 1
+    },
+    {
+      "iteration": 2,
+      "hypothesis": "Add a concrete example in the iteration-rules section showing the difference between a vague diagnosis (bad) and a precise, actionable diagnosis (good) to reinforce the diagnosis quality that the benchmark scores.",
+      "critique": "The current protocol already achieves a perfect score of 1.0. The baseline succeeds because the agent correctly identifies both bugs with precise diagnosis (line numbers, expected vs actual behavior, fix suggestions) and correctly passes the working task. However, the protocol lacks concrete examples of what \"good diagnosis\" looks like versus \"bad diagnosis\" — the agent is succeeding based on general competence rather than protocol guidance. Adding an example would make this behavior more robust and reproducible across different models or harder benchmarks.",
+      "operator": "add-example",
+      "score": 1,
+      "decision": "revert",
+      "candidatesEvaluated": 1
     }
   ],
   "revertTracking": [
@@ -63,8 +72,13 @@
       "iteration": 1,
       "operator": "remove-bloat",
       "hypothesis": "Remove the `<personality>` section entirely, as its content is either redundant with other sections (memory files in startup, diagnosis in iteration-rules) or too vague to influence agent behavior."
+    },
+    {
+      "iteration": 2,
+      "operator": "add-example",
+      "hypothesis": "Add a concrete example in the iteration-rules section showing the difference between a vague diagnosis (bad) and a precise, actionable diagnosis (good) to reinforce the diagnosis quality that the benchmark scores."
     }
   ],
-  "consecutiveLowImprovement": 1,
+  "consecutiveLowImprovement": 2,
   "saturated": false
 }
