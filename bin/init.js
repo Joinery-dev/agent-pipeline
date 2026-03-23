@@ -406,6 +406,33 @@ copyIfMissing(
   'app/api/illustrations/route.js'
 );
 
+copyIfMissing(
+  join(TEMPLATE_DIR, 'app', 'api', 'screenshots', 'route.js'),
+  join(targetDir, 'app', 'api', 'screenshots', 'route.js'),
+  'app/api/screenshots/route.js'
+);
+
+copyIfMissing(
+  join(TEMPLATE_DIR, 'app', 'api', 'status', 'route.js'),
+  join(targetDir, 'app', 'api', 'status', 'route.js'),
+  'app/api/status/route.js',
+  { forceOverwrite: true }
+);
+
+copyIfMissing(
+  join(TEMPLATE_DIR, 'app', 'components', 'PipelineStatus.js'),
+  join(targetDir, 'app', 'components', 'PipelineStatus.js'),
+  'app/components/PipelineStatus.js',
+  { forceOverwrite: true }
+);
+
+copyIfMissing(
+  join(TEMPLATE_DIR, 'app', 'components', 'PipelineStatus.module.css'),
+  join(targetDir, 'app', 'components', 'PipelineStatus.module.css'),
+  'app/components/PipelineStatus.module.css',
+  { forceOverwrite: true }
+);
+
 // ── CLAUDE.md starter ─────────────────────────────────────────────
 
 copyIfMissing(
