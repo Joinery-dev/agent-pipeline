@@ -22,21 +22,8 @@ import { resolve, dirname } from 'path';
 const GOALS_PATH = resolve('.goals.json');
 const INLINE_DIR = resolve('.autoresearch/inline');
 const SIGNALS_PATH = resolve(INLINE_DIR, 'signals.jsonl');
-const EXPERIMENT_PATH = resolve(INLINE_DIR, 'experiment.json');
 const MAX_SIGNAL_LINES = 500;
 const TRUNCATE_TO = 300;
-
-// ── Config ───────────────────────────────────────────────────────────────
-
-function loadConfig() {
-  const configPath = resolve('ship-config.json');
-  if (!existsSync(configPath)) return { inlineAutoresearch: { enabled: false } };
-  try {
-    return JSON.parse(readFileSync(configPath, 'utf-8'));
-  } catch {
-    return { inlineAutoresearch: { enabled: false } };
-  }
-}
 
 // ── Goals reading (standalone — no import dependency on pipeline.js) ─────
 
@@ -99,6 +86,29 @@ function extractFailureCategories(notes) {
   return [...new Set(found)];
 }
 
+// ── Task type derivation ─────────────────────────────────────────────────
+
+function deriveTaskType(files) {
+  if (!files || files.length === 0) return 'general';
+
+  let ui = 0, api = 0, test = 0, data = 0;
+  for (const f of files) {
+    const lower = f.toLowerCase();
+    if (/\.(tsx|jsx|css|scss|sass|less|svg)$/.test(lower) || /component/i.test(lower)) ui++;
+    if (/route\.(js|ts)$/.test(lower) || /\/api\//.test(lower) || /controller/i.test(lower)) api++;
+    if (/\.(test|spec)\.(js|ts|jsx|tsx)$/.test(lower) || /\/__tests__\//.test(lower)) test++;
+    if (/schema|migration|seed|model\.(js|ts)$/.test(lower) || /prisma|drizzle|knex/i.test(lower)) data++;
+  }
+
+  const max = Math.max(ui, api, test, data);
+  if (max === 0) return 'general';
+  if (ui === max) return 'ui';
+  if (api === max) return 'api';
+  if (test === max) return 'test';
+  if (data === max) return 'data';
+  return 'general';
+}
+
 // ── Deduplication ────────────────────────────────────────────────────────
 
 function getExistingKeys() {
@@ -133,21 +143,6 @@ function truncateIfNeeded() {
   } catch {}
 }
 
-// ── Protocol version ─────────────────────────────────────────────────────
-
-function getProtocolVersion() {
-  if (!existsSync(EXPERIMENT_PATH)) return 'baseline';
-  try {
-    const state = JSON.parse(readFileSync(EXPERIMENT_PATH, 'utf-8'));
-    if (state.state === 'running' && state.activeExperiment) {
-      return `exp-${String(state.activeExperiment.id).padStart(3, '0')}`;
-    }
-    return 'baseline';
-  } catch {
-    return 'baseline';
-  }
-}
-
 // ── Main collection ──────────────────────────────────────────────────────
 
 function collectSignals(phaseId, trigger) {
@@ -162,7 +157,6 @@ function collectSignals(phaseId, trigger) {
   if (targetPhases.length === 0) return 0;
 
   const existingKeys = getExistingKeys();
-  const protocolVersion = getProtocolVersion();
   let collected = 0;
 
   for (const phase of targetPhases) {
@@ -194,9 +188,13 @@ function collectSignals(phaseId, trigger) {
         }
       }
 
-      // Complexity proxy
+      // Complexity proxy and tier
       const filesCount = task.files?.length || 0;
       const complexity = filesCount + 1;
+      const complexityTier = complexity <= 2 ? 'low' : complexity <= 4 ? 'medium' : 'high';
+
+      // Task type from file extensions
+      const taskType = deriveTaskType(task.files || []);
 
       // Rounds to complete
       const maxRound = attempts.reduce((max, a) => Math.max(max, a.round || 0), 0);
@@ -207,8 +205,9 @@ function collectSignals(phaseId, trigger) {
         taskId: task.id,
         taskTitle: task.title,
         agent: 'builder',
-        protocolVersion,
         complexity,
+        complexityTier,
+        taskType,
         firstPassQA,
         buildAttempts,
         fixAttempts,
@@ -232,9 +231,6 @@ function collectSignals(phaseId, trigger) {
 // ── CLI ──────────────────────────────────────────────────────────────────
 
 function main() {
-  const config = loadConfig();
-  if (!config.inlineAutoresearch?.enabled) return;
-
   // Ensure directory exists
   if (!existsSync(INLINE_DIR)) mkdirSync(INLINE_DIR, { recursive: true });
 

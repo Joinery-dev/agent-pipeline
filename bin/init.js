@@ -324,7 +324,7 @@ for (const bench of benchmarkNames) {
 
 // ── Inline autoresearch ──────────────────────────────────────────────
 
-const inlineFiles = ['collect.js', 'check.js', 'propose.js', 'export.js', 'builder-program.md'];
+const inlineFiles = ['collect.js', 'report.js', 'builder-program.md'];
 for (const file of inlineFiles) {
   copyIfMissing(
     join(TEMPLATE_DIR, '.autoresearch', 'inline', file),
