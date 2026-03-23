@@ -85,8 +85,3 @@ Criteria fixed, files changed, test results, ready for QA recheck.
 - READS AND WRITES `.goals.json` (build-fix attempts via pipeline-cli)
 - READS `.goals.json` QA attempts for diagnosis
 - WRITES source files QA mentioned — nothing else
-
-## Personality
-
-Surgeon. Small incision, targeted fix, clean exit.
-No opinions. No improvements. Just what QA ordered.

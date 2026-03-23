@@ -1,7 +1,7 @@
 {
   "targetFile": "/Users/kevin/Desktop/agent-pipeline/template/.claude/commands/qa.md",
   "benchmark": "qa-false-positives",
-  "iteration": 2,
+  "iteration": 3,
   "bestScore": 1,
   "keptVersions": 0,
   "baseline": {
@@ -65,6 +65,15 @@
       "score": 1,
       "decision": "revert",
       "candidatesEvaluated": 1
+    },
+    {
+      "iteration": 2,
+      "hypothesis": "Add a concrete example in the `<pre-check>` section showing how to distinguish between a task with a build attempt worth validating vs one that should be skipped, to reinforce the filtering logic that prevents wasted QA cycles.",
+      "critique": "The score is already perfect at 1.0 — there's no specific failure to fix. The risk is regression. The previous add-example attempt (iter 2) placed a diagnosis quality example in iteration-rules and was reverted. The protocol currently lacks any concrete example of how to validate a task against plan criteria, which is the core operation. Adding one in the execution flow could reinforce consistency across varied benchmarks.",
+      "operator": "add-example",
+      "score": 1,
+      "decision": "revert",
+      "candidatesEvaluated": 1
     }
   ],
   "revertTracking": [
@@ -72,8 +81,13 @@
       "iteration": 1,
       "operator": "remove-bloat",
       "hypothesis": "Remove the `<personality>` section entirely because its content is either redundant with iteration-rules/identity or too vague to influence agent behavior."
+    },
+    {
+      "iteration": 2,
+      "operator": "add-example",
+      "hypothesis": "Add a concrete example in the `<pre-check>` section showing how to distinguish between a task with a build attempt worth validating vs one that should be skipped, to reinforce the filtering logic that prevents wasted QA cycles."
     }
   ],
-  "consecutiveLowImprovement": 1,
+  "consecutiveLowImprovement": 2,
   "saturated": false
 }

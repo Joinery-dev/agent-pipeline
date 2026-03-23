@@ -1,0 +1,29 @@
+{
+  "targetFile": "/Users/kevin/Desktop/agent-pipeline/template/.claude/commands/resolve.md",
+  "benchmark": "resolve-precision",
+  "iteration": 1,
+  "bestScore": 1,
+  "keptVersions": 0,
+  "baseline": {
+    "score": 1,
+    "details": {
+      "bugFixed": true,
+      "noRegression": true,
+      "testsTotal": 4,
+      "testsPassed": 4,
+      "testsRan": true,
+      "scopeClean": true,
+      "modifiedFiles": [],
+      "hasBuildFixAttempt": true,
+      "pipelineState": "awaiting-qa"
+    },
+    "agentSuccess": true,
+    "durationMs": 41704
+  },
+  "startedAt": "2026-03-23T00:27:42.320Z",
+  "branch": "autoresearch-nightly/resolve-1774225662320",
+  "history": [],
+  "revertTracking": [],
+  "consecutiveLowImprovement": 0,
+  "saturated": false
+}

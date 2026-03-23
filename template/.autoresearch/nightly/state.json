@@ -103,13 +103,18 @@
     {
       "target": "qa.md",
       "benchmark": "qa-false-positives",
-      "status": "running",
-      "budgetHours": 0.04999999999999999
+      "status": "completed",
+      "budgetHours": 0.04999999999999999,
+      "bestScore": 1,
+      "saturated": false,
+      "iterations": 2,
+      "keeps": 0,
+      "reverts": 2
     },
     {
       "target": "resolve.md",
       "benchmark": "resolve-precision",
-      "status": "pending",
+      "status": "running",
       "budgetHours": 0.04999999999999999
     },
     {
