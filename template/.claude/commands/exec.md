@@ -714,6 +714,31 @@ Append to .exec/memory/decisions.md:
    **Human decision:** SHIP | IMPROVE
    **Improvements requested:** {if IMPROVE — what the human asked for}
    **New phases created:** {if IMPROVE — list of new major phases}
+
+Then update the pipeline status to reflect the human's decision:
+
+```bash
+# Update .goals.json review state
+node -e "
+const fs = require('fs');
+const g = JSON.parse(fs.readFileSync('.goals.json','utf-8'));
+g.review = { state: '{SHIP or IMPROVE}', decidedAt: new Date().toISOString() };
+fs.writeFileSync('.goals.json', JSON.stringify(g, null, 2));
+"
+
+# Update .ship/status.json
+node -e "
+const fs = require('fs');
+fs.mkdirSync('.ship', { recursive: true });
+fs.writeFileSync('.ship/status.json', JSON.stringify({
+  state: 'finished',
+  success: true,
+  reviewCompleted: true,
+  decision: '{SHIP or IMPROVE}',
+  timestamp: new Date().toISOString()
+}, null, 2));
+"
+```
 </step>
 
 <guardrails>
