@@ -10,7 +10,7 @@ that feeds into /pm:plan.
 <step name="context">
 1. Read .ship/briefing.md if it exists — pre-digested PM context.
 2. Read CLAUDE.md and .claude/agent-protocol.md
-3. Read .goals.json for project vision and existing phases
+3. Use `node lib/pipeline-cli.js get-major-phase <title>` for specific lookups. Read .goals.json only for project vision if the briefing doesn't cover it.
 4. Read .pm/memory/ for prior decisions and concerns
 4. Read any existing plans in plans/ related to the topic
 5. Read .pm/research/ for any prior research on this or related topics

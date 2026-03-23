@@ -1,0 +1,30 @@
+{
+  "targetFile": "/Users/kevin/Desktop/agent-pipeline/template/.claude/commands/pm:review.md",
+  "benchmark": "pm-review",
+  "iteration": 1,
+  "bestScore": 1,
+  "keptVersions": 0,
+  "baseline": {
+    "score": 1,
+    "details": {
+      "requireIssueDetected": true,
+      "hardcodedUrlDetected": true,
+      "consoleLogSecurityDetected": true,
+      "missingErrorHandlingDetected": true,
+      "missingValidationDetected": true,
+      "helpersClean": true,
+      "hasVerdict": true,
+      "hasStructuredFindings": true,
+      "reviewContent": "# PM Code Review — 2026-03-22\n\n## Verdict: FAIL\n\n**Scope:** `lib/auth.js`, `lib/helpers.js`, `lib/api-client.js`\n\n`lib/auth.js` has multiple critical and high-severity violations across nearly every convention. `lib/api-client.js` has missing error handling and input validation in one function. `lib/helpers.js` is clean.\n\n---\n\n## Findings\n\n### lib/auth.js\n\n| # | Severity | Issue | Convention Violated |\n|---|----------|-------|---------------------|\n| 1 | **[CRITICAL]** | Line 10: `console.log('t...",
+      "error": null
+    },
+    "agentSuccess": true,
+    "durationMs": 69312
+  },
+  "startedAt": "2026-03-23T00:13:08.198Z",
+  "branch": "autoresearch-nightly/pm-review-1774224788199",
+  "history": [],
+  "revertTracking": [],
+  "consecutiveLowImprovement": 0,
+  "saturated": false
+}

@@ -14,3 +14,18 @@
 5:09:30 PM  🔬 [RESEARCH]  Proposer: analyzing history and forming hypothesis...
 5:11:53 PM  🔬 [RESEARCH]  Benchmark: running agent with modified protocol...
 5:13:07 PM  🔬 [RESEARCH]  Evaluating benchmark result...
+5:13:08 PM  ↩️ [REVERT]  REVERT: 1.000 (+0.000) [remove-bloat] — "Remove the "Visual asset tasks" subsection from write-plan to reduce noise without affecting plan quality, since visual needs are already covered by the Visual Specification section and illustration step."
+5:13:08 PM  ℹ️ [INFO]  
+═══════════════════════════════════════
+5:13:08 PM  ℹ️ [INFO]           AUTORESEARCH COMPLETE
+5:13:08 PM  ℹ️ [INFO]  ═══════════════════════════════════════
+5:13:08 PM  ℹ️ [INFO]  Iterations:     1
+5:13:08 PM  ℹ️ [INFO]  Baseline:       1.000
+5:13:08 PM  ℹ️ [INFO]  Best score:     1.000
+5:13:08 PM  ℹ️ [INFO]  Improvement:    +0.0%
+5:13:08 PM  ℹ️ [INFO]  Kept:           0
+5:13:08 PM  ℹ️ [INFO]  Reverted:       1
+5:13:08 PM  ℹ️ [INFO]  Saturated:      no
+5:13:08 PM  ℹ️ [INFO]  Protocol vers:  0
+5:13:08 PM  ℹ️ [INFO]  Results:        /Users/kevin/Desktop/agent-pipeline/template/.autoresearch/nightly/pm-planning/results.tsv
+5:13:08 PM  ℹ️ [INFO]  Git tags:       autoresearch-nightly/pm-plan/v1..v0

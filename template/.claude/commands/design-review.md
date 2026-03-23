@@ -18,7 +18,7 @@ judge whether it meets the described visual intent.
 6. Read ALL files in .design/memory/ for persistent context
 7. Read .pm/memory/concerns.md for design issues from PM
 8. Read .qa/memory/patterns.md for visual patterns from QA
-9. Read .goals.json — find the phase and its plan
+9. Read .ship/briefing.md for phase context. Use `node lib/pipeline-cli.js get-phase-full <id>` for specific lookups. Avoid reading .goals.json directly.
 10. Read the plan file — specifically the ## Visual Specification section
 </startup>
 
