@@ -150,11 +150,17 @@ writeIfMissing(
 
 // ── ship-config.json (orchestration parameters) ──────────────────────
 
-copyIfMissing(
-  join(TEMPLATE_DIR, 'ship-config.json'),
-  join(targetDir, 'ship-config.json'),
-  'ship-config.json'
-);
+const shipConfigDest = join(targetDir, 'ship-config.json');
+if (existsSync(shipConfigDest)) {
+  skipped.push('ship-config.json');
+} else {
+  // Copy template and inject agentPipelineRoot so field reports auto-sync
+  const agentPipelineRoot = resolve(__dirname, '..');
+  const shipConfig = JSON.parse(readFileSync(join(TEMPLATE_DIR, 'ship-config.json'), 'utf-8'));
+  shipConfig.agentPipelineRoot = agentPipelineRoot;
+  writeFileSync(shipConfigDest, JSON.stringify(shipConfig, null, 2) + '\n');
+  created.push('ship-config.json');
+}
 
 // ── Memory directories ────────────────────────────────────────────────
 

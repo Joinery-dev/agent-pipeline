@@ -283,6 +283,35 @@ function generateReport() {
   };
 }
 
+// ── Auto-sync to agent-pipeline repo ─────────────────────────────────────
+
+const CONFIG_PATH = resolve('ship-config.json');
+
+function syncToAgentPipeline(report) {
+  if (!report.projectHash || !report.summary) return false;
+
+  // Read agentPipelineRoot from ship-config.json
+  if (!existsSync(CONFIG_PATH)) return false;
+  let config;
+  try {
+    config = JSON.parse(readFileSync(CONFIG_PATH, 'utf-8'));
+  } catch { return false; }
+
+  const root = config.agentPipelineRoot;
+  if (!root || !existsSync(root)) return false;
+
+  const destDir = resolve(root, '.autoresearch', 'field-reports');
+  const destFile = resolve(destDir, `${report.projectHash}.json`);
+
+  try {
+    if (!existsSync(destDir)) mkdirSync(destDir, { recursive: true });
+    writeFileSync(destFile, JSON.stringify(report, null, 2));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 // ── CLI ──────────────────────────────────────────────────────────────────
 
 function main() {
@@ -310,17 +339,23 @@ function main() {
   }
 
   if (command === '--generate') {
+    // Write local copy
     writeFileSync(REPORT_PATH, JSON.stringify(report, null, 2));
+
+    // Auto-sync to agent-pipeline repo for nightly consumption
+    const synced = syncToAgentPipeline(report);
+
     if (report.summary) {
       console.log(JSON.stringify({
         generated: true,
+        synced,
         tasks: report.summary.totalTasks,
         firstPassQARate: report.summary.firstPassQARate,
         topFailure: report.failureAnalysis?.topCategories?.[0]?.category || 'none',
         recommendations: report.recommendations?.length || 0,
       }));
     } else {
-      console.log(JSON.stringify({ generated: true, note: 'No signal data yet' }));
+      console.log(JSON.stringify({ generated: true, synced: false, note: 'No signal data yet' }));
     }
     return;
   }
