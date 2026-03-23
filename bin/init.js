@@ -19,10 +19,11 @@ const TEMPLATE_DIR = resolve(__dirname, '..', 'template');
 const LIB_DIR = resolve(__dirname, '..', 'lib');
 
 const args = process.argv.slice(2);
-const command = args[0];
+const force = args.includes('--force');
+const command = args.find(a => a !== '--force' && !a.startsWith('--'));
 
 if (command !== 'init') {
-  console.error('Usage: npx agent-pipeline init [target-dir]');
+  console.error('Usage: npx agent-pipeline init [target-dir] [--force]');
   console.error('');
   console.error('Scaffolds the agent pipeline into your project:');
   console.error('  .claude/commands/   — Agent slash commands (pm, build, qa, resolve, etc.)');
@@ -35,22 +36,24 @@ if (command !== 'init') {
   process.exit(1);
 }
 
-const targetDir = resolve(args[1] || '.');
+const targetDir = resolve(args.find(a => a !== 'init' && a !== '--force' && !a.startsWith('--')) || '.');
 
-console.log(`\nScaffolding agent pipeline into: ${targetDir}\n`);
+console.log(`\nScaffolding agent pipeline into: ${targetDir}${force ? ' (--force: overwriting lib + commands)' : ''}\n`);
 
 // Track what we create vs skip
 const created = [];
 const skipped = [];
+const updated = [];
 
-function copyIfMissing(src, dest, label) {
-  if (existsSync(dest)) {
+function copyIfMissing(src, dest, label, { forceOverwrite = false } = {}) {
+  if (existsSync(dest) && !(force && forceOverwrite)) {
     skipped.push(label);
   } else {
+    const existed = existsSync(dest);
     const dir = dirname(dest);
     if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
     cpSync(src, dest, { recursive: true });
-    created.push(label);
+    if (existed) { updated.push(label); } else { created.push(label); }
   }
 }
 
@@ -80,7 +83,8 @@ for (const file of commandFiles) {
   copyIfMissing(
     join(commandsDir, file),
     join(targetCommands, file),
-    `.claude/commands/${file}`
+    `.claude/commands/${file}`,
+    { forceOverwrite: true }
   );
 }
 
@@ -89,13 +93,15 @@ for (const file of commandFiles) {
 copyIfMissing(
   join(TEMPLATE_DIR, '.claude', 'agent-protocol.md'),
   join(targetDir, '.claude', 'agent-protocol.md'),
-  '.claude/agent-protocol.md'
+  '.claude/agent-protocol.md',
+  { forceOverwrite: true }
 );
 
 copyIfMissing(
   join(TEMPLATE_DIR, '.claude', 'ralph-loop.md'),
   join(targetDir, '.claude', 'ralph-loop.md'),
-  '.claude/ralph-loop.md'
+  '.claude/ralph-loop.md',
+  { forceOverwrite: true }
 );
 
 copyIfMissing(
@@ -107,7 +113,8 @@ copyIfMissing(
 copyIfMissing(
   join(TEMPLATE_DIR, '.claude', 'pm-reference.md'),
   join(targetDir, '.claude', 'pm-reference.md'),
-  '.claude/pm-reference.md'
+  '.claude/pm-reference.md',
+  { forceOverwrite: true }
 );
 
 // ── lib/ pipeline engine ──────────────────────────────────────────────
@@ -125,7 +132,8 @@ for (const file of libFiles) {
   copyIfMissing(
     join(LIB_DIR, file),
     join(targetDir, 'lib', file),
-    `lib/${file}`
+    `lib/${file}`,
+    { forceOverwrite: true }
   );
 }
 
@@ -284,13 +292,15 @@ writeIfMissing(
 copyIfMissing(
   join(TEMPLATE_DIR, '.claude', 'design-loop.md'),
   join(targetDir, '.claude', 'design-loop.md'),
-  '.claude/design-loop.md'
+  '.claude/design-loop.md',
+  { forceOverwrite: true }
 );
 
 copyIfMissing(
   join(TEMPLATE_DIR, '.claude', 'design-reference.md'),
   join(targetDir, '.claude', 'design-reference.md'),
-  '.claude/design-reference.md'
+  '.claude/design-reference.md',
+  { forceOverwrite: true }
 );
 
 // ── Illustrations directory ────────────────────────────────────────
@@ -404,15 +414,22 @@ try {
 
 // ── Report ────────────────────────────────────────────────────────────
 
-console.log('\nCreated:');
-for (const f of created) console.log(`  + ${f}`);
+if (created.length > 0) {
+  console.log('\nCreated:');
+  for (const f of created) console.log(`  + ${f}`);
+}
+
+if (updated.length > 0) {
+  console.log('\nUpdated (--force):');
+  for (const f of updated) console.log(`  ↑ ${f}`);
+}
 
 if (skipped.length > 0) {
   console.log('\nSkipped (already exist):');
   for (const f of skipped) console.log(`  - ${f}`);
 }
 
-console.log(`\nDone! ${created.length} files created, ${skipped.length} skipped.`);
+console.log(`\nDone! ${created.length} created, ${updated.length} updated, ${skipped.length} skipped.`);
 console.log('\nNext steps:');
 console.log('  1. Run /exec <topic> to create your project structure (vision, phases, contracts)');
 console.log('  2. Run node ship.js <topic> for fully autonomous execution');
