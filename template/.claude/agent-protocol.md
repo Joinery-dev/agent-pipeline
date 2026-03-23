@@ -53,7 +53,7 @@ Task
 
 Attempt (flat — NO children/nesting)
 ├── id: string (UUID)
-├── type: "build" | "qa" | "build-fix" | "qa-recheck"
+├── type: "build" | "qa" | "build-fix" | "qa-recheck" | "design-review" | "design-fix"
 ├── round: number (auto-incremented per type)
 ├── description: string
 ├── outcome: "in-progress" | "success" | "failure" | "partial"
@@ -61,7 +61,7 @@ Attempt (flat — NO children/nesting)
 └── createdAt: string (ISO 8601 timestamp)
 
 Pipeline State (on Phase)
-├── state: "idle" | "building" | "awaiting-qa" | "qa-failed" | "complete"
+├── state: "idle" | "building" | "awaiting-qa" | "qa-failed" | "awaiting-design" | "design-failed" | "complete"
 ├── lastAgent: "pm" | "build" | "qa" | "resolve" | "exec" | "design" | null
 └── lastTimestamp: string (ISO 8601) | null
 
