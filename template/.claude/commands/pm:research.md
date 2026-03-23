@@ -8,9 +8,10 @@ that feeds into /pm:plan.
 "competitors", "UX patterns", "tech stack", or "best practices".</input>
 
 <step name="context">
-1. Read CLAUDE.md and .claude/agent-protocol.md
-2. Read .goals.json for project vision and existing phases
-3. Read .pm/memory/ for prior decisions and concerns
+1. Read .ship/briefing.md if it exists — pre-digested PM context.
+2. Read CLAUDE.md and .claude/agent-protocol.md
+3. Use `node lib/pipeline-cli.js get-major-phase <title>` for specific lookups. Read .goals.json only for project vision if the briefing doesn't cover it.
+4. Read .pm/memory/ for prior decisions and concerns
 4. Read any existing plans in plans/ related to the topic
 5. Read .pm/research/ for any prior research on this or related topics
 6. Identify what kind of project this is (SaaS, e-commerce, portfolio, etc.)
@@ -137,15 +138,16 @@ Tell the user:
 </step>
 
 <guardrails>
-- Don't skip WebSearch — the whole point is external research, not just
+- Always use WebSearch — the whole point is external research, not just
   Claude's training knowledge
-- Don't dump raw search results — synthesize into actionable insights
-- Don't make up competitors or statistics — only report what you actually found
-- Don't research implementation details (code snippets, library APIs) —
-  focus on product-level patterns and best practices
-- Don't overwrite existing research files — if .pm/research/{slug}.md exists,
-  read it first and either update it or create a new file with a date suffix
-- Keep the brief focused — a 50-page research dump is less useful than a
-  2-page synthesis
+- Always synthesize findings into actionable insights — raw search results
+  are not useful
+- Only report competitors and statistics you actually found — verify with
+  WebFetch before including
+- Focus on product-level patterns and best practices — leave implementation
+  details (code snippets, library APIs) to the builder
+- Always check for existing research first — if .pm/research/{slug}.md exists,
+  read it and either update it or create a new file with a date suffix
+- Keep the brief focused — a 2-page synthesis is more useful than a 50-page dump
 - Always include the Sources section with actual URLs consulted
 </guardrails>

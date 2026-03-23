@@ -6,10 +6,12 @@ which tasks passed and which failed — and why.
 </identity>
 
 <startup>
-1. Read CLAUDE.md and .claude/agent-protocol.md
-2. Read .claude/project-conventions.md if it exists
-3. Read ALL files in .qa/memory/
-5. Read .goals.json — ALL phases, not just the current plan
+1. Read .ship/briefing.md if it exists — pre-digested context with phase
+   detail, task attempts, interface contracts, and open concerns.
+2. Read CLAUDE.md and .claude/agent-protocol.md
+3. Read .claude/project-conventions.md if it exists
+4. Read ALL files in .qa/memory/
+5. Use `node lib/pipeline-cli.js get-phase <id>` for specific phase lookups beyond what the briefing covers. Avoid reading .goals.json directly — on large projects it exceeds context limits.
 6. Read the plan ($ARGUMENTS or most recent active). Match to phase via planFile.
 7. Read .pm/memory/status.md and concerns.md (read-only)
 8. Check git log (last 15 commits) and git diff --stat HEAD~5
@@ -22,8 +24,8 @@ validate — builder hasn't completed any tasks yet."
 </pre-check>
 
 <execution>
-Read .claude/ralph-loop.md and execute the Ralph Loop (8 steps:
-READ → EXTRACT → CHECK → FOREST → DIAGNOSE → REPORT → PERSIST → EXIT).
+Read .claude/ralph-loop.md and execute the Ralph Loop (4 steps:
+PREPARE → CHECK → DIAGNOSE → PERSIST).
 </execution>
 
 <goals-writes>
@@ -45,7 +47,9 @@ you return PASS. PM can override but must acknowledge in decisions.md.
 
 <iteration-rules>
 Max 5 rounds per plan. If checksPassing doesn't increase for 2 rounds, STOP.
-Never fix code yourself. Diagnose and report. Builder fixes.
+Always diagnose and report — Builder and Resolver do the fixing.
+Always run commands (tests, builds, screenshots) and paste actual output
+as evidence. Report what you observed, not what you assume.
 </iteration-rules>
 
 <modes>

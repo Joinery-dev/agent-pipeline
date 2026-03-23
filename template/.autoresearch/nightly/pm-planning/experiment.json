@@ -1,0 +1,44 @@
+{
+  "targetFile": "/Users/kevin/Desktop/agent-pipeline/template/.claude/commands/pm:plan.md",
+  "benchmark": "pm-planning",
+  "iteration": 2,
+  "bestScore": 1,
+  "keptVersions": 0,
+  "baseline": {
+    "score": 1,
+    "details": {
+      "planFileCreated": true,
+      "planFilePath": "plans/user-auth.md",
+      "subPhasesCount": 3,
+      "tasksCount": 9,
+      "tasksWithFullFields": 9,
+      "planHasSuccessCriteria": true,
+      "descriptiveTitles": 9,
+      "planReferencesContract": true
+    },
+    "agentSuccess": true,
+    "durationMs": 74944
+  },
+  "startedAt": "2026-03-23T00:08:15.565Z",
+  "branch": "autoresearch-nightly/pm-plan-1774224495565",
+  "history": [
+    {
+      "iteration": 1,
+      "hypothesis": "Remove the \"Visual asset tasks\" subsection from write-plan to reduce noise without affecting plan quality, since visual needs are already covered by the Visual Specification section and illustration step.",
+      "critique": "The baseline already scores 1.0, so nothing is broken. However, the protocol contains a \"Visual asset tasks\" subsection in the write-plan step that is generic filler: it contains a vague opinion (\"A project without visual assets looks unfinished\"), lists specific asset types that may not apply to most projects, and overlaps with both the Visual Specification section (which already describes visual intent) and the illustration step (which handles mockups). This is noise the agent must parse on every invocation, including non-UI phases where it's entirely irrelevant.",
+      "operator": "remove-bloat",
+      "score": 1,
+      "decision": "revert",
+      "candidatesEvaluated": 1
+    }
+  ],
+  "revertTracking": [
+    {
+      "iteration": 1,
+      "operator": "remove-bloat",
+      "hypothesis": "Remove the \"Visual asset tasks\" subsection from write-plan to reduce noise without affecting plan quality, since visual needs are already covered by the Visual Specification section and illustration step."
+    }
+  ],
+  "consecutiveLowImprovement": 1,
+  "saturated": false
+}

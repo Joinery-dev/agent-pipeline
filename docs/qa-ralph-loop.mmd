@@ -1,0 +1,67 @@
+---
+title: "QA Ralph Loop Protocol"
+---
+
+flowchart TD
+    START(("QA\nDispatched"))
+
+    START --> PREPARE
+
+    PREPARE["📋 PREPARE\nRead plan file, extract success criteria\nRead QA memory: status, regressions, patterns\nRead PM concerns with testable implications\nMap each criterion to a specific task\nCheck git log for recent changes"]
+
+    PREPARE --> TREE
+
+    subgraph CHECK["CHECK"]
+        direction TB
+
+        TREE["🌳 Tree Checks -- blocking\nRun test suite\nMachine-verifiable criteria first\nRegression watch list\nStructural assertions"]
+
+        TREE --> VISUAL
+
+        VISUAL["📸 Visual Verification\nScreenshot key pages\nContent visible? Layout intact?\nCompare against visual spec\nCompare against mockup illustration"]
+
+        VISUAL --> AI
+
+        AI["🤖 AI Evaluation\nCriteria machines cannot judge\nEach criterion: PASS or FAIL"]
+
+        AI --> FOREST
+
+        FOREST["🌲 Forest Checks -- advisory\nInterface contract compliance\nPattern consistency across phases\nNaming and domain alignment\nDependency direction\nVisual language compliance"]
+    end
+
+    FOREST --> DIAGNOSE
+
+    DIAGNOSE["🔬 DIAGNOSE\nFor each failure:\nWhat failed, expected vs actual\nRoot cause -- WHY is it broken\nWhich task in .goals.json\nKnown pattern from patterns.md?\nImpact on other criteria"]
+
+    DIAGNOSE --> PERSIST
+
+    subgraph PERSIST["PERSIST"]
+        direction LR
+
+        MEMORY["Update QA Memory\nstatus.json: trajectory, criteria\nlearnings.txt: new findings\nregressions.md: new or updated\npatterns.md: new or merged"]
+
+        GOALS_UPDATE["Update .goals.json\nTree pass: QA attempt success\nTree fail: QA attempt failure\nTask status: completed or blocked\nForest warnings: notes only"]
+    end
+
+    MEMORY --> REPORT
+    GOALS_UPDATE --> REPORT
+
+    REPORT{"Verdict?"}
+
+    REPORT -- "PASS" --> PASS_OUT(("All criteria\nmet"))
+    REPORT -- "FAIL" --> FAIL_OUT(("Failures listed\nwith fix commands"))
+
+    style START fill:#1a1a2e,stroke:#5a5a8a,stroke-width:2px,color:#c0c0d8
+    style PREPARE fill:#3a2a14,stroke:#d9a050,stroke-width:2px,color:#f5edd8
+    style CHECK fill:transparent,stroke:#444,stroke-width:2px,stroke-dasharray:8 4,color:#888
+    style TREE fill:#3a2a14,stroke:#d9a050,stroke-width:2px,color:#f5edd8
+    style VISUAL fill:#3a2a14,stroke:#d9a050,stroke-width:2px,color:#f5edd8
+    style AI fill:#3a2a14,stroke:#d9a050,stroke-width:2px,color:#f5edd8
+    style FOREST fill:#2a183a,stroke:#9050b6,stroke-width:1.5px,color:#e8d8f5
+    style DIAGNOSE fill:#3a1818,stroke:#d95050,stroke-width:2px,color:#f5dcdc
+    style PERSIST fill:transparent,stroke:#444,stroke-width:2px,stroke-dasharray:8 4,color:#888
+    style MEMORY fill:#3a2a14,stroke:#d9a050,stroke-width:1.5px,color:#f5edd8
+    style GOALS_UPDATE fill:#3a2a14,stroke:#d9a050,stroke-width:1.5px,color:#f5edd8
+    style REPORT fill:#1a1a2e,stroke:#5a5a8a,stroke-width:2px,color:#c0c0d8
+    style PASS_OUT fill:#163a24,stroke:#3ca050,stroke-width:2px,color:#dcf0e0
+    style FAIL_OUT fill:#3a1818,stroke:#d95050,stroke-width:2px,color:#f5dcdc

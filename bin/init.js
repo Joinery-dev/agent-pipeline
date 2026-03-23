@@ -11,6 +11,8 @@
 import { cpSync, existsSync, mkdirSync, writeFileSync, readFileSync } from 'fs';
 import { resolve, dirname, join } from 'path';
 import { fileURLToPath } from 'url';
+import { randomUUID } from 'crypto';
+import { execSync } from 'child_process';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const TEMPLATE_DIR = resolve(__dirname, '..', 'template');
@@ -69,9 +71,9 @@ const commandsDir = join(TEMPLATE_DIR, '.claude', 'commands');
 const targetCommands = join(targetDir, '.claude', 'commands');
 
 const commandFiles = [
-  'exec.md',
+  'exec.md', 'exec:escalation.md',
   'pm.md', 'pm:plan.md', 'pm:research.md', 'pm:handoff.md', 'pm:review.md',
-  'build.md', 'qa.md', 'resolve.md', 'merge.md', 'diagram.md', 'design-review.md',
+  'build.md', 'qa.md', 'resolve.md', 'walkthrough.md', 'audit.md', 'merge.md', 'diagram.md', 'design-review.md',
 ];
 
 for (const file of commandFiles) {
@@ -114,7 +116,7 @@ const libFiles = [
   'pipeline.js', 'pipeline-cli.js', 'pipeline-sync.js',
   'validate-plan.js', 'merge.js', 'lessons-sync.js',
   'ship.js', 'agent-runner.js', 'autoresearch.js',
-  'distill-briefing.js', 'cost-tracker.js',
+  'distill-briefing.js',
   'memory-hygiene.js', 'test-runner.js', 'plan-to-tasks.js',
   'visual-check.js', 'integration-check.js', 'render-mockup.js',
 ];
@@ -131,7 +133,7 @@ for (const file of libFiles) {
 
 const projectName = targetDir.split('/').pop() || 'My Project';
 const goalsTemplate = {
-  id: crypto.randomUUID(),
+  id: randomUUID(),
   name: projectName,
   description: '',
   vision: '',
@@ -148,11 +150,17 @@ writeIfMissing(
 
 // ── ship-config.json (orchestration parameters) ──────────────────────
 
-copyIfMissing(
-  join(TEMPLATE_DIR, 'ship-config.json'),
-  join(targetDir, 'ship-config.json'),
-  'ship-config.json'
-);
+const shipConfigDest = join(targetDir, 'ship-config.json');
+if (existsSync(shipConfigDest)) {
+  skipped.push('ship-config.json');
+} else {
+  // Copy template and inject agentPipelineRoot so field reports auto-sync
+  const agentPipelineRoot = resolve(__dirname, '..');
+  const shipConfig = JSON.parse(readFileSync(join(TEMPLATE_DIR, 'ship-config.json'), 'utf-8'));
+  shipConfig.agentPipelineRoot = agentPipelineRoot;
+  writeFileSync(shipConfigDest, JSON.stringify(shipConfig, null, 2) + '\n');
+  created.push('ship-config.json');
+}
 
 // ── Memory directories ────────────────────────────────────────────────
 
@@ -259,6 +267,12 @@ writeIfMissing(
   '.exec/memory/escalation-log.md'
 );
 
+writeIfMissing(
+  join(execMemory, 'escalation-count.json'),
+  `{"count": 0}\n`,
+  '.exec/memory/escalation-count.json'
+);
+
 // ── Visual language + design protocol ─────────────────────────────
 
 writeIfMissing(
@@ -314,6 +328,17 @@ for (const bench of benchmarkNames) {
   }
 }
 
+// ── Inline autoresearch ──────────────────────────────────────────────
+
+const inlineFiles = ['collect.js', 'report.js', 'builder-program.md'];
+for (const file of inlineFiles) {
+  copyIfMissing(
+    join(TEMPLATE_DIR, '.autoresearch', 'inline', file),
+    join(targetDir, '.autoresearch', 'inline', file),
+    `.autoresearch/inline/${file}`
+  );
+}
+
 // ── plans/ directory ──────────────────────────────────────────────────
 
 const plansDir = join(targetDir, 'plans');
@@ -353,9 +378,33 @@ copyIfMissing(
   'CLAUDE.md'
 );
 
+// ── Playwright config ─────────────────────────────────────────────────
+
+copyIfMissing(
+  join(TEMPLATE_DIR, 'playwright.config.js'),
+  join(targetDir, 'playwright.config.js'),
+  'playwright.config.js'
+);
+
+// ── Install Playwright ────────────────────────────────────────────────
+
+console.log('\nInstalling Playwright...');
+try {
+  execSync('npm install --save-dev @playwright/test', {
+    cwd: targetDir, stdio: 'inherit', timeout: 120000,
+  });
+  execSync('npx playwright install chromium', {
+    cwd: targetDir, stdio: 'inherit', timeout: 120000,
+  });
+  console.log('Playwright + Chromium installed successfully.');
+} catch {
+  console.warn('\nWarning: Could not install Playwright automatically.');
+  console.warn('Run manually: npm install -D @playwright/test && npx playwright install chromium');
+}
+
 // ── Report ────────────────────────────────────────────────────────────
 
-console.log('Created:');
+console.log('\nCreated:');
 for (const f of created) console.log(`  + ${f}`);
 
 if (skipped.length > 0) {

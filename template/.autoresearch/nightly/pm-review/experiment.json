@@ -1,0 +1,46 @@
+{
+  "targetFile": "/Users/kevin/Desktop/agent-pipeline/template/.claude/commands/pm:review.md",
+  "benchmark": "pm-review",
+  "iteration": 2,
+  "bestScore": 1,
+  "keptVersions": 0,
+  "baseline": {
+    "score": 1,
+    "details": {
+      "requireIssueDetected": true,
+      "hardcodedUrlDetected": true,
+      "consoleLogSecurityDetected": true,
+      "missingErrorHandlingDetected": true,
+      "missingValidationDetected": true,
+      "helpersClean": true,
+      "hasVerdict": true,
+      "hasStructuredFindings": true,
+      "reviewContent": "# PM Code Review — 2026-03-22\n\n## Verdict: FAIL\n\n**Scope:** `lib/auth.js`, `lib/helpers.js`, `lib/api-client.js`\n\n`lib/auth.js` has multiple critical and high-severity violations across nearly every convention. `lib/api-client.js` has missing error handling and input validation in one function. `lib/helpers.js` is clean.\n\n---\n\n## Findings\n\n### lib/auth.js\n\n| # | Severity | Issue | Convention Violated |\n|---|----------|-------|---------------------|\n| 1 | **[CRITICAL]** | Line 10: `console.log('t...",
+      "error": null
+    },
+    "agentSuccess": true,
+    "durationMs": 69312
+  },
+  "startedAt": "2026-03-23T00:13:08.198Z",
+  "branch": "autoresearch-nightly/pm-review-1774224788199",
+  "history": [
+    {
+      "iteration": 1,
+      "hypothesis": "Remove the vague \"Consistent with decisions.md\" checklist item, since relevant decisions are already covered by reading CLAUDE.md, project-conventions.md, and memory files in startup.",
+      "critique": "The protocol scores perfectly, but contains vague instructions that add parsing overhead for the agent without contributing to review quality. Specifically, \"Consistent with decisions.md\" in the checklist is vague (what does \"consistent\" mean?), references a file that may not exist, and overlaps with the startup step that already reads memory files and conventions. This forces the agent to either hunt for a potentially nonexistent file or silently skip the check, adding noise either way.",
+      "operator": "remove-bloat",
+      "score": 1,
+      "decision": "revert",
+      "candidatesEvaluated": 1
+    }
+  ],
+  "revertTracking": [
+    {
+      "iteration": 1,
+      "operator": "remove-bloat",
+      "hypothesis": "Remove the vague \"Consistent with decisions.md\" checklist item, since relevant decisions are already covered by reading CLAUDE.md, project-conventions.md, and memory files in startup."
+    }
+  ],
+  "consecutiveLowImprovement": 1,
+  "saturated": false
+}

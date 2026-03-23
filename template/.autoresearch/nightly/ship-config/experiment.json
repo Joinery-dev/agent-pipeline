@@ -1,0 +1,72 @@
+{
+  "targetFile": "/Users/kevin/Desktop/agent-pipeline/template/ship-config.json",
+  "benchmark": "ship-config",
+  "iteration": 2,
+  "bestScore": 1,
+  "keptVersions": 0,
+  "baseline": {
+    "score": 1,
+    "details": {
+      "validJson": true,
+      "allNumbers": true,
+      "rangeChecks": {
+        "maxQARounds": {
+          "value": 3,
+          "min": 2,
+          "max": 5,
+          "ok": true
+        },
+        "maxPMReplans": {
+          "value": 2,
+          "min": 1,
+          "max": 3,
+          "ok": true
+        },
+        "maxBuildBatch": {
+          "value": 5,
+          "min": 3,
+          "max": 8,
+          "ok": true
+        },
+        "progressCheckIntervalMs": {
+          "value": 180000,
+          "min": 120000,
+          "max": 600000,
+          "ok": true
+        },
+        "maxChecksWithoutProgress": {
+          "value": 3,
+          "min": 1,
+          "max": 4,
+          "ok": true
+        }
+      },
+      "extremeValues": [],
+      "configFound": true
+    },
+    "agentSuccess": true,
+    "durationMs": 50745
+  },
+  "startedAt": "2026-03-23T00:32:17.873Z",
+  "branch": "autoresearch-nightly/ship-config-json-1774225937873",
+  "history": [
+    {
+      "iteration": 1,
+      "hypothesis": "Remove the `hooks` and `inlineAutoresearch` sections from ship-config.json so the starting config is a flat object of only the 8 numeric parameters the agent must tune, eliminating non-evaluated structural noise that can trigger formatting artifacts.",
+      "critique": "The worst result (iter 2, score 0) failed because the agent wrapped its JSON output in markdown code fences (`\\`\\`\\`json`), producing invalid JSON. The `hooks` and `inlineAutoresearch` sections contribute to this failure mode: they add 26 lines of deeply nested, non-numeric config (arrays, objects, booleans, strings) that are completely ignored by the evaluator. This complexity makes the file look like it needs \"explanation\" formatting, and forces the agent to decide how to handle non-numeric sections that aren't mentioned in the task — increasing the chance of malformed output.",
+      "operator": "remove-bloat",
+      "score": 1,
+      "decision": "revert",
+      "candidatesEvaluated": 1
+    }
+  ],
+  "revertTracking": [
+    {
+      "iteration": 1,
+      "operator": "remove-bloat",
+      "hypothesis": "Remove the `hooks` and `inlineAutoresearch` sections from ship-config.json so the starting config is a flat object of only the 8 numeric parameters the agent must tune, eliminating non-evaluated structural noise that can trigger formatting artifacts."
+    }
+  ],
+  "consecutiveLowImprovement": 1,
+  "saturated": false
+}

@@ -1,0 +1,88 @@
+---
+title: "Executive Checkpoint Between Major Phases"
+---
+
+flowchart TD
+    TRIGGER(("Major Phase\nJust Completed"))
+
+    TRIGGER --> AUTO
+
+    subgraph AUTO["Automated Checks -- ship.js runs before exec"]
+        direction LR
+
+        TESTS["🧪 Full Test Suite\nCatch cross-phase\nregressions"]
+
+        TESTS --> LINKS
+
+        LINKS["🔗 Link Check\nBroken links\nOrphaned pages\nContent audit"]
+
+        LINKS --> GRID
+
+        GRID["📸 Screenshot Grid\nWhole product so far\nin one image"]
+
+        GRID --> WALK
+
+        WALK["🚶 Walkthrough\nNavigate new pages\nCheck integration\nwith existing product"]
+    end
+
+    WALK --> READ
+
+    READ["📋 Read All Reports\nScreenshot grid, walkthrough\nLink check results\nQA and design memory\nPM concerns, exec history\nCheckpoint context from ship.js"]
+
+    READ --> LOOK
+
+    LOOK["👁 Look at the Product\nView screenshot grid\nDoes it look cohesive so far?\nDo new pages fit the whole?"]
+
+    LOOK --> ASSESS
+
+    subgraph ASSESS["Strategic Assessment"]
+        direction TB
+
+        CONTRACTS["🔗 Verify Contracts\nDid the phase produce\nwhat it declared?\nAre outputs usable\nby the next phase?"]
+
+        CONTRACTS --> VISION_CHECK
+
+        VISION_CHECK["📌 Check Vision\nStill serving the vision?\nScope drift?\nUser would understand\nthe direction?"]
+
+        VISION_CHECK --> QUALITY
+
+        QUALITY["📊 Build Quality\nQA rounds, resolver fixes\nDesign grades trending\nTests passing after merge?\nWalkthrough issues?"]
+
+        QUALITY --> PATTERNS
+
+        PATTERNS["🔍 Emergent Patterns\nConventions not yet documented\nConstraints discovered\nPatterns to follow or avoid"]
+    end
+
+    PATTERNS --> ACT
+
+    subgraph ACT["Prepare for Next Phase"]
+        direction LR
+
+        UPDATE_CONV["Update conventions\nwith emergent patterns"]
+        UPDATE_CONV --> ADJUST
+        ADJUST["Adjust next phase\ncontracts to match\nactual outputs"]
+        ADJUST --> UPDATE_VL["Update visual language\nif design evolved"]
+        UPDATE_VL --> LESSONS["Write lessons\nto .exec/memory/"]
+    end
+
+    LESSONS --> DONE(("Next Phase\nBegins"))
+
+    style TRIGGER fill:#1a1a2e,stroke:#5a5a8a,stroke-width:2px,color:#c0c0d8
+    style AUTO fill:transparent,stroke:#444,stroke-width:2px,stroke-dasharray:8 4,color:#888
+    style TESTS fill:#3a1818,stroke:#d95050,stroke-width:1.5px,color:#f5dcdc
+    style LINKS fill:#3a2a14,stroke:#d9a050,stroke-width:1.5px,color:#f5edd8
+    style GRID fill:#3a2a14,stroke:#d9a050,stroke-width:1.5px,color:#f5edd8
+    style WALK fill:#163a24,stroke:#3ca050,stroke-width:1.5px,color:#dcf0e0
+    style READ fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+    style LOOK fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+    style ASSESS fill:transparent,stroke:#c98a4a,stroke-width:2px,stroke-dasharray:8 4,color:#c98a4a
+    style CONTRACTS fill:#2a1a10,stroke:#c98a4a,stroke-width:1.5px,color:#f5e8d4
+    style VISION_CHECK fill:#2a1a10,stroke:#c98a4a,stroke-width:1.5px,color:#f5e8d4
+    style QUALITY fill:#3a2a14,stroke:#d9a050,stroke-width:1.5px,color:#f5edd8
+    style PATTERNS fill:#2a1a10,stroke:#c98a4a,stroke-width:1.5px,color:#f5e8d4
+    style ACT fill:transparent,stroke:#444,stroke-width:2px,stroke-dasharray:8 4,color:#888
+    style UPDATE_CONV fill:#162744,stroke:#4a7fc9,stroke-width:1.5px,color:#dce8f5
+    style ADJUST fill:#162744,stroke:#4a7fc9,stroke-width:1.5px,color:#dce8f5
+    style UPDATE_VL fill:#2a183a,stroke:#9050b6,stroke-width:1.5px,color:#e8d8f5
+    style LESSONS fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+    style DONE fill:#163a24,stroke:#3ca050,stroke-width:2px,color:#dcf0e0

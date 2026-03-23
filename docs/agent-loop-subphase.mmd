@@ -1,0 +1,68 @@
+---
+title: "Per-Phase Build Loop"
+---
+
+flowchart TD
+    RESEARCH["🌐 Research\nCompetitors, Best practices, Design patterns"]
+    PLAN["📋 Plan\nVisual spec, Success criteria, Mockup"]
+
+    RESEARCH --> PLAN
+    PLAN --> BUILD
+
+    subgraph LOOP["  "]
+        direction LR
+
+        BUILD["🔨 Build\nImplement features\nWrite tests, Create assets"]
+        BUILD -- "tests and screenshots" --> QA
+
+        QA["🔍 QA\nVerify criteria\nCompare to mockup"]
+        QA -- "visual regression check" --> DESIGN
+
+        DESIGN["🎨 Design Review\nSpec compliance\nConsistency, Grading"]
+    end
+
+    DESIGN -- "failed criteria or blockers" --> RESOLVE
+    RESOLVE -- "fixes applied" --> BUILD
+
+    RESOLVE["🔧 Resolve\nSurgical fixes from\nQA or Design diagnosis"]
+
+    DESIGN -- "QA pass, Design approved" --> SHIP
+    SHIP(("✅\nShip"))
+
+    SHIP --> MORE{"More sub-phases\nin this major phase?"}
+    MORE -- "yes" --> PLAN
+
+    MORE -- "major phase complete" --> CHECKPOINT
+
+    CHECKPOINT["🧠 Executive Checkpoint\nVerify contracts fulfilled\nCheck vision alignment\nExtract lessons learned\nUpdate conventions\nAdjust next phase"]
+
+    CHECKPOINT --> NEXT{"More major\nphases?"}
+    NEXT -- "yes" --> RESEARCH
+    NEXT -- "no" --> ALLDONE(("🏁\nProject\nComplete"))
+
+    QA -. "failed 3 plus rounds" .-> PM_REPLAN
+    DESIGN -. "blockers 3 plus rounds" .-> PM_REPLAN
+
+    PM_REPLAN["📋 PM Replan\nRevise plan or visual approach"]
+    PM_REPLAN -.-> BUILD
+    PM_REPLAN -. "replanned 2 plus times" .-> EXEC
+
+    EXEC["🧠 Executive Escalation\nDiagnose root cause\nRestructure phase"]
+    EXEC -. "RESTART with fresh research" .-> RESEARCH
+    EXEC -. "CONTINUE" .-> STOP(("🛑\nHuman"))
+
+    style RESEARCH fill:#162744,stroke:#4a7fc9,stroke-width:2px,color:#dce8f5
+    style PLAN fill:#162744,stroke:#4a7fc9,stroke-width:2px,color:#dce8f5
+    style BUILD fill:#163a24,stroke:#3ca050,stroke-width:2px,color:#dcf0e0
+    style QA fill:#3a2a14,stroke:#d9a050,stroke-width:2px,color:#f5edd8
+    style RESOLVE fill:#3a1818,stroke:#d95050,stroke-width:2px,color:#f5dcdc
+    style DESIGN fill:#2a183a,stroke:#9050b6,stroke-width:2px,color:#e8d8f5
+    style PM_REPLAN fill:#162744,stroke:#4a7fc9,stroke-width:2px,color:#dce8f5
+    style EXEC fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+    style CHECKPOINT fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+    style LOOP fill:transparent,stroke:#444,stroke-width:2px,stroke-dasharray:8 4,color:#888
+    style MORE fill:#1a1a2e,stroke:#5a5a8a,stroke-width:2px,color:#c0c0d8
+    style NEXT fill:#1a1a2e,stroke:#5a5a8a,stroke-width:2px,color:#c0c0d8
+    style SHIP fill:#163a24,stroke:#3ca050,stroke-width:3px,color:#dcf0e0
+    style ALLDONE fill:#163a24,stroke:#3ca050,stroke-width:3px,color:#dcf0e0
+    style STOP fill:#3a1818,stroke:#d95050,stroke-width:2px,color:#f5dcdc

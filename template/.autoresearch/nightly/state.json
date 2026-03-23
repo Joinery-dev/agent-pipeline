@@ -1,0 +1,138 @@
+{
+  "startedAt": "2026-03-22T23:41:22.156Z",
+  "protocols": [
+    {
+      "target": "build.md",
+      "benchmark": "build-api",
+      "status": "completed",
+      "budgetHours": 0.04999999999999999,
+      "bestScore": 1,
+      "saturated": false,
+      "iterations": 2,
+      "keeps": 0,
+      "reverts": 2
+    },
+    {
+      "target": "build.md",
+      "benchmark": "build-basic",
+      "status": "completed",
+      "budgetHours": 0.059999999999999984,
+      "bestScore": 1,
+      "saturated": false,
+      "iterations": 3,
+      "keeps": 0,
+      "reverts": 3
+    },
+    {
+      "target": "build.md",
+      "benchmark": "build-component",
+      "status": "completed",
+      "budgetHours": 0.04999999999999999,
+      "bestScore": 1,
+      "saturated": false,
+      "iterations": 3,
+      "keeps": 0,
+      "reverts": 3
+    },
+    {
+      "target": "design-review.md",
+      "benchmark": "design-review",
+      "status": "completed",
+      "budgetHours": 0.024999999999999994,
+      "bestScore": 1,
+      "saturated": false,
+      "iterations": 1,
+      "keeps": 0,
+      "reverts": 1
+    },
+    {
+      "target": "exec.md",
+      "benchmark": "exec-decompose",
+      "status": "completed",
+      "budgetHours": 0.039999999999999994,
+      "bestScore": 1,
+      "saturated": false,
+      "iterations": 1,
+      "keeps": 0,
+      "reverts": 0
+    },
+    {
+      "target": "exec.md",
+      "benchmark": "exec-small-project",
+      "status": "completed",
+      "budgetHours": 0.029999999999999992,
+      "bestScore": 1,
+      "saturated": false,
+      "iterations": 1,
+      "keeps": 0,
+      "reverts": 0
+    },
+    {
+      "target": "pm:plan.md",
+      "benchmark": "pm-planning",
+      "status": "completed",
+      "budgetHours": 0.029999999999999992,
+      "bestScore": 1,
+      "saturated": false,
+      "iterations": 1,
+      "keeps": 0,
+      "reverts": 1
+    },
+    {
+      "target": "pm:review.md",
+      "benchmark": "pm-review",
+      "status": "completed",
+      "budgetHours": 0.024999999999999994,
+      "bestScore": 1,
+      "saturated": false,
+      "iterations": 1,
+      "keeps": 0,
+      "reverts": 1
+    },
+    {
+      "target": "qa.md",
+      "benchmark": "qa-accuracy",
+      "status": "completed",
+      "budgetHours": 0.059999999999999984,
+      "bestScore": 1,
+      "saturated": false,
+      "iterations": 2,
+      "keeps": 0,
+      "reverts": 2
+    },
+    {
+      "target": "qa.md",
+      "benchmark": "qa-false-positives",
+      "status": "completed",
+      "budgetHours": 0.04999999999999999,
+      "bestScore": 1,
+      "saturated": false,
+      "iterations": 2,
+      "keeps": 0,
+      "reverts": 2
+    },
+    {
+      "target": "resolve.md",
+      "benchmark": "resolve-precision",
+      "status": "completed",
+      "budgetHours": 0.04999999999999999,
+      "bestScore": 1,
+      "saturated": false,
+      "iterations": 3,
+      "keeps": 0,
+      "reverts": 3
+    },
+    {
+      "target": "ship-config.json",
+      "benchmark": "ship-config",
+      "status": "completed",
+      "budgetHours": 0.029999999999999992,
+      "bestScore": 1,
+      "saturated": false,
+      "iterations": 1,
+      "keeps": 0,
+      "reverts": 1
+    }
+  ],
+  "completedAt": "2026-03-23T00:39:24.595Z"
+}

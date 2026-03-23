@@ -1,0 +1,126 @@
+---
+title: "Final Product Review"
+---
+
+flowchart TD
+    ALLDONE(("All Major\nPhases\nComplete"))
+
+    ALLDONE --> TESTS
+
+    subgraph TECHNICAL["Technical Checks"]
+        direction LR
+
+        TESTS["🧪 Full Test Suite\nAll tiers, cross-phase\nregressions"]
+
+        TESTS --> PRODBUILD
+
+        PRODBUILD["📦 Production Build\nnpm run build\nCatch SSR, type, import errors"]
+
+        PRODBUILD --> LINKCHECK
+
+        LINKCHECK["🔗 Link Check + Content Audit\nBroken links, orphaned pages\nPlaceholder text, broken images\nEmpty sections"]
+    end
+
+    LINKCHECK --> GRID
+
+    GRID["📸 Screenshot Grid\nEvery page in one image\nWhole product at a glance"]
+
+    GRID --> PLAN_JOURNEYS
+
+    PLAN_JOURNEYS["🗺 Plan Walkthrough Journeys\nAgent reads what was built\nDesigns 3-5 product-specific\nuser journeys to test"]
+
+    PLAN_JOURNEYS --> WALK
+
+    subgraph WALKTHROUGHS["User Journey Walkthroughs -- fresh context each"]
+        direction LR
+
+        W1["🚶 Journey 1"]
+        W2["🚶 Journey 2"]
+        W3["🚶 Journey 3"]
+        W4["🚶 ..."]
+    end
+
+    WALK[ ] --> W1
+    WALK --> W2
+    WALK --> W3
+    WALK --> W4
+
+    W1 --> REPORTS
+    W2 --> REPORTS
+    W3 --> REPORTS
+    W4 --> REPORTS
+
+    REPORTS([".qa/walkthroughs/\nNarrative findings\nfrom each journey"])
+
+    REPORTS --> PROJECTQA
+
+    PROJECTQA["🔍 Project-Level QA\nCross-page validation\nVision vs reality\nOverall completeness"]
+
+    PROJECTQA --> PROJECTDESIGN
+
+    PROJECTDESIGN["🎨 Project-Level Design Review\nCross-page consistency\nVisual language adherence\nOverall quality grading"]
+
+    PROJECTDESIGN --> EXEC_START
+
+    subgraph EXEC_REVIEW["Interactive Executive Final Review"]
+        direction TB
+
+        EXEC_START["📋 Read All Reports\nScreenshot grid, walkthroughs\nLink check, QA, design memory\nTest and build results"]
+
+        EXEC_START --> RESEARCH
+
+        RESEARCH["🌐 Fresh Competitive Research\nHow does the product compare\nto current competitors?"]
+
+        RESEARCH --> OPEN
+
+        OPEN["🖥 Open the Product\nStart dev server\nHuman sees it live"]
+
+        OPEN --> PRESENT
+
+        PRESENT["💬 Present Findings\nVision fulfillment\nWalkthrough issues\nCompetitive gaps\nBroken links and content issues\nQuality state"]
+
+        PRESENT --> DISCUSS
+
+        DISCUSS["💬 Improvement Conversation\nHuman reacts to findings\nDiscusses priorities\nDecides what matters"]
+    end
+
+    DISCUSS --> DECISION{"What does the\nhuman want?"}
+
+    DECISION -- "Ship it" --> SHIP(("🏁\nProject\nShipped"))
+
+    DECISION -- "Improve these areas" --> NEWPHASES
+
+    NEWPHASES["🧠 Executive Creates\nNew Major Phases\nfor requested improvements"]
+
+    NEWPHASES -- "pipeline restarts autonomously" --> BUILDLOOP
+
+    BUILDLOOP(["Research, Plan\nBuild, QA, Design\nloop runs for\neach new phase"])
+
+    BUILDLOOP --> ALLDONE
+
+    style ALLDONE fill:#1a1a2e,stroke:#5a5a8a,stroke-width:2px,color:#c0c0d8
+    style TECHNICAL fill:transparent,stroke:#444,stroke-width:2px,stroke-dasharray:8 4,color:#888
+    style TESTS fill:#3a1818,stroke:#d95050,stroke-width:2px,color:#f5dcdc
+    style PRODBUILD fill:#3a1818,stroke:#d95050,stroke-width:2px,color:#f5dcdc
+    style LINKCHECK fill:#3a2a14,stroke:#d9a050,stroke-width:2px,color:#f5edd8
+    style GRID fill:#3a2a14,stroke:#d9a050,stroke-width:2px,color:#f5edd8
+    style PLAN_JOURNEYS fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+    style WALK fill:transparent,stroke:transparent,color:transparent
+    style WALKTHROUGHS fill:transparent,stroke:#444,stroke-width:2px,stroke-dasharray:8 4,color:#888
+    style W1 fill:#163a24,stroke:#3ca050,stroke-width:1.5px,color:#dcf0e0
+    style W2 fill:#163a24,stroke:#3ca050,stroke-width:1.5px,color:#dcf0e0
+    style W3 fill:#163a24,stroke:#3ca050,stroke-width:1.5px,color:#dcf0e0
+    style W4 fill:#163a24,stroke:#3ca050,stroke-width:1.5px,color:#dcf0e0
+    style REPORTS fill:#1a1a2e,stroke:#5a5a8a,stroke-width:1.5px,color:#c0c0d8
+    style PROJECTQA fill:#3a2a14,stroke:#d9a050,stroke-width:2px,color:#f5edd8
+    style PROJECTDESIGN fill:#2a183a,stroke:#9050b6,stroke-width:2px,color:#e8d8f5
+    style EXEC_REVIEW fill:transparent,stroke:#4a7fc9,stroke-width:2px,stroke-dasharray:8 4,color:#4a7fc9
+    style EXEC_START fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+    style RESEARCH fill:#162744,stroke:#4a7fc9,stroke-width:2px,color:#dce8f5
+    style OPEN fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+    style PRESENT fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+    style DISCUSS fill:#162744,stroke:#4a7fc9,stroke-width:2px,color:#dce8f5
+    style DECISION fill:#1a1a2e,stroke:#5a5a8a,stroke-width:2px,color:#c0c0d8
+    style SHIP fill:#163a24,stroke:#3ca050,stroke-width:3px,color:#dcf0e0
+    style NEWPHASES fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+    style BUILDLOOP fill:#1a1a2e,stroke:#5a5a8a,stroke-width:1.5px,color:#c0c0d8

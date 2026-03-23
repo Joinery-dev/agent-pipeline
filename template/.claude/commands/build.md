@@ -17,12 +17,12 @@ $ARGUMENTS — a plan name (autonomous) or task reference (manual).
 1. Read CLAUDE.md and .claude/agent-protocol.md
 2. Read .claude/project-conventions.md if it exists
 3. Read .claude/visual-language.md if it exists — use these tokens, not new ones
-4. Read .goals.json — find your target
+4. Read .ship/briefing.md for your task context (target task, phase, success criteria, previous attempts). For specific lookups, use `node lib/pipeline-cli.js get-task <id>` or `get-phase <id>`. Avoid reading .goals.json directly — it may exceed your context window on large projects.
 5. Branch check: if on main, create build/<name> branch
 6. Read the task's planFile — extract goal, architecture, success criteria,
    and Visual Specification (if present — this describes what pages should look like)
 7. Read task's files[] or grep/glob to discover relevant files
-8. Read .pm/memory/concerns.md and .qa/memory/patterns.md (read-only)
+8. Read .pm/memory/concerns.md, .qa/memory/patterns.md, and .qa/memory/regressions.md (read-only)
 9. Read .design/memory/page-grades.json — know which pages got low grades
 10. If the phase has illustrations in .goals.json, view the mockup image —
     this is what the page should look like. Match it.

@@ -5,131 +5,161 @@ Each invocation is a **fresh agent**. Context comes from memory files only.
 ```
 Round N (fresh agent):
 
-  1. READ       — visual language + spec + ALL pages + all memory
-  2. CAPTURE    — screenshots at 1280px + 375px
-  3. SPEC CHECK — point-by-point against visual specification (tree)
-  4. CONSISTENCY — against all pages across all phases (forest)
-  5. MEMORY     — previous findings addressed? Patterns recurring?
-  6. DIAGNOSE   — root cause for each issue
-  7. REPORT     — SHIP-BLOCKER / QUALITY / POLISH per finding
-  8. PERSIST    — update .design/memory/ + PM concerns + QA patterns
+  1. CAPTURE    — read all context + take screenshots
+  2. CHECK      — spec compliance (tree) + consistency (forest)
+  3. DIAGNOSE   — root cause + memory check (recurring/resolved/new)
+  4. PERSIST    — update all memory files, report verdict
 ```
 
 ---
 
-## Step 1: READ
+## Step 1: CAPTURE
 
-Read all memory files. Build the full picture before looking at anything.
+Read all context and take screenshots:
 
-- `.claude/visual-language.md` — the visual constitution. This is your primary
-  reference. Every judgment traces back to it.
-- Plan file `## Visual Specification` — what this phase should look like.
-  Verify it references visual-language.md. If it doesn't, note as QUALITY finding.
-- `.design/memory/status.json` — previous review state and trajectory
-- `.design/memory/page-grades.json` — grade history per page
-- `.design/memory/findings.md` — previous findings (which are resolved?)
-- `.design/memory/visual-drift.md` — known drift items
+**Read:**
+- `.claude/visual-language.md` — the visual constitution. Primary reference.
+- Plan file `## Visual Specification` — what this phase should look like
+- `.design/memory/` (status.json, page-grades.json, findings.md, visual-drift.md)
 - `.pm/memory/concerns.md` — design concerns flagged by PM
 - `.qa/memory/patterns.md` — visual patterns flagged by QA
 
-## Step 2: CAPTURE
-
-Take full-page screenshots of EVERY page in the project (not just this phase):
-
+**Screenshot EVERY page** in the project (not just this phase):
 - Desktop: 1280 x 800 viewport
 - Mobile: 375 x 812 viewport
 - Save to `.qa/screenshots/design-review-<phase>-<timestamp>/`
 - Name format: `<route>-desktop.png`, `<route>-mobile.png`
 - Wait for animations to settle (1-2s after load)
 
-**Note:** If running in autonomous mode (--print), you may not be able to
-take screenshots. Ship.js runs `lib/visual-check.js` independently. In
-interactive mode, always take screenshots yourself.
+**Note:** In autonomous mode (--print), ship.js runs `lib/visual-check.js`
+independently. In interactive mode, always take screenshots yourself.
 
-## Step 3: SPEC CHECK (tree — blocking)
+---
+
+## Step 2: CHECK
+
+### Spec compliance (tree — blocking)
 
 **If the phase has `illustrations[]` in .goals.json, the mockup is the
-PRIMARY reference.** Compare the built page screenshot side-by-side
-against the mockup illustration:
+PRIMARY reference.** Compare built page against mockup:
+- Layout match: same sections in same positions and proportions?
+- Color match: same palette?
+- Typography match: same heading/body hierarchy?
+- Content hierarchy: same visual weight distribution?
+- Proportions: hero same relative height? Sections same spacing?
 
-- **Layout match**: same sections in the same positions and proportions?
-- **Color match**: same palette as the mockup?
-- **Typography match**: same heading/body hierarchy?
-- **Content hierarchy**: same visual weight distribution?
-- **Proportions**: hero same relative height? Sections same spacing?
-
-Grade the match: A (near-identical) through F (completely different).
+Grade: A (near-identical) through F (completely different).
 C or below on any critical area = **SHIP-BLOCKER**.
 
-**If no illustration exists**, fall back to the text Visual Specification
-and evaluate point by point:
+Always write letter grades (A, A-, B+, B, B-, C+, C, C-, D, F) to `overallGrade` in status.json. Do not use 'pass' or 'fail' — those are not valid grades.
 
-- **Layout**: does the actual composition match the described layout?
-- **Hierarchy**: is the described prominence achieved? Eye path correct?
-- **Mood**: does the page convey the described feeling?
-- **Content flow**: does the user path match the described flow?
-- **Key details**: are the specified colors, typography, treatments used?
+**If no illustration**, evaluate against text Visual Specification point by point:
+- Layout, hierarchy, mood, content flow, key details
+- Binary per point: **MET** or **NOT MET**
+- NOT MET on critical layout/hierarchy = **SHIP-BLOCKER**
+- Minor detail mismatches = **QUALITY**
+- Note missing illustration as a QUALITY finding
 
-Note the absence of an illustration as a **QUALITY** finding.
-
-Binary per point: **MET** or **NOT MET**.
-Any NOT MET on a critical layout/hierarchy point = **SHIP-BLOCKER**.
-Minor detail mismatches = **QUALITY**.
-
-## Step 4: CONSISTENCY CHECK (forest)
+### Consistency (forest — advisory)
 
 Compare ALL pages against `.claude/visual-language.md`:
+1. **Palette compliance** — all colors from documented palette?
+2. **Typography compliance** — all fonts/weights from documented scale?
+3. **Spacing rhythm** — consistent across pages?
+4. **Component patterns** — cards, buttons, nav follow documented patterns?
+5. **Cross-phase consistency** — pages from this phase feel like same product as other phases?
+6. **Drift detection** — has the visual language evolved beyond the document?
 
-1. **Palette compliance** — are all colors from the documented palette?
-   Flag any hex values, rgb values, or Tailwind colors not in visual-language.md.
-2. **Typography compliance** — are all fonts and weights from the documented scale?
-3. **Spacing rhythm** — is the spacing system consistent across pages?
-4. **Component patterns** — do cards, buttons, sections, nav follow the
-   documented patterns?
-5. **Cross-phase consistency** — do pages from THIS phase feel like they belong
-   with pages from OTHER phases? Or do they look like different products?
-6. **Drift detection** — has the visual language evolved since it was documented?
-   If the code has drifted from visual-language.md, is it the code that's wrong
-   or the document that needs updating?
-
-Forest findings are **advisory** unless they indicate systematic drift affecting
+Forest findings are advisory unless they indicate systematic drift across
 multiple pages (which becomes a QUALITY finding).
 
-## Step 5: MEMORY CHECK
+### Visual assertion codification
 
-Check previous state:
+After consistency analysis, encode findings that can be expressed as CSS
+or DOM assertions. Write to `tests/design/<phaseId>.spec.js`:
 
-- Read `.design/memory/findings.md` — for each previous finding:
-  - Is it **RESOLVED** (the issue no longer exists in screenshots)?
-  - Is it **RECURRING** (still present despite being flagged)?
-  - Is it **NEW** (first time seeing this)?
-- Read `.design/memory/page-grades.json` — is each page's grade:
-  - **IMPROVING** (trending up)?
-  - **STABLE** (same grade)?
-  - **DEGRADING** (trending down)?
-- Read `.pm/memory/concerns.md` — were design concerns addressed?
-- Read `.qa/memory/patterns.md` — are visual patterns still occurring?
+```javascript
+// tests/design/<phaseId>.spec.js
+// Design visual assertions — Round N, YYYY-MM-DD
+import { test, expect } from '@playwright/test';
 
-RECURRING findings that have been flagged 2+ times get elevated one severity
-level (POLISH → QUALITY, QUALITY → SHIP-BLOCKER).
+test.describe('<Phase> — Visual Assertions', () => {
+  test('buttons use brand primary color', async ({ page }) => {
+    await page.goto('/');
+    const btn = page.locator('button.primary, a.btn-primary').first();
+    await expect(btn).toHaveCSS('background-color', 'rgb(26, 115, 232)');
+  });
 
-## Step 6: DIAGNOSE
+  test('headings use correct font family', async ({ page }) => {
+    await page.goto('/');
+    const h1 = page.locator('h1').first();
+    const font = await h1.evaluate(el => getComputedStyle(el).fontFamily);
+    expect(font).toContain('Inter');
+  });
+});
+```
+
+**What to codify:**
+- Brand color usage on interactive elements (use `rgb()` format from computed styles)
+- Font family on headings and body text (use `.toContain()` for partial match)
+- Border radius on cards, buttons, inputs
+- Spacing values that follow the documented scale
+- Consistent component styling across pages (same card shadow, button height)
+- Responsive: key elements visible at mobile viewport (375px)
+
+**What NOT to codify:**
+- Subjective mood/feel ("warm", "editorial" — can't be an assertion)
+- Exact layout positions (too fragile for automated tests)
+- Content-specific checks (QA handles those)
+
+**Use tolerant selectors.** Prefer role-based (`page.getByRole`) or semantic
+selectors (`page.locator('nav')`) over class names that may change between builds.
+
+**If `tests/design/<phaseId>.spec.js` already exists, READ it first and append.**
+
+If Playwright is not installed, skip. Write findings to memory files only.
+
+Commit:
+```
+git add tests/design/ && git commit -m "Design: visual assertions for <phase>"
+```
+
+---
+
+## Step 3: DIAGNOSE
 
 For each finding, identify root cause:
-
 - **Builder didn't read visual-language.md** — hardcoded values instead of tokens
 - **Visual spec was vague** — builder made reasonable but wrong interpretation
-- **Design tokens not used** — builder used inline styles instead of system
 - **Cross-phase inconsistency** — different builder sessions made different choices
-- **Visual language outdated** — the spec doesn't reflect the evolved design
-- **Missing visual spec** — no spec existed for this page, builder guessed
+- **Visual language outdated** — spec doesn't reflect evolved design
+- **Missing visual spec** — no spec existed, builder guessed
 
 Root cause determines who fixes it:
 - Builder issue → resolver or new build task
 - Spec issue → PM revises spec
 - Visual language outdated → PM updates visual-language.md
 
-## Step 7: REPORT
+**Memory check:** For each finding from `.design/memory/findings.md`:
+- **RESOLVED** — issue no longer exists in current screenshots
+- **RECURRING** — still present despite being flagged (elevate severity: POLISH → QUALITY → SHIP-BLOCKER)
+- **NEW** — first time seeing this
+
+Check grade trajectory in `page-grades.json` — is each page improving, stable, or degrading?
+
+---
+
+## Step 4: PERSIST
+
+### Update memory files
+1. `.design/memory/status.json` — new trajectory entry, current state. Validate after write.
+2. `.design/memory/findings.md` — append this phase's findings. Mark previous findings RESOLVED if fixed.
+3. `.design/memory/page-grades.json` — new grade entry per page.
+4. `.design/memory/visual-drift.md` — new drift items, resolve old ones.
+5. `.pm/memory/concerns.md` — write QUALITY+ findings so PM addresses them.
+6. `.qa/memory/patterns.md` — write recurring visual patterns for QA to check. When writing visual patterns to patterns.md, use the same schema as QA: include `**Symptoms:**`, `**Root cause:**`, `**Fix:**`, `**Affected areas:**`, and `**Seen in:**` fields. The quality gate and memory hygiene rely on these fields.
+
+### Report
 
 ```
 ## Design Review: [phase]
@@ -137,74 +167,32 @@ Root cause determines who fixes it:
 **Visual Specification compliance:** X/Y points met
 **Overall grade:** [A/B/C/D/F]
 **Grade trajectory:** [previous → current]
-**Visual language compliance:** [compliant / drifting / non-compliant]
 
-### Tree Findings (this phase — spec compliance)
+### Tree Findings (spec compliance)
 [SHIP-BLOCKER] spec point: "..." — actual: "..." — root cause: ...
 [QUALITY] spec point: "..." — actual: "..." — root cause: ...
-[POLISH] "..." — root cause: ...
 
-### Forest Findings (whole product — consistency)
+### Forest Findings (consistency)
 [DRIFT] visual-language.md says X, pages show Y — affects N pages
-[INCONSISTENCY] Phase A pages use X, Phase B pages use Y
 
 ### Memory Findings
 [RESOLVED] previous finding "..." — now fixed
 [RECURRING] previous finding "..." — still present (Nth time)
-[NEW] first-time finding "..."
-
-### Previous Concerns Check
-- PM concern "X": ADDRESSED / STILL OPEN
-- QA pattern "Y": ADDRESSED / STILL OPEN
 
 ### Page Grades
 | Page | Previous | Current | Trend |
 |------|----------|---------|-------|
 | /    | B        | B+      | ↑     |
-| /about | A      | A       | →     |
 ```
 
-**No ambiguity. No "looks pretty good." Every finding references the spec or
-visual-language.md. Every grade is justified.**
-
-## Step 8: PERSIST
-
-1. **Update `.design/memory/status.json`** — new trajectory entry, current state.
-   Validate after write.
-
-2. **Append to `.design/memory/findings.md`** — this phase's findings with date.
-   Mark previous findings as RESOLVED if they no longer appear.
-
-3. **Update `.design/memory/page-grades.json`** — new grade entry per page.
-
-4. **Update `.design/memory/visual-drift.md`** — new drift items, resolve old ones.
-
-5. **Write QUALITY+ findings to `.pm/memory/concerns.md`** — so PM addresses
-   them in the next phase's visual spec.
-
-6. **Write recurring visual patterns to `.qa/memory/patterns.md`** — so QA
-   checks for them in future forest checks.
-
-7. **If visual-language.md needs updating**, note the specific recommendation
-   in findings. PM decides whether to accept.
+**No ambiguity. Every finding references the spec or visual-language.md.
+Every grade is justified.**
 
 ---
 
 ## Memory Hygiene
 
-### Size caps
 - `status.json` trajectory — keep last 20 entries
-- `findings.md` — keep last 20 phase entries, archive older to `findings-archive.md`
+- `findings.md` — keep last 20 phase entries, archive older
 - `visual-drift.md` — resolve items when fixed, archive after 60 days
 - `page-grades.json` — keep all (trajectory is the whole point)
-
-### Staleness audit
-Check each OPEN drift item against current screenshots. If fixed, resolve with:
-`**Resolution:** auto-resolved — verified fixed in [phase]`.
-
-### Recovery
-If any memory file is missing or corrupted:
-1. Check `git log -- .design/memory/{file}` for last good version
-2. If in git, restore from last good commit
-3. If not, reconstruct from screenshots + findings in attempt notes
-4. Flag to user: "Reconstructed — may be incomplete"

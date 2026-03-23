@@ -11,8 +11,8 @@ All agent commands (`/pm`, `/pm:plan`, `/build`, `/qa`, `/resolve`) reference th
 Project (root)
 ├── id: string (UUID)
 ├── name: string
-├── description: string
-├── vision: string (project-level goal/milestone)
+├── description: string (optional — set by exec or update-project)
+├── vision: string (optional — set by exec or update-project)
 └── majorPhases: MajorPhase[]
 
 MajorPhase (grouping layer)
@@ -22,14 +22,16 @@ MajorPhase (grouping layer)
 ├── status: Status
 ├── phases: Phase[] (buildable work within this major phase)
 ├── order: number
-└── summary: string (optional — auto-generated rollup of phase statuses)
+├── summary: string (optional — auto-generated rollup of phase statuses)
+├── interfaceContract { produces[], consumes[] }  (optional — recommended for inter-phase contracts)
+└── dependsOn[]                                   (optional — major phase IDs this depends on)
 
 Phase (nested inside a MajorPhase)
 ├── id: string (UUID)
 ├── title: string
 ├── description: string
 ├── status: "not-started" | "in-progress" | "completed" | "blocked"
-├── planFile: string (relative path, e.g. "plans/topic-slug.md")
+├── planFile: string (optional — relative path, e.g. "plans/topic-slug.md")
 ├── order: number (0-indexed, determines execution sequence)
 ├── tasks: Task[]
 ├── pipeline: { state, lastAgent, lastTimestamp } (explicit pipeline state)
@@ -44,7 +46,7 @@ Task
 ├── title: string
 ├── description: string
 ├── status: "not-started" | "in-progress" | "completed" | "blocked"
-├── planFile: string (same as parent phase, or specific)
+├── planFile: string (optional — same as parent phase, or specific)
 ├── files: string[] (optional — hint for relevant file paths)
 ├── attempts: Attempt[] (flat list, no nesting)
 └── createdAt: string (ISO 8601 timestamp)
@@ -60,7 +62,7 @@ Attempt (flat — NO children/nesting)
 
 Pipeline State (on Phase)
 ├── state: "idle" | "building" | "awaiting-qa" | "qa-failed" | "complete"
-├── lastAgent: "pm" | "build" | "qa" | "resolve" | null
+├── lastAgent: "pm" | "build" | "qa" | "resolve" | "exec" | "design" | null
 └── lastTimestamp: string (ISO 8601) | null
 
 Diagram (optional on Project, MajorPhase, Phase, Task)
@@ -182,6 +184,29 @@ Every field must be specific. "Various changes" or "Standard approach"
 are not acceptable — if you can't be specific, you don't understand
 what you just did.
 
+### QA Failure Note Format (read by Resolver)
+
+When QA reports a failure, the attempt notes must include enough detail
+for the Resolver to act without reading the plan or exploring the codebase:
+
+```
+## Failed Criteria
+- [FAIL] criteria-name: expected X, got Y
+
+## Diagnosis
+Root cause: why this failed (not just what failed)
+
+## Files to Fix
+- path/to/file.js — what needs to change and why
+- path/to/other.js — what needs to change and why
+
+## Severity
+CRITICAL | HIGH | MEDIUM
+```
+
+The Resolver reads ONLY the files listed in `## Files to Fix`. If QA
+doesn't name specific files, the Resolver cannot act and escalates to PM.
+
 ---
 
 ## Severity Levels
@@ -219,6 +244,17 @@ Don't inflate severity — it causes unnecessary rework cycles.
 
 ---
 
+## PM Memory Schema
+
+```
+.pm/memory/
+├── status.md     — PM state: last review date, pipeline state snapshot, top concerns
+├── decisions.md  — Architectural decisions with date, alternatives, reasoning (append-only, archive at 20)
+├── concerns.md   — Open issues with severity (CRITICAL/HIGH/MEDIUM), status (OPEN/RESOLVED), resolution
+├── reviews.md    — Code review verdicts with action items (archive at 15)
+└── handoff.md    — End-of-session context: summary, in-flight work, decisions, concerns, recommendations
+```
+
 ## Design Memory Schema
 
 ```
@@ -238,7 +274,7 @@ Don't inflate severity — it causes unnecessary rework cycles.
 ## Illustration Schema
 
 ```
-Illustration (optional on Project, MajorPhase, Phase)
+Illustration (optional on Project, MajorPhase, Phase, Task)
 ├── id: string (UUID)
 ├── title: string
 ├── imagePath: string (relative path to PNG)

@@ -1,0 +1,98 @@
+---
+title: "Autoresearch: Overnight Agent Optimization"
+---
+
+flowchart TD
+    %% ══════════════════════════════════════
+    %%  WHAT GOES IN
+    %% ══════════════════════════════════════
+
+    PROTOCOL["The agent's current instructions"]
+    CONSTRAINTS["Rules about what can't be changed"]
+    BENCHMARK["A test the agent has to pass"]
+
+    PROTOCOL --> PROPOSE
+    CONSTRAINTS --> PROPOSE
+    BENCHMARK --> PROPOSE
+
+    %% ══════════════════════════════════════
+    %%  THE LOOP
+    %% ══════════════════════════════════════
+
+    subgraph LOOP["  "]
+        direction LR
+
+        PROPOSE["🧬 Think of a way\nto improve the instructions"]
+
+        PROPOSE -- "try it" --> TEST
+
+        TEST["🔨 Run the agent\nwith the new instructions"]
+
+        TEST -- "how'd it do?" --> SCORE
+
+        SCORE["📊 Grade the result"]
+    end
+
+    SCORE --> DECIDE
+
+    %% ══════════════════════════════════════
+    %%  DID IT WORK?
+    %% ══════════════════════════════════════
+
+    DECIDE{"Did the agent\ndo better?"}
+
+    DECIDE -- "Yes — keep it" --> KEEP["Save the improvement"]
+    DECIDE -- "No — toss it" --> REVERT["Go back, try\nsomething different"]
+
+    KEEP -. "remember what worked" .-> PROPOSE
+    REVERT -. "remember what didn't" .-> PROPOSE
+
+    KEEP --> CHECK
+    REVERT --> CHECK
+
+    CHECK{"Still improving?"}
+    CHECK -- "yes" --> PROPOSE
+    CHECK -- "no — we're done" --> DONE
+
+    DONE(("✅\nBetter\nAgent"))
+
+    %% ══════════════════════════════════════
+    %%  OVERNIGHT
+    %% ══════════════════════════════════════
+
+    subgraph NIGHTLY["Runs overnight for every agent"]
+        direction LR
+
+        N_PICK["Pick which agents\nneed the most help"]
+        N_RUN["Optimize each one"]
+        N_LEARN["Review what improved\nand plan tomorrow"]
+
+        N_PICK --> N_RUN --> N_LEARN
+    end
+
+    N_RUN -.-> PROPOSE
+
+    %% ══════════════════════════════════════
+    %%  STYLES
+    %% ══════════════════════════════════════
+
+    style PROPOSE fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+    style TEST fill:#163a24,stroke:#3ca050,stroke-width:2px,color:#dcf0e0
+    style SCORE fill:#3a2a14,stroke:#d9a050,stroke-width:2px,color:#f5edd8
+    style LOOP fill:transparent,stroke:#444,stroke-width:2px,stroke-dasharray:8 4,color:#888
+
+    style PROTOCOL fill:#162744,stroke:#4a7fc9,stroke-width:1.5px,color:#dce8f5
+    style CONSTRAINTS fill:#162744,stroke:#4a7fc9,stroke-width:1.5px,color:#dce8f5
+    style BENCHMARK fill:#162744,stroke:#4a7fc9,stroke-width:1.5px,color:#dce8f5
+
+    style DECIDE fill:#1a1a2e,stroke:#5a5a8a,stroke-width:2px,color:#c0c0d8
+    style KEEP fill:#163a24,stroke:#3ca050,stroke-width:1.5px,color:#dcf0e0
+    style REVERT fill:#3a1818,stroke:#d95050,stroke-width:1.5px,color:#f5dcdc
+    style CHECK fill:#1a1a2e,stroke:#5a5a8a,stroke-width:2px,color:#c0c0d8
+
+    style DONE fill:#163a24,stroke:#3ca050,stroke-width:3px,color:#dcf0e0
+
+    style NIGHTLY fill:transparent,stroke:#444,stroke-width:2px,stroke-dasharray:8 4,color:#888
+    style N_PICK fill:#2a183a,stroke:#9050b6,stroke-width:1.5px,color:#e8d8f5
+    style N_RUN fill:#2a183a,stroke:#9050b6,stroke-width:1.5px,color:#e8d8f5
+    style N_LEARN fill:#2a183a,stroke:#9050b6,stroke-width:1.5px,color:#e8d8f5

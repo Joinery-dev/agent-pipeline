@@ -1,0 +1,152 @@
+---
+title: "Inline Autoresearch: Your Pipeline Gets Smarter Every Run"
+---
+
+flowchart TD
+    %% ══════════════════════════════════════
+    %%  THE NORMAL PIPELINE (what you already have)
+    %% ══════════════════════════════════════
+
+    subgraph PIPELINE["  Your normal pipeline — nothing changes  "]
+        direction LR
+
+        BUILD["Builder\ncodes the task"]
+        QA["QA\nchecks the work"]
+        RESOLVE["Resolver\nfixes failures"]
+
+        BUILD --> QA
+        QA -- "failed" --> RESOLVE
+        RESOLVE --> QA
+    end
+
+    QA -- "every verdict" --> COLLECT
+
+    %% ══════════════════════════════════════
+    %%  SIGNAL COLLECTION (passive, invisible)
+    %% ══════════════════════════════════════
+
+    subgraph SIGNAL["  Happens automatically in the background  "]
+        direction TB
+
+        COLLECT["Record the outcome\nPass or fail? How many tries?\nWhat went wrong?"]
+
+        COLLECT --> ACCUMULATE["Build up a picture\nover multiple tasks"]
+    end
+
+    ACCUMULATE --> ENOUGH
+
+    %% ══════════════════════════════════════
+    %%  THE EXPERIMENT CYCLE
+    %% ══════════════════════════════════════
+
+    ENOUGH{"Enough data\nto learn from?"}
+
+    ENOUGH -- "not yet" --> WAIT["Keep collecting"]
+    WAIT -.-> COLLECT
+
+    ENOUGH -- "yes" --> ANALYZE
+
+    subgraph EXPERIMENT["  The learning cycle  "]
+        direction TB
+
+        ANALYZE["Analyze patterns\nWhat's the #1 reason\ntasks fail QA?"]
+
+        ANALYZE --> PROPOSE["Propose one change\nA specific, testable convention\nfor the Builder to follow"]
+
+        PROPOSE --> APPLY["Add it to project conventions\nBuilder picks it up\nautomatically next task"]
+    end
+
+    APPLY --> OBSERVE
+
+    %% ══════════════════════════════════════
+    %%  OBSERVATION & DECISION
+    %% ══════════════════════════════════════
+
+    OBSERVE["Watch the next 5 tasks\nDid the change help?"]
+    OBSERVE --> COMPARE
+
+    COMPARE{"Compare results\nvs. baseline"}
+
+    COMPARE -- "Better\nKeep it" --> KEEP
+    COMPARE -- "Worse or unclear\nRemove it" --> REVERT
+
+    KEEP["Convention stays\nBaseline improves\nTry to improve further"]
+    REVERT["Convention removed\nTry a different approach"]
+
+    KEEP -.-> ACCUMULATE
+    REVERT -.-> ACCUMULATE
+
+    %% ══════════════════════════════════════
+    %%  EXAMPLE CALLOUT
+    %% ══════════════════════════════════════
+
+    subgraph EXAMPLE["  Example  "]
+        direction TB
+
+        EX1["Tasks 1-5: 40% pass QA first try"]
+        EX2["System notices: 'test-failure' is\nthe #1 problem"]
+        EX3["Proposes: 'Always run tests\nbefore reporting build complete'"]
+        EX4["Tasks 6-10: 80% pass QA first try"]
+        EX5["Result: +40% improvement — kept"]
+
+        EX1 --> EX2 --> EX3 --> EX4 --> EX5
+    end
+
+    %% ══════════════════════════════════════
+    %%  SAFETY
+    %% ══════════════════════════════════════
+
+    subgraph SAFETY["  Built-in safety  "]
+        direction LR
+
+        S1["One experiment\nat a time"]
+        S2["Automatic rollback\nif things get worse"]
+        S3["Auto-pause after\n3 failed attempts"]
+    end
+
+    %% ══════════════════════════════════════
+    %%  STYLES
+    %% ══════════════════════════════════════
+
+    %% Pipeline agents
+    style BUILD fill:#162744,stroke:#4a7fc9,stroke-width:2px,color:#dce8f5
+    style QA fill:#2a183a,stroke:#9050b6,stroke-width:2px,color:#e8d8f5
+    style RESOLVE fill:#3a2a14,stroke:#d9a050,stroke-width:2px,color:#f5edd8
+    style PIPELINE fill:transparent,stroke:#444,stroke-width:2px,stroke-dasharray:8 4,color:#888
+
+    %% Signal collection
+    style COLLECT fill:#1a2a1a,stroke:#3ca050,stroke-width:1.5px,color:#dcf0e0
+    style ACCUMULATE fill:#1a2a1a,stroke:#3ca050,stroke-width:1.5px,color:#dcf0e0
+    style SIGNAL fill:transparent,stroke:#3ca050,stroke-width:1px,stroke-dasharray:8 4,color:#6a9a6a
+
+    %% Decision points
+    style ENOUGH fill:#1a1a2e,stroke:#5a5a8a,stroke-width:2px,color:#c0c0d8
+    style COMPARE fill:#1a1a2e,stroke:#5a5a8a,stroke-width:2px,color:#c0c0d8
+    style WAIT fill:#1a2a1a,stroke:#3ca050,stroke-width:1px,color:#dcf0e0
+
+    %% Experiment cycle
+    style ANALYZE fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+    style PROPOSE fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+    style APPLY fill:#2a1a10,stroke:#c98a4a,stroke-width:2px,color:#f5e8d4
+    style EXPERIMENT fill:transparent,stroke:#c98a4a,stroke-width:1px,stroke-dasharray:8 4,color:#a08050
+
+    %% Observation
+    style OBSERVE fill:#162744,stroke:#4a7fc9,stroke-width:1.5px,color:#dce8f5
+
+    %% Outcomes
+    style KEEP fill:#163a24,stroke:#3ca050,stroke-width:2px,color:#dcf0e0
+    style REVERT fill:#3a1818,stroke:#d95050,stroke-width:1.5px,color:#f5dcdc
+
+    %% Example
+    style EX1 fill:#1a1a2e,stroke:#5a5a8a,stroke-width:1px,color:#c0c0d8
+    style EX2 fill:#3a1818,stroke:#d95050,stroke-width:1px,color:#f5dcdc
+    style EX3 fill:#2a1a10,stroke:#c98a4a,stroke-width:1px,color:#f5e8d4
+    style EX4 fill:#163a24,stroke:#3ca050,stroke-width:1px,color:#dcf0e0
+    style EX5 fill:#163a24,stroke:#3ca050,stroke-width:2px,color:#dcf0e0
+    style EXAMPLE fill:transparent,stroke:#444,stroke-width:1px,stroke-dasharray:8 4,color:#888
+
+    %% Safety
+    style S1 fill:#162744,stroke:#4a7fc9,stroke-width:1px,color:#dce8f5
+    style S2 fill:#162744,stroke:#4a7fc9,stroke-width:1px,color:#dce8f5
+    style S3 fill:#162744,stroke:#4a7fc9,stroke-width:1px,color:#dce8f5
+    style SAFETY fill:transparent,stroke:#4a7fc9,stroke-width:1px,stroke-dasharray:8 4,color:#6a8ab0

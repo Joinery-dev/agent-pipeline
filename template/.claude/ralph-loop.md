@@ -5,135 +5,126 @@ Each invocation is a **fresh agent**. Context comes from memory files only.
 ```
 Round N (fresh agent):
 
-  1. READ       — memory + plan + ALL of .goals.json + PM context + git
-  2. EXTRACT    — success criteria from plan + vision criteria from goals
-  3. CHECK      — machine-verifiable first, then AI evaluation
-  4. FOREST     — does this work fit the broader project vision?
-  5. DIAGNOSE   — root cause analysis for failures (tree + forest)
-  6. REPORT     — binary verdict per criterion, per task, overall
-  7. PERSIST    — update .qa/memory/ AND .goals.json
-  8. EXIT       — report verdict and next actions
+  1. PREPARE    — read all context, extract success criteria
+  2. CHECK      — machine-verifiable first, then AI evaluation, then forest
+  3. DIAGNOSE   — root cause for every failure
+  4. PERSIST    — update memory + .goals.json, report verdict
 ```
 
 ---
 
-## Step 1: READ
+## Step 1: PREPARE
 
-Read all memory files. Compare against `status.json`. Identify changes
-since last run. Read plan success criteria. Read PM concerns — failures
-related to concerns get elevated severity.
+Read all context and extract what you're checking against:
 
-## Step 2: EXTRACT
+**Read:**
+- `.qa/memory/` (status.json, learnings.txt, regressions.md, patterns.md)
+- `.goals.json` — ALL phases, not just the current one
+- The plan file (via phase's `planFile`) — extract success criteria
+- `.pm/memory/status.md` and `concerns.md` — failures related to concerns get elevated severity
+- git log (last 15 commits), git diff --stat HEAD~5
 
-Pull success criteria from the plan. Map each criterion to a specific
-task in `.goals.json` (via the phase's `planFile` link). These become
-`criteria` entries in `status.json` with `taskTitle` set.
-
-Also add:
+**Extract criteria from:**
+- Plan success criteria → map each to a specific task via `planFile` link
 - Active entries from `regressions.md`
 - PM concerns with testable implications
 - Basic health checks (tests pass, no regressions)
-- **Vision criteria** (see "The Forest Check" below) — these are not
-  from the plan but from the broader project context
+- Vision criteria from broader project context (see Forest section in Step 2)
 
-## Step 3: CHECK
+These become `criteria` entries in `status.json` with `taskTitle` set.
+
+---
+
+## Step 2: CHECK
+
+### Tree checks (blocking — determine the verdict)
 
 Run machine-verifiable checks FIRST. Always. Before any AI evaluation.
 
-Priority order:
 1. `node --test tests/` — existing test suite must pass
 2. Plan success criteria that are machine-checkable
 3. Regression watch list checks
 4. Structural assertions (no undefined, no NaN, no console errors)
-5. **Visual verification** — if the project has a UI (web pages, app screens):
-   - Start the dev server if not running
-   - Use Playwright or a browser tool to take screenshots of key pages
-   - Save screenshots to `.qa/screenshots/<phaseId>-<timestamp>/` with descriptive
-     names (e.g., `homepage-full.png`, `dashboard-cards.png`, `nav-mobile.png`)
-   - Verify: content is visible (not hidden by CSS), layout isn't broken,
-     sections render with actual content (not blank/empty), navigation works
-   - Compare against what previous phases built — new changes must not hide,
-     break, or obscure existing content
-   - This catches: opacity:0 animations without triggers, display:none without
-     toggles, z-index issues, overflow:hidden clipping content
-   - **Note:** If running in autonomous mode (--print), you may not be able to
-     take screenshots. That's OK — ship.js runs `lib/visual-check.js`
-     independently as a hard gate. In interactive mode, do take screenshots.
-6. **Visual spec check** — if the plan has a `## Visual Specification` section:
-   - For each page described in the spec, compare the screenshot against the
-     spec's described layout, hierarchy, mood, and content flow
-   - Flag mismatches: "Spec says hero is dominant element but it's the same
-     visual weight as the nav" or "Spec says warm amber accents but page is
-     all neutral grays"
-   - These are tree checks (blocking), not forest warnings — the spec is part
-     of the plan, and the plan is the success criteria
+5. **Visual verification** — if the project has a UI:
+   - Take screenshots of key pages (save to `.qa/screenshots/<phaseId>-<timestamp>/`)
+   - Verify: content visible, layout not broken, sections render with actual content
+   - Compare against what previous phases built — new changes must not break existing content
+6. **Visual spec check** — if the plan has a `## Visual Specification`:
+   - Compare screenshot against spec's described layout, hierarchy, mood, content flow
+   - These are tree checks (blocking) — the spec is part of the plan
 7. **Mockup comparison** — if the phase has `illustrations[]` in `.goals.json`:
-   - Take a screenshot of the built page at the same viewport as the mockup
-   - Compare against the mockup illustration: same sections in same order?
-     Same proportions? Same color palette? Same content hierarchy?
-   - Not pixel-perfect — compare structure, proportions, and visual weight
+   - Compare built page against mockup: same sections, proportions, color palette, hierarchy
+   - Not pixel-perfect — compare structure and visual weight
    - Significant deviations are tree findings (blocking)
-   - The mockup IS the visual contract
-8. Only then: AI evaluation for things machines can't judge
+8. AI evaluation for things machines can't judge
 
-**Isolation rule:** Test through the interface (browser, CLI, API calls,
-screenshots), not by reading source code. You verify *behavior*, not
-*implementation*.
+**Isolation rule:** Test through the interface (browser, CLI, API), not source code.
 
-## Step 4: FOREST — Does this tree fit the forest?
+### Forest checks (advisory — PM decides whether to act)
 
-This is the vision check. You already validated that the code works
-(Step 3). Now ask whether it's the RIGHT code for the broader project.
+Read the code the builder wrote. Read ALL phases in `.goals.json`. Evaluate:
 
-Read the code the builder wrote. Read ALL phases in `.goals.json`.
-For each task that was built, evaluate:
+1. **Interface contracts** — does the code actually produce/consume what the contracts claim? Do other phases' outputs conflict with this phase?
+2. **Pattern consistency** — same patterns as completed phases?
+3. **Naming and domain alignment** — same vocabulary as the rest of the project?
+4. **Dependency direction** — does this create coupling that makes future phases harder?
+5. **Diagram sync** — does the phase diagram still match the plan and parent?
+6. **Visual language compliance** — if `.claude/visual-language.md` exists, does the code use documented tokens? Flag hardcoded values.
 
-1. **Interface contract verification** — read `interfaceContract` on this phase
-   AND all other phases in `.goals.json`.
-   - Does this phase's code actually produce what `produces` claims?
-   - Does it consume what `consumes` lists — and do those things exist?
-   - Do any other phases' `produces` conflict with or break what this phase
-     built? (e.g., a later phase adds CSS that hides elements this phase created,
-     or overrides an API this phase depends on)
-   - Are there undelcared dependencies — things the code uses that aren't in `consumes`?
-2. **Pattern consistency** — does this implementation follow the same
-   patterns as existing completed phases?
-3. **Scaling assumptions** — does this implementation assume things
-   that won't hold as the project grows?
-4. **Naming and domain alignment** — do the names use the same
-   vocabulary as the rest of the project?
-5. **Dependency direction** — does this code depend on things it
-   shouldn't, or create coupling that will make future phases harder?
-6. **Diagram sync** — read the phase's diagram (if it has one) and the
-   parent's diagram. Check:
-   - Does the phase diagram still match the plan? (Same number of tasks/nodes,
-     same interfaces as edges, nothing added or removed without updating)
-   - Is this phase represented in the parent diagram? If a new sub-phase was
-     added, the parent diagram should include it
-   - Do the entry/exit points in the parent diagram match what the code
-     actually implements? (e.g., parent shows "REST API" edge into this phase —
-     does the code actually expose/consume that API?)
-   Flag stale or mismatched diagrams as forest warnings.
-7. **Visual language compliance** — if `.claude/visual-language.md` exists:
-   - Does the code use documented design tokens (colors, fonts, spacing)?
-   - Flag any hardcoded hex values, font families, or spacing not in the
-     visual language document
-   - Read `.design/memory/status.json` for the visual quality trajectory —
-     is quality improving or degrading?
+Forest findings are **WARNING** (advisory, not blocking). Risk levels: HIGH, MEDIUM, LOW.
 
-Forest findings are reported as **WARNING** (advisory, not blocking).
-WARNING risk levels: HIGH, MEDIUM, LOW.
+**The overall verdict is based ONLY on tree checks.** Forest warnings go in attempt notes as informational.
 
-The overall verdict is based ONLY on tree checks. Forest warnings are
-advisory. The PM decides whether to act on them.
+Run forest findings through a review agent (Agent tool) to catch false positives before reporting.
 
-**Forest review (validate findings before reporting):**
-Run forest findings through a review agent (Agent tool) to catch false
-positives. The reviewer checks: is this real or speculative? Is the
-severity right? Does the future phase's planFile actually say what
-the forest check claims? Remove speculative findings, keep confirmed ones.
+### Forest test codification
 
-## Step 5: DIAGNOSE
+After forest analysis, encode HIGH and MEDIUM cross-cutting findings as
+Playwright tests. These persist permanently — future builds must pass them.
+
+Write to `tests/qa/<phaseId>.spec.js`:
+
+```javascript
+// tests/qa/<phaseId>.spec.js
+// QA forest tests — Round N, YYYY-MM-DD
+import { test, expect } from '@playwright/test';
+
+test.describe('<Phase> — QA Forest Checks', () => {
+  test('description of what is being verified', async ({ page }) => {
+    await page.goto('/relevant-page');
+    // assertion encoding the finding
+  });
+});
+```
+
+**What to codify:**
+- Navigation links resolve to real pages (no 404s)
+- Forms produce expected responses on submit
+- Error states render (empty input, invalid data, missing auth)
+- Data flows correctly between features built in different phases
+- Accessibility: images have alt text, inputs have labels, focus works
+- Cross-page consistency: nav, footer, header render on all pages
+- Content completeness: no placeholder text, no empty sections
+
+**What NOT to codify:**
+- Tree verdicts (those go through pipeline-cli as attempt outcomes)
+- Subjective assessments that can't be expressed as assertions
+- One-off bugs better described in attempt notes
+
+**If `tests/qa/<phaseId>.spec.js` already exists from a previous round,
+READ it first. Append new tests — do not overwrite previous rounds' tests.**
+
+If Playwright is not installed, skip this step. Write findings to memory
+files only (existing behavior).
+
+Commit new test files:
+```
+git add tests/qa/ && git commit -m "QA: forest tests for <phase>"
+```
+
+---
+
+## Step 3: DIAGNOSE
 
 For each failure (tree OR forest warning):
 - What failed (the specific check)
@@ -144,11 +135,35 @@ For each failure (tree OR forest warning):
 - Whether this is a known pattern (check `patterns.md`)
 - Impact: does this block other criteria?
 
-**Project-aware diagnosis:** Connect failures to business impact.
+**No ambiguity. No "mostly works." No partial credit** on tree checks.
 
-## Step 6: REPORT
+---
 
-**Verdict is based ONLY on tree checks.** Forest warnings are advisory.
+## Step 4: PERSIST
+
+### Update memory files
+
+1. `.qa/memory/status.json` — new trajectory entry, update criteria. Forest warnings in `forestWarnings[]`. **Validate after write.**
+2. `learnings.txt` — append new findings
+3. `regressions.md` — new regressions, increment recurrence counts
+4. `patterns.md` — new patterns or update existing
+
+### Update .goals.json
+
+Map **tree** verdicts to tasks:
+- All tree criteria pass → QA attempt `outcome: "success"`
+- Some fail → `outcome: "partial"`, notes list what failed
+- Critical fail → `outcome: "failure"`, notes have root cause
+- Forest warnings do NOT affect task status (informational in notes only)
+- After updates: all tasks success → `completed`, any failure → `blocked`
+- Include screenshot paths in attempt notes under `## Screenshots`
+- For QA rounds after the first (round > 1), use `--type qa-recheck` instead of `--type qa`. This distinguishes initial validation from rechecks after fixes.
+- **Validate .goals.json after write.**
+
+### Report
+
+**FAIL:** List failures by severity, business impact, specific `/build` commands to fix.
+**PASS:** Confirm what was verified, note retired regressions, flag resolved PM concerns.
 
 Report format:
 ```
@@ -169,47 +184,6 @@ Report format:
   CONTEXT: ...
   SUGGESTION: ...
 ```
-
-**No ambiguity. No "mostly works." No partial credit** on tree checks.
-
-## Step 7: PERSIST
-
-1. Update `.qa/memory/status.json` — new trajectory entry, update criteria.
-   Forest warnings go in `forestWarnings[]` (separate from `criteria[]`).
-   **Validate after write.**
-
-2. Append to `learnings.txt`
-
-3. Update `regressions.md` — new regressions, increment recurrence counts
-
-4. Update `patterns.md` — new patterns or update existing
-
-5. **Update `.goals.json`** — map **tree** verdicts to tasks:
-   - All tree criteria pass → QA attempt `outcome: "success"`
-   - Some fail → `outcome: "partial"`, notes list what failed
-   - Critical fail → `outcome: "failure"`, notes have root cause
-   - **Forest warnings do NOT affect task status.** They go in attempt
-     notes as informational only.
-   - Never overwrite a `success` outcome
-   - If builder had `success` but QA tree finds failure, create NEW attempt
-   - After updates: all tasks success → `completed`, any failure → `blocked`
-   - **Screenshots:** Include the paths to screenshots in the attempt notes
-     under a `## Screenshots` section, e.g.:
-     ```
-     ## Screenshots
-     - .qa/screenshots/abc123-2026-03-20/homepage-full.png
-     - .qa/screenshots/abc123-2026-03-20/dashboard-cards.png
-     ```
-     The Goals Side Panel reads these paths and displays the images inline.
-   - **Validate .goals.json after write.**
-
-## Step 8: EXIT
-
-If **FAIL**: list failures by severity, what it means for the business
-owner, specific `/build` commands to fix.
-
-If **PASS**: confirm what was verified, note retired regressions,
-flag resolved PM concerns, recommend `/pm` for status update.
 
 ---
 

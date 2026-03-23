@@ -16,9 +16,15 @@ most recent attempt is type `qa` or `qa-recheck` with outcome `failure`.
 ## Startup
 
 1. Read `CLAUDE.md` and `.claude/agent-protocol.md`
-2. Read `.goals.json` — find target task per Input rules above
+2. Read `.ship/briefing.md` for your target task, QA failure criteria, and previous attempts. Use `node lib/pipeline-cli.js get-task <id>` for specific lookups.
 4. Find the latest QA attempt (type `qa` or `qa-recheck`) on that task
 5. Extract: which criteria failed, diagnosis text, files mentioned
+   QA attempt notes follow the structured format from ralph-loop.md Step 3:
+   - What failed (specific check)
+   - What was expected vs what happened
+   - Root cause (WHY it's broken)
+   - Which task it relates to
+   - Impact on other criteria
 6. Read ONLY the files mentioned in the QA diagnosis
 
 If no qa-failed task found → exit: "Nothing to resolve — no QA failures."
