@@ -19,13 +19,19 @@ const TEMPLATE_DIR = resolve(__dirname, '..', 'template');
 const LIB_DIR = resolve(__dirname, '..', 'lib');
 
 const args = process.argv.slice(2);
-const force = args.includes('--force');
 const command = args.find(a => a !== '--force' && !a.startsWith('--'));
 
-if (command !== 'init') {
-  console.error('Usage: npx agent-pipeline init [target-dir] [--force]');
+if (command === 'update') {
+  // `update` is shorthand for `init --force` in the current directory
+  // It updates lib files, commands, and protocols without touching project data
+  args.push('--force');
+  // Fall through to init logic
+} else if (command !== 'init') {
+  console.error('Usage:');
+  console.error('  npx agent-pipeline init [target-dir]     # scaffold into a new project');
+  console.error('  npx agent-pipeline update [target-dir]   # update lib + commands in existing project');
   console.error('');
-  console.error('Scaffolds the agent pipeline into your project:');
+  console.error('init scaffolds the full agent pipeline (skips existing files):');
   console.error('  .claude/commands/   — Agent slash commands (pm, build, qa, resolve, etc.)');
   console.error('  .claude/            — Agent protocol and QA loop docs');
   console.error('  lib/pipeline*.js    — Pipeline engine and CLI');
@@ -33,12 +39,17 @@ if (command !== 'init') {
   console.error('  .pm/memory/         — PM memory directory');
   console.error('  .qa/memory/         — QA memory directory');
   console.error('  plans/              — Plan files directory');
+  console.error('');
+  console.error('update overwrites lib/ and .claude/commands/ with latest versions.');
+  console.error('Project data (.goals.json, memory, conventions) is never touched.');
   process.exit(1);
 }
 
-const targetDir = resolve(args.find(a => a !== 'init' && a !== '--force' && !a.startsWith('--')) || '.');
+const force = args.includes('--force');
+const targetDir = resolve(args.find(a => !['init', 'update', '--force'].includes(a) && !a.startsWith('--')) || '.');
+const isUpdate = command === 'update' || force;
 
-console.log(`\nScaffolding agent pipeline into: ${targetDir}${force ? ' (--force: overwriting lib + commands)' : ''}\n`);
+console.log(`\n${isUpdate ? 'Updating' : 'Scaffolding'} agent pipeline in: ${targetDir}\n`);
 
 // Track what we create vs skip
 const created = [];
@@ -420,7 +431,7 @@ if (created.length > 0) {
 }
 
 if (updated.length > 0) {
-  console.log('\nUpdated (--force):');
+  console.log('\nUpdated:');
   for (const f of updated) console.log(`  ↑ ${f}`);
 }
 
