@@ -47,12 +47,12 @@ For each failing criterion: make the minimal change to satisfy it.
 - Do NOT improve things QA didn't flag
 - Do NOT change files QA didn't mention
 
-### Step 3: Self-review
+### Step 3: Verify
+Run `node --test tests/`. If tests fail → go to Step 5 with failure.
+
+### Step 4: Self-review
 Run `git diff`. Every changed line must trace back to a QA finding.
 If the diff touches anything QA didn't flag → revert that part.
-
-### Step 4: Verify
-Run `node --test tests/`. If tests fail → go to Step 5 with failure.
 
 ### Step 5: Log outcome
 ```bash
