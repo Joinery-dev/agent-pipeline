@@ -137,6 +137,7 @@ const libFiles = [
   'distill-briefing.js',
   'memory-hygiene.js', 'test-runner.js', 'plan-to-tasks.js',
   'visual-check.js', 'integration-check.js', 'render-mockup.js', 'browser-test.js',
+  'cost-tracker.js',
 ];
 
 for (const file of libFiles) {
