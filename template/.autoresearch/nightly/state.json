@@ -114,13 +114,18 @@
     {
       "target": "resolve.md",
       "benchmark": "resolve-precision",
-      "status": "running",
-      "budgetHours": 0.04999999999999999
+      "status": "completed",
+      "budgetHours": 0.04999999999999999,
+      "bestScore": 1,
+      "saturated": false,
+      "iterations": 3,
+      "keeps": 0,
+      "reverts": 3
     },
     {
       "target": "ship-config.json",
       "benchmark": "ship-config",
-      "status": "pending",
+      "status": "running",
       "budgetHours": 0.029999999999999992
     }
   ]

@@ -1,7 +1,7 @@
 {
   "targetFile": "/Users/kevin/Desktop/agent-pipeline/template/.claude/commands/resolve.md",
   "benchmark": "resolve-precision",
-  "iteration": 3,
+  "iteration": 4,
   "bestScore": 1,
   "keptVersions": 0,
   "baseline": {
@@ -40,6 +40,15 @@
       "score": 1,
       "decision": "revert",
       "candidatesEvaluated": 1
+    },
+    {
+      "iteration": 3,
+      "hypothesis": "Move self-review (git diff scope check) before test verification so that tests always run against the final, scope-clean code state rather than a pre-review state that may change.",
+      "critique": "The current protocol runs tests (Step 3) before self-review (Step 4). If the self-review catches scope creep and reverts changes, the test results from Step 3 are now stale — they were validated against a different code state than what will be submitted. In the current benchmark this doesn't matter because the agent doesn't introduce scope creep, but in harder real-world scenarios this ordering gap could cause a fix to be logged as \"success\" with passing tests when the final post-review code was never actually tested.",
+      "operator": "restructure",
+      "score": 1,
+      "decision": "revert",
+      "candidatesEvaluated": 1
     }
   ],
   "revertTracking": [
@@ -52,8 +61,13 @@
       "iteration": 2,
       "operator": "add-example",
       "hypothesis": "Add a concrete example in Step 2 showing a before/after minimal fix for a diagnosed bug, illustrating the boundary between \"fixing what QA flagged\" and \"scope creep,\" so the agent has a behavioral reference for any QA diagnosis."
+    },
+    {
+      "iteration": 3,
+      "operator": "restructure",
+      "hypothesis": "Move self-review (git diff scope check) before test verification so that tests always run against the final, scope-clean code state rather than a pre-review state that may change."
     }
   ],
-  "consecutiveLowImprovement": 2,
+  "consecutiveLowImprovement": 3,
   "saturated": false
 }
